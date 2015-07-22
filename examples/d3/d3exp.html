@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<script src="d3.js" charset="utf-8"></script>
+<h3>SVG Bar</h3>
+<svg>
+    <rect height="200" width="50" style="fill: blue"></rect>
+</svg>
+<h3>D3 Bar</h3>
+<script>
+    d3.select("body")
+            .append("svg")
+            .append("rect")
+            .attr("width", 200)
+            .attr("height", 50)
+            .style("fill", "blue");
+
+    var width = 500, height = 100, padding = 2, dataset = [5, 10, 15, 20, 25, 8];
+
+    var svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height + 20);
+
+    svg.selectAll("rect")
+            .data(dataset)
+            .enter()
+            .append("rect")
+            .attr({
+                x: function (d, i) {
+                    return i * (width / dataset.length);
+                },
+                y: function (d, i) {
+                    return height - d * 4;
+                },
+                width: function (d, i) {
+                    return width / dataset.length - padding;
+                },
+                height: function (d, i) {
+                    return d * 4;
+                },
+                fill: function (d, i) {
+                    return "rgb(0, " + d * 10 + ",0)";
+                }
+            });
+
+    svg.selectAll("text")
+            .data(dataset)
+            .enter()
+            .append("text")
+            .text(function(d) { return d})
+            .attr({
+                "text-anchor" : 'middle',
+                x: function(d, i) { return i * width / dataset.length + 0.5 * width / dataset.length  ; },
+                y: function(d, i) { return height - d * 3.5;}
+            });
+
+
+
+
+</script>
+<div id="bob">Click Me</div>
+</body>
