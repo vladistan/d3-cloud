@@ -198,7 +198,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
             cloud = {};
 
         cloud.start = function () {
-            function n() {
+            function step() {
                 for (var n, s = +new Date; +new Date - s < timeInterval && ++u < o && timer;) {
                     n = h[u], n.x = size[0] * (Math.random() + .5) >> 1,
                         n.y = size[1] * (Math.random() + .5) >> 1,
@@ -231,7 +231,11 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 }).sort(function (t, e) {
                     return e.size - t.size
                 });
-            return timer && clearInterval(timer), timer = setInterval(n, 0), n(), cloud
+            return timer && clearInterval(timer), timer = setInterval(step, 0), step(), cloud
+        };
+
+        cloud.stop = function () {
+            return timer && (clearInterval(timer), timer = null), cloud
         };
 
         function place(board, tag, bounds) {
@@ -278,11 +282,6 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
             }
             return false;
         }
-
-
-        cloud.stop = function () {
-            return timer && (clearInterval(timer), timer = null), cloud
-        };
 
         cloud.timeInterval = function (t) {
             return arguments.length ? (timeInterval = null == t ? 1 / 0 : t, cloud) : timeInterval
