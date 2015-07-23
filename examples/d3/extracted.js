@@ -16,3 +16,7 @@ function hashchange(t) {
 function progress() {
     statusText.text(++complete + '/' + max)
 }
+
+function proxy(t, e) {
+    d3.text('//www.jasondavies.com/xhr?url=' + encodeURIComponent(t), e)
+}

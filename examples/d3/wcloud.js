@@ -28,10 +28,6 @@ function getURL(t, e) {
     }
 }
 
-function proxy(t, e) {
-    d3.text('//www.jasondavies.com/xhr?url=' + encodeURIComponent(t), e)
-}
-
 function flatten(t, e) {
     if ('string' == typeof t) {
         return t;
@@ -81,8 +77,6 @@ function generate() {
                 max = Math.min(tags.length, +d3.select('#max').property('value'))))
             .start()
 }
-
-
 
 function draw(t, e) {
     statusText.style('display', 'none');
@@ -186,9 +180,9 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                     return b.size - a.size;
                 });
 
-             if (timer) {
-                    clearInterval(timer);
-                }
+            if (timer) {
+                clearInterval(timer);
+            }
             timer = setInterval(step, 0);
             step();
 
@@ -214,10 +208,10 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
 
         cloud.stop = function () {
             if (timer) {
-                    clearInterval(timer);
-                    timer = null;
-                }
-                return cloud;
+                clearInterval(timer);
+                timer = null;
+            }
+            return cloud;
         };
 
         function place(board, tag, bounds) {
@@ -304,7 +298,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         };
 
         return d3.rebind(cloud, event, 'on');
-    };
+    }
 
     function cloudText(d) {
         return d.text;
