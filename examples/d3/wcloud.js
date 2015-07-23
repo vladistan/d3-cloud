@@ -8,14 +8,16 @@ function parseHTML(text) {
 }
 
 function getURL(t, e) {
-    if (statusText.text('Fetching\u2026 '), matchTwitter.test(t)) {
+    if (statusText.text('Fetching\u2026 '),
+            matchTwitter.test(t)) {
         var n = d3.select('body').append('iframe').style('display', 'none');
         return d3.select(window).on('message', function () {
             var t = JSON.parse(d3.event.data);
             e((Array.isArray(t) ? t : t.results).map(function (t) {
                 return t.text
             }).join('\n\n')), n.remove()
-        }), n.attr('src', 'http://jsonp.jasondavies.com/?' + encodeURIComponent(t)), void 0
+        }),
+            n.attr('src', 'http://jsonp.jasondavies.com/?' + encodeURIComponent(t)), void 0
     }
     try {
         'https:' !== location.protocol || /^https:/.test(t) ? d3.text(t, function (n) {
@@ -251,7 +253,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 u >= o && (C.stop(), b.end(c, r))
             }
 
-            var a = f((e[0] >> 5) * e[1]),
+            var a = zeroArray((e[0] >> 5) * e[1]),
                 r = null,
                 o = m.length,
                 u = -1,
@@ -311,6 +313,8 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         return 1
     }
 
+    // Fetches a monochrome sprite bitmap for the specified text.
+    // Load in batches for speed.
     function cloudSprite(t, e, n) {
         if (!t.sprite) {
             w.clearRect(0, 0, (g << 5) / v, x / v);
@@ -468,11 +472,14 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         };
     }
 
-    function f(t) {
-        for (var e = [], n = -1; ++n < t;) {
-            e[n] = 0;
+    // TODO reuse arrays?
+    function zeroArray(n) {
+        var a = [],
+            i = -1;
+        while (++i < n) {
+            a[i] = 0;
         }
-        return e
+        return a;
     }
 
     var p, y = Math.PI / 180,
