@@ -317,14 +317,14 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
     // Load in batches for speed.
     function cloudSprite(t, e, n) {
         if (!t.sprite) {
-            w.clearRect(0, 0, (g << 5) / v, x / v);
+            w.clearRect(0, 0, (g << 5) / ratio, x / ratio);
             var a = 0,
                 r = 0,
                 o = 0,
                 s = e.length;
             for (n--; ++n < s;) {
-                t = e[n], w.save(), w.font = ~~((t.size + 1) / v) + 'px ' + t.font;
-                var l = w.measureText(t.text + 'm').width * v,
+                t = e[n], w.save(), w.font = ~~((t.size + 1) / ratio) + 'px ' + t.font;
+                var l = w.measureText(t.text + 'm').width * ratio,
                     u = t.size << 1;
                 if (t.rotate) {
                     var i = Math.sin(t.rotate * y),
@@ -346,7 +346,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                     r + u >= x) {
                     break;
                 }
-                w.translate((a + (l >> 1)) / v, (r + (u >> 1)) / v),
+                w.translate((a + (l >> 1)) / ratio, (r + (u >> 1)) / ratio),
                 t.rotate && w.rotate(t.rotate * y),
                     w.fillText(t.text, 0, 0),
                     w.restore(),
@@ -360,7 +360,10 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                     t.y0 = -t.y1,
                     a += l
             }
-            for (var m = w.getImageData(0, 0, (g << 5) / v, x / v).data, M = []; --n >= 0;) {
+            for (var m = w.getImageData(0, 0, (g << 5) / ratio,
+                x / ratio)
+                .data, M = [];
+                 --n >= 0;) {
                 t = e[n];
                 for (var l = t.width,
                          b = l >> 5,
@@ -482,23 +485,27 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         return a;
     }
 
-    var p, y = Math.PI / 180,
+    var canvas, y = Math.PI / 180,
         g = 64,
         x = 2048,
-        v = 1;
+        ratio = 1;
     if ('undefined' != typeof document) {
-        p = document.createElement('canvas'),
-            p.width = 1,
-            p.height = 1,
-            v = Math.sqrt(p.getContext('2d').getImageData(0, 0, 1, 1).data.length >> 2),
-            p.width = (g << 5) / v,
-            p.height = x / v;
-    }
-    else {
+        canvas = document.createElement('canvas'),
+            canvas.width = 1;
+        canvas.height = 1;
+        ratio = Math.sqrt(
+            canvas.getContext('2d')
+                .getImageData(0, 0, 1, 1)
+                .data
+                .length >> 2);
+        canvas.width = (g << 5) / ratio;
+        canvas.height = x / ratio;
+    } else {
         var m = require('canvas');
-        p = new m(g << 5, x)
+        // Attempt to use node-canvas.
+        canvas = new m(g << 5, x)
     }
-    var w = p.getContext('2d'),
+    var w = canvas.getContext('2d'),
         M = {
             archimedean: archimedianSprial,
             rectangular: rectangularSpiral
