@@ -1,65 +1,7 @@
 /* jshint -W030, -W101, -W016, -W117, -W004, -W008, -W116, -W089, -W058, -W055, -W018 */
 
-function parseHTML(text) {
-    parseText(text.replace(htmlTags, ' ').replace(/&#(x?)([\dA-Fa-f]{1,4});/g,
-        function (t, e, n) {
-            return String.fromCharCode(+((e ? '0x' : '') + n))
-        }).replace(/&\w+;/g, ' '))
-}
-
-function getURL(t, e) {
-    if (statusText.text('Fetching\u2026 '),
-            matchTwitter.test(t)) {
-        var n = d3.select('body').append('iframe').style('display', 'none');
-        return d3.select(window).on('message', function () {
-            var t = JSON.parse(d3.event.data);
-            e((Array.isArray(t) ? t : t.results).map(function (t) {
-                return t.text
-            }).join('\n\n')), n.remove()
-        }),
-            n.attr('src', 'http://jsonp.jasondavies.com/?' + encodeURIComponent(t)), void 0
-    }
-    try {
-        'https:' !== location.protocol || /^https:/.test(t) ? d3.text(t, function (n) {
-            null == n ? proxy(t, e) : e(n)
-        }) : proxy(t, e)
-    } catch (a) {
-        proxy(t, e)
-    }
-}
-
-function flatten(t, e) {
-    if ('string' == typeof t) {
-        return t;
-    }
-    var n = [];
-    for (e in t) {
-        var a = flatten(t[e], e);
-        a && n.push(a)
-    }
-    return n.join(' ')
-}
-
-function parseText(t) {
-    tags = {};
-    var e = {};
-
-    t.split(d3.select('#per-line').property('checked') ? /\n/g : wordSeparators)
-        .forEach(function (t) {
-            discard.test(t) ||
-            (t = t.replace(punctuation, ''),
-            stopWords.test(t.toLowerCase()) ||
-            (t = t.substr(0, maxLength),
-                e[t.toLowerCase()] = t,
-                tags[t = t.toLowerCase()] = (tags[t] || 0) + 1))
-        }),
-
-        tags = d3.entries(tags).sort(function (t, e) {
-            return e.value - t.value
-        }), tags.forEach(function (t) {
-        t.key = e[t.key]
-    }), generate()
-}
+// Word cloud layout by Jason Davies, http://www.jasondavies.com/word-cloud/
+// Algorithm due to Jonathan Feinberg, http://static.mrfeinberg.com/bv_ch03.pdf
 
 function generate() {
     layout.font(d3.select('#font')
@@ -118,14 +60,6 @@ function draw(t, e) {
             .attr('transform', 'translate(' + [w >> 1, h >> 1] + ')scale(' + scale + ')')
 }
 
-function load(t) {
-    fetcher = t;
-    var e = /^(https?:)?\/\//.test(fetcher) ? '#' + encodeURIComponent(fetcher) : '';
-    null != fetcher && d3.select('#text').property('value', fetcher),
-    location.hash !== e && (location.hash = e),
-        e ? getURL(fetcher, parseHTML) : fetcher && parseText(fetcher)
-}
-
 var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\u037e\u0387' +
     '\u055a-\u055f\u0589\u058a\u05be\u05c0\u05c3\u05c6\u05f3\u05f4\u0609\u060a\u060c\u060d' +
     '\u061b\u061e\u061f\u066a-\u066d\u06d4\u0700-\u070d\u07f7-\u07f9\u0830-\u083e\u085e' +
@@ -143,9 +77,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
     '\uff03\uff05-\uff0a\uff0c-\uff0f\uff1a\uff1b\uff1f\uff20\uff3b-\uff3d\uff3f' +
     '\uff5b\uff5d\uff5f-\uff65';
 
-// Word cloud layout by Jason Davies, http://www.jasondavies.com/word-cloud/
-// Algorithm due to Jonathan Feinberg, http://static.mrfeinberg.com/bv_ch03.pdf
-!(function (t) {
+(function (t) {
     function cloud() {
 
         var size = [256, 256],
@@ -253,10 +185,10 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                             last;
                         h > j; j++) {
                         last = 0;
-                        for (var i = 0; w >= i; i++) {
+                        for (var i = 0; i <= w; i++) {
                             board[x + i] |=
                                 (last << msx) |
-                                (w > i ? (last = sprite[j * w + i]) >>> sx : 0);
+                                (i < w ? (last = sprite[j * w + i]) >>> sx : 0);
                         }
                         x += sw;
                     }
@@ -378,11 +310,11 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 t.y0 = -t.y1;
                 a += l
             }
-            for (var pixels = cnv.getImageData(0, 0, (cw << 5) / ratio,
-                ch / ratio)
-                .data, sprite = [];
+            for (var pixels = cnv.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
+                     sprite = [];
                  --di >= 0;) {
                 t = data[di];
+                // Zero the buffer
                 for (var l = t.width,
                          w32 = l >> 5,
                          u = t.y1 - t.y0,
