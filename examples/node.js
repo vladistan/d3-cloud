@@ -1,3 +1,4 @@
+/* jshint -W016 */
 var cloud = require("../");
 
 var words = ["Hello", "world", "normally", "you", "want", "more", "words", "than", "this"]
