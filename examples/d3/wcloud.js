@@ -126,36 +126,6 @@ function draw(t, e) {
             .attr('transform', 'translate(' + [w >> 1, h >> 1] + ')scale(' + scale + ')')
 }
 
-function downloadPNG() {
-    var t = document.createElement('canvas'),
-        e = t.getContext('2d');
-    t.width = w,
-        t.height = h,
-        e.translate(w >> 1, h >> 1),
-        e.scale(scale, scale),
-        words.forEach(function (t) {
-            e.save(),
-                e.translate(t.x, t.y),
-                e.rotate(t.rotate * Math.PI / 180),
-                e.textAlign = 'center',
-                e.fillStyle = fill(t.text.toLowerCase()),
-                e.font = t.size + 'px ' + t.font,
-                e.fillText(t.text, 0, 0),
-                e.restore()
-        }),
-        d3.select(this).attr('href', t.toDataURL('image/png'))
-}
-
-function downloadSVG() {
-    d3.select(this)
-        .attr('href', 'data:image/svg+xml;charset=utf-8;base64,' +
-        btoa(unescape(encodeURIComponent(svg.attr('version', '1.1')
-            .attr('xmlns', 'http://www.w3.org/2000/svg')
-            .node()
-            .parentNode
-            .innerHTML))))
-}
-
 function load(t) {
     fetcher = t;
     var e = /^(https?:)?\/\//.test(fetcher) ? '#' + encodeURIComponent(fetcher) : '';
@@ -206,7 +176,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 o = words.length,
                 u = -1,
                 tags = [],
-                h = words.map(function (t, e) {
+                data = words.map(function (t, e) {
                     return {
                         text: text.call(this, t, e),
                         font: font.call(this, t, e),
@@ -226,9 +196,9 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
 
             function step() {
                 for (var n, s = +new Date; +new Date - s < timeInterval && ++u < o && timer;) {
-                    n = h[u], n.x = size[0] * (Math.random() + .5) >> 1,
+                    n = data[u], n.x = size[0] * (Math.random() + .5) >> 1,
                         n.y = size[1] * (Math.random() + .5) >> 1,
-                        cloudSprite(n, h, u),
+                        cloudSprite(n, data, u),
                     place(board, n, bounds) && (tags.push(n),
                         event.word(n), bounds ? cloudBounds(bounds, n) : bounds = [{
                         x: n.x + n.x0,
@@ -240,8 +210,6 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 }
                 u >= o && (cloud.stop(), event.end(tags, bounds))
             }
-
-
         };
 
         cloud.stop = function () {
@@ -543,7 +511,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         ch = 1 << 11,
         canvas,
         ratio = 1;
-    if ('undefined' != typeof document) {
+    if (typeof document !== 'undefined') {
         canvas = document.createElement('canvas');
         canvas.width = 1;
         canvas.height = 1;
@@ -588,10 +556,6 @@ var fill = d3.scale.category20b(),
     background = svg.append('g'),
     vis = svg.append('g').attr('transform', 'translate(' + [w >> 1, h >> 1] + ')');
 
-d3.select('#download-svg')
-    .on('click', downloadSVG);
-d3.select('#download-png')
-    .on('click', downloadPNG);
 d3.select(window)
     .on('hashchange', hashchange);
 
