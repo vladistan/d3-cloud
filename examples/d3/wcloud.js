@@ -237,17 +237,18 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
             spiral = archimedeanSpiral,
             m = [],
             w = 1 / 0,
-            b = d3.dispatch('word', 'end'),
+            event = d3.dispatch('word', 'end'),
             z = null,
             cloud = {};
-        return cloud.start = function () {
+        
+        cloud.start = function () {
             function n() {
                 for (var n, s = +new Date; +new Date - s < w && ++u < o && z;) {
                     n = h[u], n.x = size[0] * (Math.random() + .5) >> 1,
                         n.y = size[1] * (Math.random() + .5) >> 1,
                         cloudSprite(n, h, u),
                     place(a, n, r) && (c.push(n),
-                        b.word(n), r ? cloudBounds(r, n) : r = [{
+                        event.word(n), r ? cloudBounds(r, n) : r = [{
                         x: n.x + n.x0,
                         y: n.y + n.y0
                     }, {
@@ -255,7 +256,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                         y: n.y + n.y1
                     }], n.x -= size[0] >> 1, n.y -= size[1] >> 1);
                 }
-                u >= o && (cloud.stop(), b.end(c, r))
+                u >= o && (cloud.stop(), event.end(c, r))
             }
 
             var a = zeroArray((size[0] >> 5) * size[1]),
@@ -295,7 +296,9 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
             return arguments.length ? (y = d3.functor(t), cloud) : y
         }, cloud.padding = function (t) {
             return arguments.length ? (x = d3.functor(t), cloud) : x
-        }, d3.rebind(cloud, b, 'on')
+        };
+
+        return    d3.rebind(cloud, event, 'on');
     }
 
     function cloudText(d) {
@@ -370,17 +373,17 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
             }
             for (var pixels = cnv.getImageData(0, 0, (cw << 5) / ratio,
                 ch / ratio)
-                .data, M = [];
+                .data, sprite = [];
                  --di >= 0;) {
                 t = data[di];
                 for (var l = t.width,
-                         b = l >> 5,
+                         w32 = l >> 5,
                          u = t.y1 - t.y0,
                          z = t.padding,
                          C = 0;
-                     u * b > C;
+                     u * w32 > C;
                      C++) {
-                    M[C] = 0;
+                    sprite[C] = 0;
                 }
                 if (a = t.xoff, null == a) {
                     return;
@@ -388,11 +391,11 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 r = t.yoff;
                 for (var seen = 0, seenRow = -1, A = 0; u > A; A++) {
                     for (var C = 0; l > C; C++) {
-                        var L = b * A + (C >> 5),
+                        var L = w32 * A + (C >> 5),
                             I = pixels[(r + A) * (cw << 5) + (a + C) << 2] ? 1 << 31 - C % 32 : 0;
-                        z && (A && (M[L - b] |= I), l - 1 > A &&
-                        (M[L + b] |= I), I |= I << 1 | I >> 1),
-                            M[L] |= I,
+                        z && (A && (sprite[L - w32] |= I), l - 1 > A &&
+                        (sprite[L + w32] |= I), I |= I << 1 | I >> 1),
+                            sprite[L] |= I,
                             seen |= I
                     }
                     if (seen) {
@@ -405,7 +408,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                     }
                 }
                 t.y1 = t.y0 + seenRow;
-                t.sprite = M.slice(0, (t.y1 - t.y0) * b);
+                t.sprite = sprite.slice(0, (t.y1 - t.y0) * w32);
             }
         }
     }
