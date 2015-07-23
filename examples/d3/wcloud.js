@@ -320,15 +320,15 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
 
     // Fetches a monochrome sprite bitmap for the specified text.
     // Load in batches for speed.
-    function cloudSprite(t, e, n) {
+    function cloudSprite(t, data, di) {
         if (!t.sprite) {
             cnv.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
             var a = 0,
                 r = 0,
-                o = 0,
-                s = e.length;
-            for (n--; ++n < s;) {
-                t = e[n],
+                maxh = 0,
+                s = data.length;
+            for (di--; ++di < s;) {
+                t = data[di],
                     cnv.save(),
                     cnv.font = ~~((t.size + 1) / ratio) +
                         'px ' + t.font;
@@ -348,31 +348,31 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 } else {
                     l = l + 31 >> 5 << 5;
                 }
-                if (u > o && (o = u),
+                if (u > maxh && (maxh = u),
                     a + l >= cw << 5 &&
-                    (a = 0, r += o, o = 0),
+                    (a = 0, r += maxh, maxh = 0),
                     r + u >= ch) {
                     break;
                 }
-                cnv.translate((a + (l >> 1)) / ratio, (r + (u >> 1)) / ratio),
-                t.rotate && cnv.rotate(t.rotate * cloudRadians),
-                    cnv.fillText(t.text, 0, 0),
-                    cnv.restore(),
-                    t.width = l,
-                    t.height = u,
-                    t.xoff = a,
-                    t.yoff = r,
-                    t.x1 = l >> 1,
-                    t.y1 = u >> 1,
-                    t.x0 = -t.x1,
-                    t.y0 = -t.y1,
-                    a += l
+                cnv.translate((a + (l >> 1)) / ratio, (r + (u >> 1)) / ratio);
+                t.rotate && cnv.rotate(t.rotate * cloudRadians);
+                cnv.fillText(t.text, 0, 0);
+                cnv.restore();
+                t.width = l;
+                t.height = u;
+                t.xoff = a;
+                t.yoff = r;
+                t.x1 = l >> 1;
+                t.y1 = u >> 1;
+                t.x0 = -t.x1;
+                t.y0 = -t.y1;
+                a += l
             }
-            for (var m = cnv.getImageData(0, 0, (cw << 5) / ratio,
+            for (var pixels = cnv.getImageData(0, 0, (cw << 5) / ratio,
                 ch / ratio)
                 .data, M = [];
-                 --n >= 0;) {
-                t = e[n];
+                 --di >= 0;) {
+                t = data[di];
                 for (var l = t.width,
                          b = l >> 5,
                          u = t.y1 - t.y0,
@@ -386,18 +386,26 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                     return;
                 }
                 r = t.yoff;
-                for (var T = 0, k = -1, A = 0; u > A; A++) {
+                for (var seen = 0, seenRow = -1, A = 0; u > A; A++) {
                     for (var C = 0; l > C; C++) {
                         var L = b * A + (C >> 5),
-                            I = m[(r + A) * (cw << 5) + (a + C) << 2] ? 1 << 31 - C % 32 : 0;
+                            I = pixels[(r + A) * (cw << 5) + (a + C) << 2] ? 1 << 31 - C % 32 : 0;
                         z && (A && (M[L - b] |= I), l - 1 > A &&
                         (M[L + b] |= I), I |= I << 1 | I >> 1),
                             M[L] |= I,
-                            T |= I
+                            seen |= I
                     }
-                    T ? k = A : (t.y0++, u--, A--, r++)
+                    if (seen) {
+                        seenRow = A
+                    } else {
+                        t.y0++;
+                        u--;
+                        A--;
+                        r++;
+                    }
                 }
-                t.y1 = t.y0 + k, t.sprite = M.slice(0, (t.y1 - t.y0) * b)
+                t.y1 = t.y0 + seenRow;
+                t.sprite = M.slice(0, (t.y1 - t.y0) * b);
             }
         }
     }
