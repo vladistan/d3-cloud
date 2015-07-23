@@ -183,6 +183,57 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
 
 !(function (t) {
     function cloud() {
+
+        var size = [256, 256],
+            text = cloudText,
+            font = cloudFont,
+            fontSize = cloudFontSize,
+            rotate = cloudRotate,
+            padding = cloudPadding,
+            spiral = archimedeanSpiral,
+            words = [],
+            timeInterval = 1 / 0,
+            event = d3.dispatch('word', 'end'),
+            timer = null,
+            cloud = {};
+
+        cloud.start = function () {
+            function n() {
+                for (var n, s = +new Date; +new Date - s < timeInterval && ++u < o && timer;) {
+                    n = h[u], n.x = size[0] * (Math.random() + .5) >> 1,
+                        n.y = size[1] * (Math.random() + .5) >> 1,
+                        cloudSprite(n, h, u),
+                    place(a, n, r) && (c.push(n),
+                        event.word(n), r ? cloudBounds(r, n) : r = [{
+                        x: n.x + n.x0,
+                        y: n.y + n.y0
+                    }, {
+                        x: n.x + n.x1,
+                        y: n.y + n.y1
+                    }], n.x -= size[0] >> 1, n.y -= size[1] >> 1);
+                }
+                u >= o && (cloud.stop(), event.end(c, r))
+            }
+
+            var a = zeroArray((size[0] >> 5) * size[1]),
+                r = null,
+                o = words.length,
+                u = -1,
+                c = [],
+                h = words.map(function (t, e) {
+                    return {
+                        text: text.call(this, t, e),
+                        font: font.call(this, t, e),
+                        rotate: rotate.call(this, t, e),
+                        size: ~~fontSize.call(this, t, e),
+                        padding: cloudPadding.call(this, t, e)
+                    }
+                }).sort(function (t, e) {
+                    return e.size - t.size
+                });
+            return timer && clearInterval(timer), timer = setInterval(n, 0), n(), cloud
+        };
+
         function place(board, tag, bounds) {
             for (var r, o, s,
                      startX = ([{x: 0, y: 0}, {x: size[0], y: size[1]}], tag.x),
@@ -228,77 +279,48 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
             return false;
         }
 
-        var size = [256, 256],
-            d = cloudText,
-            p = cloudFont,
-            y = cloudFontSize,
-            g = cloudRotate,
-            x = cloudPadding,
-            spiral = archimedeanSpiral,
-            m = [],
-            w = 1 / 0,
-            event = d3.dispatch('word', 'end'),
-            z = null,
-            cloud = {};
-        
-        cloud.start = function () {
-            function n() {
-                for (var n, s = +new Date; +new Date - s < w && ++u < o && z;) {
-                    n = h[u], n.x = size[0] * (Math.random() + .5) >> 1,
-                        n.y = size[1] * (Math.random() + .5) >> 1,
-                        cloudSprite(n, h, u),
-                    place(a, n, r) && (c.push(n),
-                        event.word(n), r ? cloudBounds(r, n) : r = [{
-                        x: n.x + n.x0,
-                        y: n.y + n.y0
-                    }, {
-                        x: n.x + n.x1,
-                        y: n.y + n.y1
-                    }], n.x -= size[0] >> 1, n.y -= size[1] >> 1);
-                }
-                u >= o && (cloud.stop(), event.end(c, r))
-            }
 
-            var a = zeroArray((size[0] >> 5) * size[1]),
-                r = null,
-                o = m.length,
-                u = -1,
-                c = [],
-                h = m.map(function (t, e) {
-                    return {
-                        text: d.call(this, t, e),
-                        font: p.call(this, t, e),
-                        rotate: g.call(this, t, e),
-                        size: ~~y.call(this, t, e),
-                        padding: cloudPadding.call(this, t, e)
-                    }
-                }).sort(function (t, e) {
-                    return e.size - t.size
-                });
-            return z && clearInterval(z), z = setInterval(n, 0), n(), cloud
-        }, cloud.stop = function () {
-            return z && (clearInterval(z), z = null), cloud
-        }, cloud.timeInterval = function (t) {
-            return arguments.length ? (w = null == t ? 1 / 0 : t, cloud) : w
-        }, cloud.words = function (t) {
-            return arguments.length ? (m = t, cloud) : m
-        }, cloud.size = function (t) {
-            return arguments.length ? (size = [+t[0], +t[1]], cloud) : size
-        }, cloud.font = function (t) {
-            return arguments.length ? (p = d3.functor(t), cloud) : p
-        }, cloud.rotate = function (t) {
-            return arguments.length ? (g = d3.functor(t), cloud) : g
-        }, cloud.text = function (t) {
-            return arguments.length ? (d = d3.functor(t), cloud) : d
-        }, cloud.spiral = function (t) {
-            return arguments.length ? (spiral = spirals[t + ''] || t, cloud) : spiral
-        }, cloud.fontSize = function (t) {
-            return arguments.length ? (y = d3.functor(t), cloud) : y
-        }, cloud.padding = function (t) {
-            return arguments.length ? (x = d3.functor(t), cloud) : x
+        cloud.stop = function () {
+            return timer && (clearInterval(timer), timer = null), cloud
         };
 
-        return    d3.rebind(cloud, event, 'on');
+        cloud.timeInterval = function (t) {
+            return arguments.length ? (timeInterval = null == t ? 1 / 0 : t, cloud) : timeInterval
+        };
+
+        cloud.words = function (t) {
+            return arguments.length ? (words = t, cloud) : words
+        };
+
+        cloud.size = function (t) {
+            return arguments.length ? (size = [+t[0], +t[1]], cloud) : size
+        };
+
+        cloud.font = function (t) {
+            return arguments.length ? (font = d3.functor(t), cloud) : font
+        };
+
+        cloud.rotate = function (t) {
+            return arguments.length ? (rotate = d3.functor(t), cloud) : rotate
+        };
+
+        cloud.text = function (t) {
+            return arguments.length ? (text = d3.functor(t), cloud) : text
+        };
+
+        cloud.spiral = function (t) {
+            return arguments.length ? (spiral = spirals[t + ''] || t, cloud) : spiral
+        };
+
+        cloud.fontSize = function (t) {
+            return arguments.length ? (fontSize = d3.functor(t), cloud) : fontSize
+        };
+
+        cloud.padding = function (_) {
+            return arguments.length ? (padding = d3.functor(_), cloud) : padding
+        };
+
+        return d3.rebind(cloud, event, 'on');
     }
 
     function cloudText(d) {
@@ -534,6 +556,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
     cnv.fillStyle = 'red',
         cnv.textAlign = 'center',
         t.cloud = cloud
+
 }('undefined' == typeof exports ? d3.layout || (d3.layout = {}) : exports));
 
 var fill = d3.scale.category20b(),
