@@ -1,4 +1,4 @@
-/* jshint -W117, -W089 */
+/* jshint -W117, -W089, -W030 */
 function hashchange(t) {
     var e = location.hash;
     if (e && e.length > 1) {
@@ -97,7 +97,17 @@ function parseText(t) {
 function load(t) {
     fetcher = t;
     var e = /^(https?:)?\/\//.test(fetcher) ? '#' + encodeURIComponent(fetcher) : '';
-    null != fetcher && d3.select('#text').property('value', fetcher),
-    location.hash !== e && (location.hash = e),
-        e ? getURL(fetcher, parseHTML) : fetcher && parseText(fetcher)
+    if (null !== fetcher) {
+        d3.select('#text').property('value', fetcher);
+    }
+    if (location.hash !== e) {
+        location.hash = e;
+    }
+    if (e) {
+        getURL(fetcher, parseHTML)
+    } else {
+        if (fetcher) {
+            parseText(fetcher);
+        }
+    }
 }
