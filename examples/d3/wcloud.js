@@ -183,47 +183,47 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
 
 !(function (t) {
     function e() {
-        function t(t, n, a) {
+        function t(board, tag, a) {
             for (var r, o, s,
-                     l = ([{x: 0, y: 0}, {x: e[0], y: e[1]}], n.x),
-                     i = n.y,
-                     h = Math.sqrt(e[0] * e[0] + e[1] * e[1]),
-                     d = v(e),
+                     l = ([{x: 0, y: 0}, {x: size[0], y: size[1]}], tag.x),
+                     i = tag.y,
+                     h = Math.sqrt(size[0] * size[0] + size[1] * size[1]),
+                     d = v(size),
                      f = Math.random() < .5 ? 1 : -1, p = -f;
                  (r = d(p += f)) && (o = ~~r[0], s = ~~r[1],
                      !(Math.min(o, s) > h));) {
-                if (n.x = l + o,
-                        n.y = i + s,
-                        !(n.x + n.x0 < 0 ||
-                        n.y + n.y0 < 0 ||
-                        n.x + n.x1 > e[0] ||
-                        n.y + n.y1 > e[1] || a &&
-                        cloudCollide(n, t, e[0]) ||
-                        a && !collideRects(n, a))) {
+                if (tag.x = l + o,
+                        tag.y = i + s,
+                        !(tag.x + tag.x0 < 0 ||
+                        tag.y + tag.y0 < 0 ||
+                        tag.x + tag.x1 > size[0] ||
+                        tag.y + tag.y1 > size[1] || a &&
+                        cloudCollide(tag, board, size[0]) ||
+                        a && !collideRects(tag, a))) {
                     for (var y,
-                             g = n.sprite,
-                             x = n.width >> 5,
-                             m = e[0] >> 5,
-                             w = n.x - (x << 4),
+                             g = tag.sprite,
+                             x = tag.width >> 5,
+                             sw = size[0] >> 5,
+                             w = tag.x - (x << 4),
                              M = 127 & w,
-                             b = 32 - M,
-                             z = n.y1 - n.y0,
-                             C = (n.y + n.y0) * m + (w >> 5),
+                             msx = 32 - M,
+                             z = tag.y1 - tag.y0,
+                             C = (tag.y + tag.y0) * sw + (w >> 5),
                              T = 0;
                          z > T; T++) {
                         y = 0;
                         for (var k = 0; x >= k; k++) {
-                            t[C + k] |= y << b | (x > k ? (y = g[T * x + k]) >>> M : 0);
+                            board[C + k] |= y << msx | (x > k ? (y = g[T * x + k]) >>> M : 0);
                         }
-                        C += m
+                        C += sw
                     }
-                    return delete n.sprite, !0
+                    return delete tag.sprite, !0
                 }
             }
             return !1
         }
 
-        var e = [256, 256],
+        var size = [256, 256],
             d = cloudText,
             p = cloudFont,
             y = cloudFontSize,
@@ -234,12 +234,12 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
             w = 1 / 0,
             b = d3.dispatch('word', 'end'),
             z = null,
-            C = {};
-        return C.start = function () {
+            cloud = {};
+        return cloud.start = function () {
             function n() {
                 for (var n, s = +new Date; +new Date - s < w && ++u < o && z;) {
-                    n = h[u], n.x = e[0] * (Math.random() + .5) >> 1,
-                        n.y = e[1] * (Math.random() + .5) >> 1,
+                    n = h[u], n.x = size[0] * (Math.random() + .5) >> 1,
+                        n.y = size[1] * (Math.random() + .5) >> 1,
                         cloudSprite(n, h, u),
                     t(a, n, r) && (c.push(n),
                         b.word(n), r ? cloudBounds(r, n) : r = [{
@@ -248,12 +248,12 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                     }, {
                         x: n.x + n.x1,
                         y: n.y + n.y1
-                    }], n.x -= e[0] >> 1, n.y -= e[1] >> 1);
+                    }], n.x -= size[0] >> 1, n.y -= size[1] >> 1);
                 }
-                u >= o && (C.stop(), b.end(c, r))
+                u >= o && (cloud.stop(), b.end(c, r))
             }
 
-            var a = zeroArray((e[0] >> 5) * e[1]),
+            var a = zeroArray((size[0] >> 5) * size[1]),
                 r = null,
                 o = m.length,
                 u = -1,
@@ -269,55 +269,55 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 }).sort(function (t, e) {
                     return e.size - t.size
                 });
-            return z && clearInterval(z), z = setInterval(n, 0), n(), C
-        }, C.stop = function () {
-            return z && (clearInterval(z), z = null), C
-        }, C.timeInterval = function (t) {
-            return arguments.length ? (w = null == t ? 1 / 0 : t, C) : w
-        }, C.words = function (t) {
-            return arguments.length ? (m = t, C) : m
-        }, C.size = function (t) {
-            return arguments.length ? (e = [+t[0], +t[1]], C) : e
-        }, C.font = function (t) {
-            return arguments.length ? (p = d3.functor(t), C) : p
-        }, C.rotate = function (t) {
-            return arguments.length ? (g = d3.functor(t), C) : g
-        }, C.text = function (t) {
-            return arguments.length ? (d = d3.functor(t), C) : d
-        }, C.spiral = function (t) {
-            return arguments.length ? (v = M[t + ''] || t, C) : v
-        }, C.fontSize = function (t) {
-            return arguments.length ? (y = d3.functor(t), C) : y
-        }, C.padding = function (t) {
-            return arguments.length ? (x = d3.functor(t), C) : x
-        }, d3.rebind(C, b, 'on')
+            return z && clearInterval(z), z = setInterval(n, 0), n(), cloud
+        }, cloud.stop = function () {
+            return z && (clearInterval(z), z = null), cloud
+        }, cloud.timeInterval = function (t) {
+            return arguments.length ? (w = null == t ? 1 / 0 : t, cloud) : w
+        }, cloud.words = function (t) {
+            return arguments.length ? (m = t, cloud) : m
+        }, cloud.size = function (t) {
+            return arguments.length ? (size = [+t[0], +t[1]], cloud) : size
+        }, cloud.font = function (t) {
+            return arguments.length ? (p = d3.functor(t), cloud) : p
+        }, cloud.rotate = function (t) {
+            return arguments.length ? (g = d3.functor(t), cloud) : g
+        }, cloud.text = function (t) {
+            return arguments.length ? (d = d3.functor(t), cloud) : d
+        }, cloud.spiral = function (t) {
+            return arguments.length ? (v = M[t + ''] || t, cloud) : v
+        }, cloud.fontSize = function (t) {
+            return arguments.length ? (y = d3.functor(t), cloud) : y
+        }, cloud.padding = function (t) {
+            return arguments.length ? (x = d3.functor(t), cloud) : x
+        }, d3.rebind(cloud, b, 'on')
     }
 
-    function cloudText(t) {
-        return t.text
+    function cloudText(d) {
+        return d.text;
     }
 
     function cloudFont() {
-        return 'serif'
+        return 'serif';
     }
 
-    function cloudFontSize(t) {
-        return Math.sqrt(t.value)
+    function cloudFontSize(d) {
+        return Math.sqrt(d.value);
     }
 
-    function cloudRotate() {
-        return 30 * (~~(6 * Math.random()) - 3)
-    }
+        function cloudRotate() {
+            return (~~(Math.random() * 6) - 3) * 30;
+        }
 
     function cloudPadding() {
-        return 1
+        return 1;
     }
 
     // Fetches a monochrome sprite bitmap for the specified text.
     // Load in batches for speed.
     function cloudSprite(t, e, n) {
         if (!t.sprite) {
-            w.clearRect(0, 0, (g << 5) / ratio, x / ratio);
+            w.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
             var a = 0,
                 r = 0,
                 o = 0,
@@ -327,8 +327,8 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 var l = w.measureText(t.text + 'm').width * ratio,
                     u = t.size << 1;
                 if (t.rotate) {
-                    var i = Math.sin(t.rotate * y),
-                        c = Math.cos(t.rotate * y),
+                    var i = Math.sin(t.rotate * cloudRadians),
+                        c = Math.cos(t.rotate * cloudRadians),
                         h = l * c,
                         d = l * i,
                         f = u * c,
@@ -341,13 +341,13 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                     l = l + 31 >> 5 << 5;
                 }
                 if (u > o && (o = u),
-                    a + l >= g << 5 &&
+                    a + l >= cw << 5 &&
                     (a = 0, r += o, o = 0),
-                    r + u >= x) {
+                    r + u >= ch) {
                     break;
                 }
                 w.translate((a + (l >> 1)) / ratio, (r + (u >> 1)) / ratio),
-                t.rotate && w.rotate(t.rotate * y),
+                t.rotate && w.rotate(t.rotate * cloudRadians),
                     w.fillText(t.text, 0, 0),
                     w.restore(),
                     t.width = l,
@@ -360,8 +360,8 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                     t.y0 = -t.y1,
                     a += l
             }
-            for (var m = w.getImageData(0, 0, (g << 5) / ratio,
-                x / ratio)
+            for (var m = w.getImageData(0, 0, (cw << 5) / ratio,
+                ch / ratio)
                 .data, M = [];
                  --n >= 0;) {
                 t = e[n];
@@ -381,7 +381,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 for (var T = 0, k = -1, A = 0; u > A; A++) {
                     for (var C = 0; l > C; C++) {
                         var L = b * A + (C >> 5),
-                            I = m[(r + A) * (g << 5) + (a + C) << 2] ? 1 << 31 - C % 32 : 0;
+                            I = m[(r + A) * (cw << 5) + (a + C) << 2] ? 1 << 31 - C % 32 : 0;
                         z && (A && (M[L - b] |= I), l - 1 > A &&
                         (M[L + b] |= I), I |= I << 1 | I >> 1),
                             M[L] |= I,
@@ -446,7 +446,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         var e = size[0] / size[1];
         return function (t) {
             return [e * (t *= .1) * Math.cos(t), t * Math.sin(t)]
-        }
+        };
     }
 
     function rectangularSpiral(size) {
@@ -485,12 +485,13 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         return a;
     }
 
-    var canvas, y = Math.PI / 180,
-        g = 64,
-        x = 2048,
+    var cloudRadians = Math.PI / 180,
+        cw = 1 << 11 >> 5,
+        ch = 1 << 11,
+        canvas,
         ratio = 1;
     if ('undefined' != typeof document) {
-        canvas = document.createElement('canvas'),
+        canvas = document.createElement('canvas');
             canvas.width = 1;
         canvas.height = 1;
         ratio = Math.sqrt(
@@ -498,12 +499,12 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 .getImageData(0, 0, 1, 1)
                 .data
                 .length >> 2);
-        canvas.width = (g << 5) / ratio;
-        canvas.height = x / ratio;
+        canvas.width = (cw << 5) / ratio;
+        canvas.height = ch / ratio;
     } else {
         var m = require('canvas');
         // Attempt to use node-canvas.
-        canvas = new m(g << 5, x)
+        canvas = new m(cw << 5, ch)
     }
     var w = canvas.getContext('2d'),
         M = {
