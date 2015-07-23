@@ -1,8 +1,5 @@
 /* jshint -W030, -W101, -W016, -W117, -W004, -W008, -W116, -W089, -W058, -W055, -W018 */
 
-// Word cloud layout by Jason Davies, http://www.jasondavies.com/word-cloud/
-// Algorithm due to Jonathan Feinberg, http://static.mrfeinberg.com/bv_ch03.pdf
-
 function generate() {
     layout.font(d3.select('#font')
         .property('value'))

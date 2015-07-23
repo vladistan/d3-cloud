@@ -1,3 +1,8 @@
+/* jshint -W016, -W004, -W117, -W058, -W055, -W018, -W030 */
+
+// Word cloud layout by Jason Davies, http://www.jasondavies.com/word-cloud/
+// Algorithm due to Jonathan Feinberg, http://static.mrfeinberg.com/bv_ch03.pdf
+
 (function (t) {
     function cloud() {
 
@@ -42,7 +47,8 @@
             return cloud;
 
             function step() {
-                for (var n, s = +new Date; +new Date - s < timeInterval && ++u < o && timer;) {
+                for (var n, s = +new Date;
+                     +new Date - s < timeInterval && ++u < o && timer;) {
                     n = data[u];
                     n.x = (size[0] * (Math.random() + 0.5)) >> 1;
                     n.y = (size[1] * (Math.random() + 0.5)) >> 1;
@@ -245,14 +251,16 @@
                      C++) {
                     sprite[C] = 0;
                 }
-                if (a = t.xoff, null == a) {
+                if (a = t.xoff, null === a) {
                     return;
                 }
                 r = t.yoff;
                 for (var seen = 0, seenRow = -1, A = 0; u > A; A++) {
                     for (var C = 0; l > C; C++) {
                         var L = w32 * A + (C >> 5),
-                            I = pixels[(r + A) * (cw << 5) + (a + C) << 2] ? 1 << 31 - C % 32 : 0;
+                            I = pixels[(r + A) * (cw << 5) + (a + C) << 2] ?
+                            1 << 31 - C % 32 :
+                                0;
                         z && (A && (sprite[L - w32] |= I), l - 1 > A &&
                         (sprite[L + w32] |= I), I |= I << 1 | I >> 1),
                             sprite[L] |= I,
@@ -395,4 +403,4 @@
     cnv.textAlign = 'center';
     t.cloud = cloud;
 
-}('undefined' == typeof exports ? d3.layout || (d3.layout = {}) : exports));
+}('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));
