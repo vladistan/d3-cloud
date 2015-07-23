@@ -12,3 +12,7 @@ function hashchange(t) {
         }
     }
 }
+
+function progress() {
+    statusText.text(++complete + '/' + max)
+}

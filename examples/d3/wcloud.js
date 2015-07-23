@@ -82,9 +82,7 @@ function generate() {
             .start()
 }
 
-function progress() {
-    statusText.text(++complete + '/' + max)
-}
+
 
 function draw(t, e) {
     statusText.style('display', 'none');
@@ -176,19 +174,21 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 o = words.length,
                 u = -1,
                 tags = [],
-                data = words.map(function (t, e) {
+                data = words.map(function (d, i) {
                     return {
-                        text: text.call(this, t, e),
-                        font: font.call(this, t, e),
-                        rotate: rotate.call(this, t, e),
-                        size: ~~fontSize.call(this, t, e),
-                        padding: cloudPadding.call(this, t, e)
+                        text: text.call(this, d, i),
+                        font: font.call(this, d, i),
+                        rotate: rotate.call(this, d, i),
+                        size: ~~fontSize.call(this, d, i),
+                        padding: cloudPadding.call(this, d, i)
                     }
                 }).sort(function (a, b) {
                     return b.size - a.size;
                 });
 
-            timer && clearInterval(timer);
+             if (timer) {
+                    clearInterval(timer);
+                }
             timer = setInterval(step, 0);
             step();
 
@@ -213,7 +213,11 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         };
 
         cloud.stop = function () {
-            return timer && (clearInterval(timer), timer = null), cloud
+            if (timer) {
+                    clearInterval(timer);
+                    timer = null;
+                }
+                return cloud;
         };
 
         function place(board, tag, bounds) {
@@ -275,32 +279,32 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
             return arguments.length ? (size = [+_[0], +_[1]], cloud) : size;
         };
 
-        cloud.font = function (t) {
-            return arguments.length ? (font = d3.functor(t), cloud) : font;
+        cloud.font = function (_) {
+            return arguments.length ? (font = d3.functor(_), cloud) : font;
         };
 
-        cloud.rotate = function (t) {
-            return arguments.length ? (rotate = d3.functor(t), cloud) : rotate
+        cloud.rotate = function (_) {
+            return arguments.length ? (rotate = d3.functor(_), cloud) : rotate;
         };
 
-        cloud.text = function (t) {
-            return arguments.length ? (text = d3.functor(t), cloud) : text
+        cloud.text = function (_) {
+            return arguments.length ? (text = d3.functor(_), cloud) : text;
         };
 
-        cloud.spiral = function (t) {
-            return arguments.length ? (spiral = spirals[t + ''] || t, cloud) : spiral
+        cloud.spiral = function (_) {
+            return arguments.length ? (spiral = spirals[_] || _, cloud) : spiral;
         };
 
-        cloud.fontSize = function (t) {
-            return arguments.length ? (fontSize = d3.functor(t), cloud) : fontSize
+        cloud.fontSize = function (_) {
+            return arguments.length ? (fontSize = d3.functor(_), cloud) : fontSize;
         };
 
         cloud.padding = function (_) {
-            return arguments.length ? (padding = d3.functor(_), cloud) : padding
+            return arguments.length ? (padding = d3.functor(_), cloud) : padding;
         };
 
         return d3.rebind(cloud, event, 'on');
-    }
+    };
 
     function cloudText(d) {
         return d.text;
@@ -532,9 +536,9 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
             archimedean: archimedeanSpiral,
             rectangular: rectangularSpiral
         };
-    cnv.fillStyle = 'red',
-        cnv.textAlign = 'center',
-        t.cloud = cloud
+    cnv.fillStyle = 'red';
+    cnv.textAlign = 'center';
+    t.cloud = cloud;
 
 }('undefined' == typeof exports ? d3.layout || (d3.layout = {}) : exports));
 
@@ -551,10 +555,10 @@ var fill = d3.scale.category20b(),
         .timeInterval(10)
         .size([w, h])
         .fontSize(function (t) {
-        return fontSize(+t.value)
-    }).text(function (t) {
-        return t.key
-    }).on('word', progress).on('end', draw),
+            return fontSize(+t.value)
+        }).text(function (t) {
+            return t.key
+        }).on('word', progress).on('end', draw),
     svg = d3.select('#vis')
         .append('svg')
         .attr('width', w)
