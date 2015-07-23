@@ -322,26 +322,29 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
     // Load in batches for speed.
     function cloudSprite(t, e, n) {
         if (!t.sprite) {
-            w.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
+            cnv.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
             var a = 0,
                 r = 0,
                 o = 0,
                 s = e.length;
             for (n--; ++n < s;) {
-                t = e[n], w.save(), w.font = ~~((t.size + 1) / ratio) + 'px ' + t.font;
-                var l = w.measureText(t.text + 'm').width * ratio,
+                t = e[n],
+                    cnv.save(),
+                    cnv.font = ~~((t.size + 1) / ratio) +
+                        'px ' + t.font;
+                var l = cnv.measureText(t.text + 'm').width * ratio,
                     u = t.size << 1;
                 if (t.rotate) {
-                    var i = Math.sin(t.rotate * cloudRadians),
-                        c = Math.cos(t.rotate * cloudRadians),
-                        h = l * c,
-                        d = l * i,
-                        f = u * c,
-                        p = u * i;
-                    l = Math.max(Math.abs(h + p),
-                            Math.abs(h - p)) + 31 >> 5 << 5,
-                        u = ~~Math.max(Math.abs(d + f),
-                            Math.abs(d - f))
+                    var sr = Math.sin(t.rotate * cloudRadians),
+                        cr = Math.cos(t.rotate * cloudRadians),
+                        wcr = l * cr,
+                        wsr = l * sr,
+                        hcr = u * cr,
+                        hsr = u * sr;
+                    l = Math.max(Math.abs(wcr + hsr),
+                            Math.abs(wcr - hsr)) + 31 >> 5 << 5,
+                        u = ~~Math.max(Math.abs(wsr + hcr),
+                            Math.abs(wsr - hcr))
                 } else {
                     l = l + 31 >> 5 << 5;
                 }
@@ -351,10 +354,10 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                     r + u >= ch) {
                     break;
                 }
-                w.translate((a + (l >> 1)) / ratio, (r + (u >> 1)) / ratio),
-                t.rotate && w.rotate(t.rotate * cloudRadians),
-                    w.fillText(t.text, 0, 0),
-                    w.restore(),
+                cnv.translate((a + (l >> 1)) / ratio, (r + (u >> 1)) / ratio),
+                t.rotate && cnv.rotate(t.rotate * cloudRadians),
+                    cnv.fillText(t.text, 0, 0),
+                    cnv.restore(),
                     t.width = l,
                     t.height = u,
                     t.xoff = a,
@@ -365,7 +368,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                     t.y0 = -t.y1,
                     a += l
             }
-            for (var m = w.getImageData(0, 0, (cw << 5) / ratio,
+            for (var m = cnv.getImageData(0, 0, (cw << 5) / ratio,
                 ch / ratio)
                 .data, M = [];
                  --n >= 0;) {
@@ -399,30 +402,30 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         }
     }
 
-      // Use mask-based collision detection.
-        function cloudCollide(tag, board, sw) {
-            sw >>= 5;
-            var sprite = tag.sprite,
-                w = tag.width >> 5,
-                lx = tag.x - (w << 4),
-                sx = lx & 0x7f,
-                msx = 32 - sx,
-                h = tag.y1 - tag.y0,
-                x = (tag.y + tag.y0) * sw + (lx >> 5),
-                last;
-            for (var j = 0; j < h; j++) {
-                last = 0;
-                for (var i = 0; i <= w; i++) {
-                    if (((last << msx) |
-                        (i < w ? (last = sprite[j * w + i]) >>> sx : 0)) &
-                        board[x + i]) {
-                        return true;
-                    }
+    // Use mask-based collision detection.
+    function cloudCollide(tag, board, sw) {
+        sw >>= 5;
+        var sprite = tag.sprite,
+            w = tag.width >> 5,
+            lx = tag.x - (w << 4),
+            sx = lx & 0x7f,
+            msx = 32 - sx,
+            h = tag.y1 - tag.y0,
+            x = (tag.y + tag.y0) * sw + (lx >> 5),
+            last;
+        for (var j = 0; j < h; j++) {
+            last = 0;
+            for (var i = 0; i <= w; i++) {
+                if (((last << msx) |
+                    (i < w ? (last = sprite[j * w + i]) >>> sx : 0)) &
+                    board[x + i]) {
+                    return true;
                 }
-                x += sw;
             }
-            return false;
+            x += sw;
         }
+        return false;
+    }
 
     function cloudBounds(bounds, d) {
         var b0 = bounds[0],
@@ -512,13 +515,13 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         // Attempt to use node-canvas.
         canvas = new m(cw << 5, ch)
     }
-    var w = canvas.getContext('2d'),
+    var cnv = canvas.getContext('2d'),
         spirals = {
             archimedean: archimedeanSpiral,
             rectangular: rectangularSpiral
         };
-    w.fillStyle = 'red',
-        w.textAlign = 'center',
+    cnv.fillStyle = 'red',
+        cnv.textAlign = 'center',
         t.cloud = cloud
 }('undefined' == typeof exports ? d3.layout || (d3.layout = {}) : exports));
 
