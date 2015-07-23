@@ -190,9 +190,10 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
 
             function step() {
                 for (var n, s = +new Date; +new Date - s < timeInterval && ++u < o && timer;) {
-                    n = data[u], n.x = size[0] * (Math.random() + .5) >> 1,
-                        n.y = size[1] * (Math.random() + .5) >> 1,
-                        cloudSprite(n, data, u),
+                    n = data[u];
+                    n.x = (size[0] * (Math.random() + 0.5)) >> 1;
+                    n.y = (size[1] * (Math.random() + 0.5)) >> 1;
+                    cloudSprite(n, data, u);
                     place(board, n, bounds) && (tags.push(n),
                         event.word(n), bounds ? cloudBounds(bounds, n) : bounds = [{
                         x: n.x + n.x0,
@@ -200,9 +201,15 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                     }, {
                         x: n.x + n.x1,
                         y: n.y + n.y1
-                    }], n.x -= size[0] >> 1, n.y -= size[1] >> 1);
+                    }],
+                        // Temporary hack
+                        n.x -= size[0] >> 1,
+                        n.y -= size[1] >> 1);
                 }
-                u >= o && (cloud.stop(), event.end(tags, bounds))
+                if (u >= o) {
+                    cloud.stop();
+                    event.end(tags, bounds);
+                }
             }
         };
 
@@ -215,21 +222,22 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         };
 
         function place(board, tag, bounds) {
-            for (var r, o, s,
+            for (var r, dx, dy,
                      startX = ([{x: 0, y: 0}, {x: size[0], y: size[1]}], tag.x),
                      startY = tag.y,
                      maxDelta = Math.sqrt(size[0] * size[0] + size[1] * size[1]),
                      d = spiral(size),
                      dt = Math.random() < 0.5 ? 1 : -1,
                      p = -dt;
-                 (r = d(p += dt)) && (o = ~~r[0], s = ~~r[1],
-                     !(Math.min(o, s) > maxDelta));) {
-                if (tag.x = startX + o,
-                        tag.y = startY + s,
+                 (r = d(p += dt)) && (dx = ~~r[0], dy = ~~r[1],
+                     !(Math.min(dx, dy) > maxDelta));) {
+                if (tag.x = startX + dx,
+                        tag.y = startY + dy,
                         !(tag.x + tag.x0 < 0 ||
                         tag.y + tag.y0 < 0 ||
                         tag.x + tag.x1 > size[0] ||
-                        tag.y + tag.y1 > size[1] || bounds &&
+                        tag.y + tag.y1 > size[1] ||
+                        bounds &&
                         cloudCollide(tag, board, size[0]) ||
                         bounds && !collideRects(tag, bounds))) {
                     for (
@@ -261,7 +269,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
 
         cloud.timeInterval = function (_) {
             return arguments.length ?
-                (timeInterval = null == _ ? 1 / 0 : _, cloud) :
+                (timeInterval = _ === null ? Infinity : _ , cloud) :
                 timeInterval;
         };
 
