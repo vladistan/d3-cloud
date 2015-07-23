@@ -196,7 +196,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                         n.y + n.y0 < 0 ||
                         n.x + n.x1 > e[0] ||
                         n.y + n.y1 > e[1] || a &&
-                        u(n, t, e[0]) ||
+                        cloudCollide(n, t, e[0]) ||
                         a && !collideRects(n, a))) {
                     for (var y,
                              g = n.sprite,
@@ -222,7 +222,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         }
 
         var e = [256, 256],
-            d = n,
+            d = cloudText,
             p = cloudFont,
             y = cloudFontSize,
             g = cloudRotate,
@@ -291,7 +291,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         }, d3.rebind(C, b, 'on')
     }
 
-    function n(t) {
+    function cloudText(t) {
         return t.text
     }
 
@@ -387,7 +387,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         }
     }
 
-    function u(t, e, n) {
+    function cloudCollide(t, e, n) {
         n >>= 5;
         for (var a, r = t.sprite, o = t.width >> 5,
                  s = t.x - (o << 4),
