@@ -1,19 +1,28 @@
 {
   "name": "d3-cloud",
-  "version": "1.1.2",
+  "version": "0.0.1",
   "main": "d3.layout.cloud.js",
   "scripts": [
     "d3.layout.cloud.js"
   ],
   "ignore": [
-    ".DS_Store",
-    ".git",
-    ".gitignore",
-    ".npmignore",
+     "**/.*",
     "examples",
     "index.js",
     "lib",
     "node_modules",
-    "package.json"
-  ]
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "sinon": "http://sinonjs.org/releases/sinon-1.12.1.js",
+    "bardjs": "~0.1.0",
+    "gulp": "~3.9.0"
+  },
+  "dependencies": {
+    "jquery": "~2.1.0",
+    "bootstrap": "~3.2.0",
+    "toastr": "~2.1.0"
+  }
 }
