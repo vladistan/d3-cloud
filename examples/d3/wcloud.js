@@ -197,7 +197,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                         n.x + n.x1 > e[0] ||
                         n.y + n.y1 > e[1] || a &&
                         u(n, t, e[0]) ||
-                        a && !c(n, a))) {
+                        a && !collideRects(n, a))) {
                     for (var y,
                              g = n.sprite,
                              x = n.width >> 5,
@@ -223,11 +223,11 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
 
         var e = [256, 256],
             d = n,
-            p = a,
-            y = r,
-            g = o,
-            x = s,
-            v = h,
+            p = cloudFont,
+            y = cloudFontSize,
+            g = cloudRotate,
+            x = cloudPadding,
+            v = archimedianSprial,
             m = [],
             w = 1 / 0,
             b = d3.dispatch('word', 'end'),
@@ -238,9 +238,9 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                 for (var n, s = +new Date; +new Date - s < w && ++u < o && z;) {
                     n = h[u], n.x = e[0] * (Math.random() + .5) >> 1,
                         n.y = e[1] * (Math.random() + .5) >> 1,
-                        l(n, h, u),
+                        cloudSprite(n, h, u),
                     t(a, n, r) && (c.push(n),
-                        b.word(n), r ? i(r, n) : r = [{
+                        b.word(n), r ? cloudBounds(r, n) : r = [{
                         x: n.x + n.x0,
                         y: n.y + n.y0
                     }, {
@@ -262,7 +262,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                         font: p.call(this, t, e),
                         rotate: g.call(this, t, e),
                         size: ~~y.call(this, t, e),
-                        padding: s.call(this, t, e)
+                        padding: cloudPadding.call(this, t, e)
                     }
                 }).sort(function (t, e) {
                     return e.size - t.size
@@ -295,23 +295,23 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         return t.text
     }
 
-    function a() {
+    function cloudFont() {
         return 'serif'
     }
 
-    function r(t) {
+    function cloudFontSize(t) {
         return Math.sqrt(t.value)
     }
 
-    function o() {
+    function cloudRotate() {
         return 30 * (~~(6 * Math.random()) - 3)
     }
 
-    function s() {
+    function cloudPadding() {
         return 1
     }
 
-    function l(t, e, n) {
+    function cloudSprite(t, e, n) {
         if (!t.sprite) {
             w.clearRect(0, 0, (g << 5) / v, x / v);
             var a = 0,
@@ -411,51 +411,61 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         return !1
     }
 
-    function i(t, e) {
-        var n = t[0],
-            a = t[1];
-        e.x + e.x0 < n.x && (n.x = e.x + e.x0);
-        e.y + e.y0 < n.y && (n.y = e.y + e.y0);
-        e.x + e.x1 > a.x && (a.x = e.x + e.x1);
-        e.y + e.y1 > a.y && (a.y = e.y + e.y1);
+    function cloudBounds(bounds, d) {
+        var b0 = bounds[0],
+            b1 = bounds[1];
+        if (d.x + d.x0 < b0.x) {
+            b0.x = d.x + d.x0;
+        }
+        if (d.y + d.y0 < b0.y) {
+            b0.y = d.y + d.y0;
+        }
+        if (d.x + d.x1 > b1.x) {
+            b1.x = d.x + d.x1;
+        }
+        if (d.y + d.y1 > b1.y) {
+            b1.y = d.y + d.y1;
+        }
     }
 
-    function c(t, e) {
+    function collideRects(t, e) {
         return t.x + t.x1 > e[0].x &&
             t.x + t.x0 < e[1].x &&
             t.y + t.y1 > e[0].y &&
             t.y + t.y0 < e[1].y;
     }
 
-    function h(t) {
-        var e = t[0] / t[1];
+    function archimedianSprial(size) {
+        var e = size[0] / size[1];
         return function (t) {
             return [e * (t *= .1) * Math.cos(t), t * Math.sin(t)]
         }
     }
 
-    function d(t) {
-        var e = 4,
-            n = e * t[0] / t[1],
-            a = 0,
-            r = 0;
+    function rectangularSpiral(size) {
+        var dy = 4,
+            dx = dy * size[0] / size[1],
+            x = 0,
+            y = 0;
         return function (t) {
-            var o = 0 > t ? -1 : 1;
-            switch (3 & Math.sqrt(1 + 4 * o * t) - o) {
+            var sign = t < 0 ? -1 : 1;
+            // See triangular numbers: T_n = n * (n + 1) / 2.
+            switch ((Math.sqrt(1 + 4 * sign * t) - sign) & 3) {
                 case 0:
-                    a += n;
+                    x += dx;
                     break;
                 case 1:
-                    r += e;
+                    y += dy;
                     break;
                 case 2:
-                    a -= n;
+                    x -= dx;
                     break;
                 default:
-                    r -= e
+                    y -= dy;
+                    break;
             }
-            return [a, r]
-        }
+            return [x, y];
+        };
     }
 
     function f(t) {
@@ -483,10 +493,12 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
     }
     var w = p.getContext('2d'),
         M = {
-            archimedean: h,
-            rectangular: d
+            archimedean: archimedianSprial,
+            rectangular: rectangularSpiral
         };
-    w.fillStyle = 'red', w.textAlign = 'center', t.cloud = e
+    w.fillStyle = 'red',
+        w.textAlign = 'center',
+        t.cloud = e
 }('undefined' == typeof exports ? d3.layout || (d3.layout = {}) : exports));
 
 var fill = d3.scale.category20b(),
