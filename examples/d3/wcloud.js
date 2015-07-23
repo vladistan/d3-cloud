@@ -399,29 +399,30 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         }
     }
 
-    function cloudCollide(t, e, n) {
-        n >>= 5;
-        for (var a, r = t.sprite, o = t.width >> 5,
-                 s = t.x - (o << 4),
-                 l = 127 & s,
-                 u = 32 - l,
-                 i = t.y1 - t.y0,
-                 c = (t.y + t.y0) * n + (s >> 5),
-                 h = 0;
-             i > h;
-             h++) {
-            a = 0;
-            for (var d = 0; o >= d; d++) {
-                if ((a << u |
-                    (o > d ? (a = r[h * o + d]) >>> l : 0)) &
-                    e[c + d]) {
-                    return !0;
+      // Use mask-based collision detection.
+        function cloudCollide(tag, board, sw) {
+            sw >>= 5;
+            var sprite = tag.sprite,
+                w = tag.width >> 5,
+                lx = tag.x - (w << 4),
+                sx = lx & 0x7f,
+                msx = 32 - sx,
+                h = tag.y1 - tag.y0,
+                x = (tag.y + tag.y0) * sw + (lx >> 5),
+                last;
+            for (var j = 0; j < h; j++) {
+                last = 0;
+                for (var i = 0; i <= w; i++) {
+                    if (((last << msx) |
+                        (i < w ? (last = sprite[j * w + i]) >>> sx : 0)) &
+                        board[x + i]) {
+                        return true;
+                    }
                 }
+                x += sw;
             }
-            c += n
+            return false;
         }
-        return !1
-    }
 
     function cloudBounds(bounds, d) {
         var b0 = bounds[0],
@@ -450,7 +451,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
     function archimedeanSpiral(size) {
         var e = size[0] / size[1];
         return function (t) {
-            return [e * (t *= .1) * Math.cos(t), t * Math.sin(t)]
+            return [e * (t *= 0.1) * Math.cos(t), t * Math.sin(t)];
         };
     }
 
