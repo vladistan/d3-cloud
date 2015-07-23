@@ -48,9 +48,26 @@
                         c = ~~(Math.atan2(n(s, l), a(s, l)) / h);
                     t = Math.max(-90, Math.min(90, t + c - 90));
                     c = i - u;
-                    o ? (i = t, c > 360 ? u += c - 360 : 0 > c && (u = i)) :
-                        (u = t, c > 360 ? i += 360 - c : 0 > c && (i = u));
-                    e()
+                    if (o) {
+                        i = t;
+                        if (c > 360) {
+                            u += c - 360;
+                        } else {
+                            if (0 > c) {
+                                u = i;
+                            }
+                        }
+                    } else {
+                        u = t;
+                        if (c > 360) {
+                            i += 360 - c;
+                        } else {
+                            if (0 > c) {
+                                (i = u)
+                            }
+                        }
+                    }
+                    e();
                 }).on('dragend', generate));
         s.attr('transform', function (t) {
             return 'rotate(' + (t + 90) + ')translate(-' + r + ')'
@@ -108,10 +125,12 @@
         }).text(function (t) {
             return t + '\xb0'
         });
-    var u, i, c, h = Math.PI / 180,
+    var u, i, c,
+        h = Math.PI / 180,
         d = d3.scale.linear(),
         f = d3.svg.arc().innerRadius(0).outerRadius(r);
     d3.selectAll('#angle-count, #angle-from, #angle-to')
         .on('change', t)
-        .on('mouseup', t), t()
+        .on('mouseup', t);
+    t();
 }());
