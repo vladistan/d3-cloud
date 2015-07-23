@@ -182,45 +182,50 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
     '\uff5b\uff5d\uff5f-\uff65';
 
 !(function (t) {
-    function e() {
-        function t(board, tag, a) {
+    function cloud() {
+        function place(board, tag, bounds) {
             for (var r, o, s,
-                     l = ([{x: 0, y: 0}, {x: size[0], y: size[1]}], tag.x),
-                     i = tag.y,
-                     h = Math.sqrt(size[0] * size[0] + size[1] * size[1]),
-                     d = v(size),
-                     f = Math.random() < .5 ? 1 : -1, p = -f;
-                 (r = d(p += f)) && (o = ~~r[0], s = ~~r[1],
-                     !(Math.min(o, s) > h));) {
-                if (tag.x = l + o,
-                        tag.y = i + s,
+                     startX = ([{x: 0, y: 0}, {x: size[0], y: size[1]}], tag.x),
+                     startY = tag.y,
+                     maxDelta = Math.sqrt(size[0] * size[0] + size[1] * size[1]),
+                     d = spiral(size),
+                     dt = Math.random() < 0.5 ? 1 : -1,
+                     p = -dt;
+                 (r = d(p += dt)) && (o = ~~r[0], s = ~~r[1],
+                     !(Math.min(o, s) > maxDelta));) {
+                if (tag.x = startX + o,
+                        tag.y = startY + s,
                         !(tag.x + tag.x0 < 0 ||
                         tag.y + tag.y0 < 0 ||
                         tag.x + tag.x1 > size[0] ||
-                        tag.y + tag.y1 > size[1] || a &&
+                        tag.y + tag.y1 > size[1] || bounds &&
                         cloudCollide(tag, board, size[0]) ||
-                        a && !collideRects(tag, a))) {
-                    for (var y,
-                             g = tag.sprite,
-                             x = tag.width >> 5,
-                             sw = size[0] >> 5,
-                             w = tag.x - (x << 4),
-                             M = 127 & w,
-                             msx = 32 - M,
-                             z = tag.y1 - tag.y0,
-                             C = (tag.y + tag.y0) * sw + (w >> 5),
-                             T = 0;
-                         z > T; T++) {
-                        y = 0;
-                        for (var k = 0; x >= k; k++) {
-                            board[C + k] |= y << msx | (x > k ? (y = g[T * x + k]) >>> M : 0);
+                        bounds && !collideRects(tag, bounds))) {
+                    for (
+                        var sprite = tag.sprite,
+                            w = tag.width >> 5,
+                            sw = size[0] >> 5,
+                            lx = tag.x - (w << 4),
+                            sx = lx & 0x7f,
+                            msx = 32 - sx,
+                            h = tag.y1 - tag.y0,
+                            x = (tag.y + tag.y0) * sw + (lx >> 5),
+                            j = 0,
+                            last;
+                        h > j; j++) {
+                        last = 0;
+                        for (var i = 0; w >= i; i++) {
+                            board[x + i] |=
+                                (last << msx) |
+                                (w > i ? (last = sprite[j * w + i]) >>> sx : 0);
                         }
-                        C += sw
+                        x += sw;
                     }
-                    return delete tag.sprite, !0
+                    delete tag.sprite;
+                    return true;
                 }
             }
-            return !1
+            return false;
         }
 
         var size = [256, 256],
@@ -229,7 +234,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
             y = cloudFontSize,
             g = cloudRotate,
             x = cloudPadding,
-            v = archimedianSprial,
+            spiral = archimedeanSpiral,
             m = [],
             w = 1 / 0,
             b = d3.dispatch('word', 'end'),
@@ -241,7 +246,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
                     n = h[u], n.x = size[0] * (Math.random() + .5) >> 1,
                         n.y = size[1] * (Math.random() + .5) >> 1,
                         cloudSprite(n, h, u),
-                    t(a, n, r) && (c.push(n),
+                    place(a, n, r) && (c.push(n),
                         b.word(n), r ? cloudBounds(r, n) : r = [{
                         x: n.x + n.x0,
                         y: n.y + n.y0
@@ -285,7 +290,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         }, cloud.text = function (t) {
             return arguments.length ? (d = d3.functor(t), cloud) : d
         }, cloud.spiral = function (t) {
-            return arguments.length ? (v = M[t + ''] || t, cloud) : v
+            return arguments.length ? (spiral = spirals[t + ''] || t, cloud) : spiral
         }, cloud.fontSize = function (t) {
             return arguments.length ? (y = d3.functor(t), cloud) : y
         }, cloud.padding = function (t) {
@@ -305,9 +310,9 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         return Math.sqrt(d.value);
     }
 
-        function cloudRotate() {
-            return (~~(Math.random() * 6) - 3) * 30;
-        }
+    function cloudRotate() {
+        return (~~(Math.random() * 6) - 3) * 30;
+    }
 
     function cloudPadding() {
         return 1;
@@ -435,14 +440,14 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         }
     }
 
-    function collideRects(t, e) {
-        return t.x + t.x1 > e[0].x &&
-            t.x + t.x0 < e[1].x &&
-            t.y + t.y1 > e[0].y &&
-            t.y + t.y0 < e[1].y;
+    function collideRects(a, b) {
+        return a.x + a.x1 > b[0].x && a.x +
+            a.x0 < b[1].x && a.y +
+            a.y1 > b[0].y && a.y +
+            a.y0 < b[1].y;
     }
 
-    function archimedianSprial(size) {
+    function archimedeanSpiral(size) {
         var e = size[0] / size[1];
         return function (t) {
             return [e * (t *= .1) * Math.cos(t), t * Math.sin(t)]
@@ -492,7 +497,7 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         ratio = 1;
     if ('undefined' != typeof document) {
         canvas = document.createElement('canvas');
-            canvas.width = 1;
+        canvas.width = 1;
         canvas.height = 1;
         ratio = Math.sqrt(
             canvas.getContext('2d')
@@ -507,13 +512,13 @@ var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}\xa1\xa7\xab\xb6\xb7\xbb\xbf\
         canvas = new m(cw << 5, ch)
     }
     var w = canvas.getContext('2d'),
-        M = {
-            archimedean: archimedianSprial,
+        spirals = {
+            archimedean: archimedeanSpiral,
             rectangular: rectangularSpiral
         };
     w.fillStyle = 'red',
         w.textAlign = 'center',
-        t.cloud = e
+        t.cloud = cloud
 }('undefined' == typeof exports ? d3.layout || (d3.layout = {}) : exports));
 
 var fill = d3.scale.category20b(),
