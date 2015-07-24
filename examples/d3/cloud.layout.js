@@ -78,14 +78,17 @@
         };
 
         function place(board, tag, bounds) {
-            for (var r, dx, dy,
-                     startX = ([{x: 0, y: 0}, {x: size[0], y: size[1]}], tag.x),
+            for (var perimeter = [{x: 0, y: 0}, {x: size[0], y: size[1]}],
+                     startX = tag.x,
                      startY = tag.y,
                      maxDelta = Math.sqrt(size[0] * size[0] + size[1] * size[1]),
                      d = spiral(size),
                      dt = Math.random() < 0.5 ? 1 : -1,
-                     p = -dt;
-                 (r = d(p += dt)) && (dx = ~~r[0], dy = ~~r[1],
+                     p = -dt,
+                     dx,
+                     dy,
+                     dxdy;
+                 (dxdy = d(p += dt)) && (dx = ~~dxdy[0], dy = ~~dxdy[1],
                      !(Math.min(dx, dy) > maxDelta));) {
                 if (tag.x = startX + dx,
                         tag.y = startY + dy,
@@ -240,7 +243,7 @@
                     break;
                 }
                 cnv.translate((a + (l >> 1)) / ratio, (r + (u >> 1)) / ratio);
-                if (d.rotate ) {
+                if (d.rotate) {
                     cnv.rotate(d.rotate * cloudRadians);
                 }
                 cnv.fillText(d.text, 0, 0);
