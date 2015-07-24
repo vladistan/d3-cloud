@@ -54,13 +54,10 @@
                     n.y = (size[1] * (Math.random() + 0.5)) >> 1;
                     cloudSprite(n, data, u);
                     place(board, n, bounds) && (tags.push(n),
-                        event.word(n), bounds ? cloudBounds(bounds, n) : bounds = [{
-                        x: n.x + n.x0,
-                        y: n.y + n.y0
-                    }, {
-                        x: n.x + n.x1,
-                        y: n.y + n.y1
-                    }],
+                        event.word(n), bounds ? cloudBounds(bounds, n) :
+                        bounds = [
+                            {x: n.x + n.x0, y: n.y + n.y0},
+                            {x: n.x + n.x1, y: n.y + n.y1}],
                         // Temporary hack
                         n.x -= size[0] >> 1,
                         n.y -= size[1] >> 1);
