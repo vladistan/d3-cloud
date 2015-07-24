@@ -142,6 +142,16 @@
             return arguments.length ? (font = d3.functor(_), cloud) : font;
         };
 
+        cloud.fontStyle = function (_) {
+            return arguments.length ? (fontStyle = d3.functor(_), cloud) : fontStyle;
+        };
+
+        cloud.fontWeight = function (_) {
+            return arguments.length ?
+                (fontWeight = d3.functor(_), cloud) :
+                fontWeight;
+        };
+
         cloud.rotate = function (_) {
             return arguments.length ? (rotate = d3.functor(_), cloud) : rotate;
         };
@@ -162,6 +172,10 @@
             return arguments.length ? (padding = d3.functor(_), cloud) : padding;
         };
 
+        cloud.random = function (_) {
+            return arguments.length ? (random = _, cloud) : random;
+        };
+
         return d3.rebind(cloud, event, 'on');
     }
 
@@ -171,6 +185,10 @@
 
     function cloudFont() {
         return 'serif';
+    }
+
+    function cloudFontNormal() {
+        return 'normal';
     }
 
     function cloudFontSize(d) {
@@ -222,7 +240,9 @@
                     break;
                 }
                 cnv.translate((a + (l >> 1)) / ratio, (r + (u >> 1)) / ratio);
-                d.rotate && cnv.rotate(d.rotate * cloudRadians);
+                if (d.rotate ) {
+                    cnv.rotate(d.rotate * cloudRadians);
+                }
                 cnv.fillText(d.text, 0, 0);
                 cnv.restore();
                 d.width = l;
