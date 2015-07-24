@@ -51,27 +51,35 @@
 
             function step() {
                 var start = +new Date;
-                for (var n;
+                for (var d;
                      +new Date - start < timeInterval && ++u < o && timer;) {
-                    n = data[u];
-                    n.x = (size[0] * (random() + 0.5)) >> 1;
-                    n.y = (size[1] * (random() + 0.5)) >> 1;
-                    cloudSprite(n, data, u);
-                    place(board, n, bounds) && (tags.push(n),
-                        event.word(n), bounds ? cloudBounds(bounds, n) :
-                        bounds = [
-                            {x: n.x + n.x0, y: n.y + n.y0},
-                            {x: n.x + n.x1, y: n.y + n.y1}],
+                    d = data[u];
+                    d.x = (size[0] * (random() + 0.5)) >> 1;
+                    d.y = (size[1] * (random() + 0.5)) >> 1;
+                    cloudSprite(d, data, u);
+                    if (place(board, d, bounds)) {
+                        tags.push(d);
+                        event.word(d);
+                        if (bounds) {
+                            cloudBounds(bounds, d);
+                        }
+                        else {
+                            bounds = [
+                                {x: d.x + d.x0, y: d.y + d.y0},
+                                {x: d.x + d.x1, y: d.y + d.y1}];
+
+                        }
                         // Temporary hack
-                        n.x -= size[0] >> 1,
-                        n.y -= size[1] >> 1);
+                        d.x -= size[0] >> 1;
+                        d.y -= size[1] >> 1;
+                    }
                 }
                 if (u >= o) {
                     cloud.stop();
                     event.end(tags, bounds);
                 }
             }
-        };
+        }
 
         cloud.stop = function () {
             if (timer) {
