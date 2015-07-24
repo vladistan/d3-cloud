@@ -282,12 +282,19 @@
                 return;
             }
             r = d.yoff;
-            for (var seen = 0, seenRow = -1, A = 0; u > A; A++) {
+            var seen = 0,
+                seenRow = -1;
+            for (var A = 0; u > A; A++) {
                 for (var C = 0; l > C; C++) {
-                    var L = w32 * A + (C >> 5),
-                        I = pixels[(r + A) * (cw << 5) + (a + C) << 2] ?
-                        1 << 31 - C % 32 :
-                            0;
+                    var L, I;
+                    if (pixels[
+                        (r + A) * (cw << 5) + (a + C) << 2]) {
+                        L = w32 * A + (C >> 5);
+                        I = 1 << 31 - C % 32;
+                    } else {
+                        L = w32 * A + (C >> 5);
+                        I = 0;
+                    }
                     z && (A && (sprite[L - w32] |= I), l - 1 > A &&
                     (sprite[L + w32] |= I), I |= I << 1 | I >> 1),
                         sprite[L] |= I,
@@ -305,7 +312,7 @@
             d.y1 = d.y0 + seenRow;
             d.sprite = sprite.slice(0, (d.y1 - d.y0) * w32);
         }
-        
+
     }
 
     // Use mask-based collision detection.
