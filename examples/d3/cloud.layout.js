@@ -10,6 +10,8 @@
             text = cloudText,
             font = cloudFont,
             fontSize = cloudFontSize,
+            fontStyle = cloudFontNormal,
+            fontWeight = cloudFontNormal,
             rotate = cloudRotate,
             padding = cloudPadding,
             spiral = archimedeanSpiral,
@@ -17,6 +19,7 @@
             timeInterval = Infinity,
             event = d3.dispatch('word', 'end'),
             timer = null,
+            random = Math.random,
             cloud = {};
 
         cloud.start = function () {
@@ -83,11 +86,11 @@
                      startY = tag.y,
                      maxDelta = Math.sqrt(size[0] * size[0] + size[1] * size[1]),
                      d = spiral(size),
-                     dt = Math.random() < 0.5 ? 1 : -1,
+                     dt = random() < 0.5 ? 1 : -1,
                      p = -dt,
+                     dxdy,
                      dx,
-                     dy,
-                     dxdy;
+                     dy;
                  (dxdy = d(p += dt)) && (dx = ~~dxdy[0], dy = ~~dxdy[1],
                      !(Math.min(dx, dy) > maxDelta));) {
                 if (tag.x = startX + dx,
@@ -209,97 +212,100 @@
     // Fetches a monochrome sprite bitmap for the specified text.
     // Load in batches for speed.
     function cloudSprite(d, data, di) {
-        if (!d.sprite) {
-            cnv.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
-            var a = 0,
-                r = 0,
-                maxh = 0,
-                s = data.length;
-            for (di--; ++di < s;) {
-                d = data[di],
-                    cnv.save(),
-                    cnv.font = ~~((d.size + 1) / ratio) +
-                        'px ' + d.font;
-                var l = cnv.measureText(d.text + 'm').width * ratio,
-                    u = d.size << 1;
-                if (d.rotate) {
-                    var sr = Math.sin(d.rotate * cloudRadians),
-                        cr = Math.cos(d.rotate * cloudRadians),
-                        wcr = l * cr,
-                        wsr = l * sr,
-                        hcr = u * cr,
-                        hsr = u * sr;
-                    l = Math.max(Math.abs(wcr + hsr),
-                            Math.abs(wcr - hsr)) + 31 >> 5 << 5,
-                        u = ~~Math.max(Math.abs(wsr + hcr),
-                            Math.abs(wsr - hcr))
-                } else {
-                    l = l + 31 >> 5 << 5;
-                }
-                if (u > maxh && (maxh = u),
-                    a + l >= cw << 5 &&
-                    (a = 0, r += maxh, maxh = 0),
-                    r + u >= ch) {
-                    break;
-                }
-                cnv.translate((a + (l >> 1)) / ratio, (r + (u >> 1)) / ratio);
-                if (d.rotate) {
-                    cnv.rotate(d.rotate * cloudRadians);
-                }
-                cnv.fillText(d.text, 0, 0);
-                cnv.restore();
-                d.width = l;
-                d.height = u;
-                d.xoff = a;
-                d.yoff = r;
-                d.x1 = l >> 1;
-                d.y1 = u >> 1;
-                d.x0 = -d.x1;
-                d.y0 = -d.y1;
-                a += l
-            }
-            for (var pixels = cnv.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
-                     sprite = [];
-                 --di >= 0;) {
-                d = data[di];
-                // Zero the buffer
-                for (var l = d.width,
-                         w32 = l >> 5,
-                         u = d.y1 - d.y0,
-                         z = d.padding,
-                         C = 0;
-                     u * w32 > C;
-                     C++) {
-                    sprite[C] = 0;
-                }
-                if (a = d.xoff, null === a) {
-                    return;
-                }
-                r = d.yoff;
-                for (var seen = 0, seenRow = -1, A = 0; u > A; A++) {
-                    for (var C = 0; l > C; C++) {
-                        var L = w32 * A + (C >> 5),
-                            I = pixels[(r + A) * (cw << 5) + (a + C) << 2] ?
-                            1 << 31 - C % 32 :
-                                0;
-                        z && (A && (sprite[L - w32] |= I), l - 1 > A &&
-                        (sprite[L + w32] |= I), I |= I << 1 | I >> 1),
-                            sprite[L] |= I,
-                            seen |= I
-                    }
-                    if (seen) {
-                        seenRow = A
-                    } else {
-                        d.y0++;
-                        u--;
-                        A--;
-                        r++;
-                    }
-                }
-                d.y1 = d.y0 + seenRow;
-                d.sprite = sprite.slice(0, (d.y1 - d.y0) * w32);
-            }
+        if (d.sprite) {
+            return;
         }
+
+        cnv.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
+        var a = 0,
+            r = 0,
+            maxh = 0,
+            s = data.length;
+        for (di--; ++di < s;) {
+            d = data[di],
+                cnv.save(),
+                cnv.font = ~~((d.size + 1) / ratio) +
+                    'px ' + d.font;
+            var l = cnv.measureText(d.text + 'm').width * ratio,
+                u = d.size << 1;
+            if (d.rotate) {
+                var sr = Math.sin(d.rotate * cloudRadians),
+                    cr = Math.cos(d.rotate * cloudRadians),
+                    wcr = l * cr,
+                    wsr = l * sr,
+                    hcr = u * cr,
+                    hsr = u * sr;
+                l = Math.max(Math.abs(wcr + hsr),
+                        Math.abs(wcr - hsr)) + 31 >> 5 << 5,
+                    u = ~~Math.max(Math.abs(wsr + hcr),
+                        Math.abs(wsr - hcr))
+            } else {
+                l = l + 31 >> 5 << 5;
+            }
+            if (u > maxh && (maxh = u),
+                a + l >= cw << 5 &&
+                (a = 0, r += maxh, maxh = 0),
+                r + u >= ch) {
+                break;
+            }
+            cnv.translate((a + (l >> 1)) / ratio, (r + (u >> 1)) / ratio);
+            if (d.rotate) {
+                cnv.rotate(d.rotate * cloudRadians);
+            }
+            cnv.fillText(d.text, 0, 0);
+            cnv.restore();
+            d.width = l;
+            d.height = u;
+            d.xoff = a;
+            d.yoff = r;
+            d.x1 = l >> 1;
+            d.y1 = u >> 1;
+            d.x0 = -d.x1;
+            d.y0 = -d.y1;
+            a += l
+        }
+        for (var pixels = cnv.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
+                 sprite = [];
+             --di >= 0;) {
+            d = data[di];
+            // Zero the buffer
+            for (var l = d.width,
+                     w32 = l >> 5,
+                     u = d.y1 - d.y0,
+                     z = d.padding,
+                     C = 0;
+                 u * w32 > C;
+                 C++) {
+                sprite[C] = 0;
+            }
+            if (a = d.xoff, null === a) {
+                return;
+            }
+            r = d.yoff;
+            for (var seen = 0, seenRow = -1, A = 0; u > A; A++) {
+                for (var C = 0; l > C; C++) {
+                    var L = w32 * A + (C >> 5),
+                        I = pixels[(r + A) * (cw << 5) + (a + C) << 2] ?
+                        1 << 31 - C % 32 :
+                            0;
+                    z && (A && (sprite[L - w32] |= I), l - 1 > A &&
+                    (sprite[L + w32] |= I), I |= I << 1 | I >> 1),
+                        sprite[L] |= I,
+                        seen |= I
+                }
+                if (seen) {
+                    seenRow = A
+                } else {
+                    d.y0++;
+                    u--;
+                    A--;
+                    r++;
+                }
+            }
+            d.y1 = d.y0 + seenRow;
+            d.sprite = sprite.slice(0, (d.y1 - d.y0) * w32);
+        }
+        
     }
 
     // Use mask-based collision detection.
@@ -411,9 +417,9 @@
         canvas.width = (cw << 5) / ratio;
         canvas.height = ch / ratio;
     } else {
-        var m = require('canvas');
+        var Canvas = require('canvas');
         // Attempt to use node-canvas.
-        canvas = new m(cw << 5, ch)
+        canvas = new Canvas(cw << 5, ch);
     }
     var cnv = canvas.getContext('2d'),
         spirals = {
