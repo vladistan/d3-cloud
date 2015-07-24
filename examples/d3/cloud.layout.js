@@ -50,11 +50,12 @@
             return cloud;
 
             function step() {
-                for (var n, s = +new Date;
-                     +new Date - s < timeInterval && ++u < o && timer;) {
+                var start = +new Date;
+                for (var n;
+                     +new Date - start < timeInterval && ++u < o && timer;) {
                     n = data[u];
-                    n.x = (size[0] * (Math.random() + 0.5)) >> 1;
-                    n.y = (size[1] * (Math.random() + 0.5)) >> 1;
+                    n.x = (size[0] * (random() + 0.5)) >> 1;
+                    n.y = (size[1] * (random() + 0.5)) >> 1;
                     cloudSprite(n, data, u);
                     place(board, n, bounds) && (tags.push(n),
                         event.word(n), bounds ? cloudBounds(bounds, n) :
