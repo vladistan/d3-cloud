@@ -97,6 +97,7 @@
                         tag.x + tag.x1 > size[0] ||
                         tag.y + tag.y1 > size[1] ||
                         bounds &&
+                            // TODO only check for collisions within current bounds.
                         cloudCollide(tag, board, size[0]) ||
                         bounds && !collideRects(tag, bounds))) {
                     for (
@@ -189,23 +190,23 @@
 
     // Fetches a monochrome sprite bitmap for the specified text.
     // Load in batches for speed.
-    function cloudSprite(t, data, di) {
-        if (!t.sprite) {
+    function cloudSprite(d, data, di) {
+        if (!d.sprite) {
             cnv.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
             var a = 0,
                 r = 0,
                 maxh = 0,
                 s = data.length;
             for (di--; ++di < s;) {
-                t = data[di],
+                d = data[di],
                     cnv.save(),
-                    cnv.font = ~~((t.size + 1) / ratio) +
-                        'px ' + t.font;
-                var l = cnv.measureText(t.text + 'm').width * ratio,
-                    u = t.size << 1;
-                if (t.rotate) {
-                    var sr = Math.sin(t.rotate * cloudRadians),
-                        cr = Math.cos(t.rotate * cloudRadians),
+                    cnv.font = ~~((d.size + 1) / ratio) +
+                        'px ' + d.font;
+                var l = cnv.measureText(d.text + 'm').width * ratio,
+                    u = d.size << 1;
+                if (d.rotate) {
+                    var sr = Math.sin(d.rotate * cloudRadians),
+                        cr = Math.cos(d.rotate * cloudRadians),
                         wcr = l * cr,
                         wsr = l * sr,
                         hcr = u * cr,
@@ -224,37 +225,37 @@
                     break;
                 }
                 cnv.translate((a + (l >> 1)) / ratio, (r + (u >> 1)) / ratio);
-                t.rotate && cnv.rotate(t.rotate * cloudRadians);
-                cnv.fillText(t.text, 0, 0);
+                d.rotate && cnv.rotate(d.rotate * cloudRadians);
+                cnv.fillText(d.text, 0, 0);
                 cnv.restore();
-                t.width = l;
-                t.height = u;
-                t.xoff = a;
-                t.yoff = r;
-                t.x1 = l >> 1;
-                t.y1 = u >> 1;
-                t.x0 = -t.x1;
-                t.y0 = -t.y1;
+                d.width = l;
+                d.height = u;
+                d.xoff = a;
+                d.yoff = r;
+                d.x1 = l >> 1;
+                d.y1 = u >> 1;
+                d.x0 = -d.x1;
+                d.y0 = -d.y1;
                 a += l
             }
             for (var pixels = cnv.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
                      sprite = [];
                  --di >= 0;) {
-                t = data[di];
+                d = data[di];
                 // Zero the buffer
-                for (var l = t.width,
+                for (var l = d.width,
                          w32 = l >> 5,
-                         u = t.y1 - t.y0,
-                         z = t.padding,
+                         u = d.y1 - d.y0,
+                         z = d.padding,
                          C = 0;
                      u * w32 > C;
                      C++) {
                     sprite[C] = 0;
                 }
-                if (a = t.xoff, null === a) {
+                if (a = d.xoff, null === a) {
                     return;
                 }
-                r = t.yoff;
+                r = d.yoff;
                 for (var seen = 0, seenRow = -1, A = 0; u > A; A++) {
                     for (var C = 0; l > C; C++) {
                         var L = w32 * A + (C >> 5),
@@ -269,14 +270,14 @@
                     if (seen) {
                         seenRow = A
                     } else {
-                        t.y0++;
+                        d.y0++;
                         u--;
                         A--;
                         r++;
                     }
                 }
-                t.y1 = t.y0 + seenRow;
-                t.sprite = sprite.slice(0, (t.y1 - t.y0) * w32);
+                d.y1 = d.y0 + seenRow;
+                d.sprite = sprite.slice(0, (d.y1 - d.y0) * w32);
             }
         }
     }
