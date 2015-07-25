@@ -227,8 +227,9 @@
         var x = 0,
             r = 0,
             maxh = 0,
-            s = data.length;
-        for (di--; ++di < s;) {
+            n = data.length;
+        --di;
+        for (; ++di < n;) {
             d = data[di],
                 cnv.save(),
                 cnv.font = ~~((d.size + 1) / ratio) +
@@ -280,10 +281,10 @@
                      w32 = l >> 5,
                      u = d.y1 - d.y0,
                      z = d.padding,
-                     C = 0;
-                 u * w32 > C;
-                 C++) {
-                sprite[C] = 0;
+                     i = 0;
+                 u * w32 > i;
+                 i++) {
+                sprite[i] = 0;
             }
             x = d.xoff;
             if (x === null) {
@@ -293,14 +294,14 @@
             var seen = 0,
                 seenRow = -1;
             for (var j = 0; u > j; j++) {
-                for (var C = 0; l > C; C++) {
+                for (var i = 0; i < l; i++) {
                     var k, m;
                     if (pixels[
-                        (r + j) * (cw << 5) + (x + C) << 2]) {
-                        k = w32 * j + (C >> 5);
-                        m = 1 << (31 - (C % 32));
+                        (r + j) * (cw << 5) + (x + i) << 2]) {
+                        k = w32 * j + (i >> 5);
+                        m = 1 << (31 - (i % 32));
                     } else {
-                        k = w32 * j + (C >> 5);
+                        k = w32 * j + (i >> 5);
                         m = 0;
                     }
                     if (z) {
