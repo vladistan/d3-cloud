@@ -229,10 +229,10 @@
             n = data.length;
         --di;
         while (++di < n) {
-            d = data[di],
-                c.save(),
-                c.font = ~~((d.size + 1) / ratio) +
-                    'px ' + d.font;
+            d = data[di];
+            c.save();
+            c.font = ~~((d.size + 1) / ratio) +
+                'px ' + d.font;
             var l = c.measureText(d.text + 'm').width * ratio,
                 u = d.size << 1;
             if (d.rotate) {
@@ -271,16 +271,16 @@
             d.y1 = u >> 1;
             d.x0 = -d.x1;
             d.y0 = -d.y1;
-            x += l
+            x += l;
         }
-        for (var pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
-                 sprite = [];
-             --di >= 0;) {
+        var pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
+            sprite = [];
+        while (--di >= 0) {
             d = data[di];
             var l = d.width,
                 w32 = l >> 5,
-                u = d.y1 - d.y0,
-                z = d.padding;
+		z = d.padding,
+                u = d.y1 - d.y0;
             // Zero the buffer
             for (var i = 0; i < u * w32; i++) {
                 sprite[i] = 0;
@@ -296,7 +296,7 @@
                 for (var i = 0; i < l; i++) {
                     var k, m;
                     if (pixels[
-                        (r + j) * (cw << 5) + (x + i) << 2]) {
+                        ((r + j) * (cw << 5) + (x + i)) << 2]) {
                         k = w32 * j + (i >> 5);
                         m = 1 << (31 - (i % 32));
                     } else {
