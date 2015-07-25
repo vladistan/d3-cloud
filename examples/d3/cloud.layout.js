@@ -94,13 +94,13 @@
                      startX = tag.x,
                      startY = tag.y,
                      maxDelta = Math.sqrt(size[0] * size[0] + size[1] * size[1]),
-                     d = spiral(size),
+                     s = spiral(size),
                      dt = random() < 0.5 ? 1 : -1,
-                     p = -dt,
+                     t = -dt,
                      dxdy,
                      dx,
                      dy;
-                 (dxdy = d(p += dt)) && (dx = ~~dxdy[0], dy = ~~dxdy[1],
+                 (dxdy = s(t += dt)) && (dx = ~~dxdy[0], dy = ~~dxdy[1],
                      !(Math.min(dx, dy) > maxDelta));) {
                 if (tag.x = startX + dx,
                         tag.y = startY + dy,
@@ -311,7 +311,8 @@
                 }
                 if (seen) {
                     seenRow = A
-                } else {
+                }
+                else {
                     d.y0++;
                     u--;
                     A--;
