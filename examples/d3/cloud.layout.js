@@ -26,7 +26,7 @@
 
             var board = zeroArray((size[0] >> 5) * size[1]),
                 bounds = null,
-                o = words.length,
+                n = words.length,
                 u = -1,
                 tags = [],
                 data = words.map(function (d, i) {
@@ -52,7 +52,7 @@
             function step() {
                 var start = +new Date;
                 for (var d;
-                     +new Date - start < timeInterval && ++u < o && timer;) {
+                     +new Date - start < timeInterval && ++u < n && timer;) {
                     d = data[u];
                     d.x = (size[0] * (random() + 0.5)) >> 1;
                     d.y = (size[1] * (random() + 0.5)) >> 1;
@@ -74,7 +74,7 @@
                         d.y -= size[1] >> 1;
                     }
                 }
-                if (u >= o) {
+                if (u >= n) {
                     cloud.stop();
                     event.end(tags, bounds);
                 }
@@ -112,18 +112,16 @@
                             // TODO only check for collisions within current bounds.
                         cloudCollide(tag, board, size[0]) ||
                         bounds && !collideRects(tag, bounds))) {
-                    for (
-                        var sprite = tag.sprite,
-                            w = tag.width >> 5,
-                            sw = size[0] >> 5,
-                            lx = tag.x - (w << 4),
-                            sx = lx & 0x7f,
-                            msx = 32 - sx,
-                            h = tag.y1 - tag.y0,
-                            x = (tag.y + tag.y0) * sw + (lx >> 5),
-                            j = 0,
-                            last;
-                        h > j; j++) {
+                    var sprite = tag.sprite,
+                        w = tag.width >> 5,
+                        sw = size[0] >> 5,
+                        lx = tag.x - (w << 4),
+                        sx = lx & 0x7f,
+                        msx = 32 - sx,
+                        h = tag.y1 - tag.y0,
+                        x = (tag.y + tag.y0) * sw + (lx >> 5),
+                        last;
+                    for ( var j = 0; j < h; j++) {
                         last = 0;
                         for (var i = 0; i <= w; i++) {
                             board[x + i] |=
