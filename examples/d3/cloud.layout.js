@@ -4,7 +4,7 @@
 // Algorithm due to Jonathan Feinberg, http://static.mrfeinberg.com/bv_ch03.pdf
 
 (function (t) {
-    t.cloud =  function cloud() {
+    t.cloud = function cloud() {
         var size = [256, 256],
             text = cloudText,
             font = cloudFont,
@@ -32,6 +32,8 @@
                     return {
                         text: text.call(this, d, i),
                         font: font.call(this, d, i),
+                        style: fontStyle.call(this, d, i),
+                        weight: fontWeight.call(this, d, i),
                         rotate: rotate.call(this, d, i),
                         size: ~~fontSize.call(this, d, i),
                         padding: cloudPadding.call(this, d, i)
@@ -55,7 +57,7 @@
                     d.x = (size[0] * (random() + 0.5)) >> 1;
                     d.y = (size[1] * (random() + 0.5)) >> 1;
                     cloudSprite(d, data, i);
-                    if (place(board, d, bounds)) {
+                    if (d.hasText && place(board, d, bounds)) {
                         tags.push(d);
                         event.word(d);
                         if (bounds) {
@@ -98,8 +100,9 @@
                 dxdy,
                 dx,
                 dy;
-            while (dxdy = s(t += dt)) {
+            while (true) {
 
+                dxdy = s(t += dt);
                 dx = ~~dxdy[0];
                 dy = ~~dxdy[1];
 
@@ -281,12 +284,16 @@
             d.y1 = h >> 1;
             d.x0 = -d.x1;
             d.y0 = -d.y1;
+            d.hasText = true;
             x += w;
         }
         var pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
             sprite = [];
         while (--di >= 0) {
             d = data[di];
+            if (!d.hasText) {
+                continue;
+            }
             var w = d.width,
                 w32 = w >> 5,
                 z = d.padding,
@@ -455,8 +462,8 @@
             archimedean: archimedeanSpiral,
             rectangular: rectangularSpiral
         };
-    c.fillStyle = 'red';
+
+    c.fillStyle = c.strokeStyle = 'red';
     c.textAlign = 'center';
-    
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));
