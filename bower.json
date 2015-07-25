@@ -17,7 +17,6 @@
   ],
   "devDependencies": {
     "sinon": "http://sinonjs.org/releases/sinon-1.12.1.js",
-    "bardjs": "~0.1.0",
     "gulp": "~3.9.0"
   },
   "dependencies": {

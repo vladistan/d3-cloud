@@ -43,6 +43,7 @@ gulp.task('vet', function () {
         .pipe($.jshint.reporter('fail'))
         .pipe($.jscs());
 });
+
 /**
  * Create a visualizer report
  */
@@ -52,6 +53,43 @@ gulp.task('plato', function (done) {
 
     startPlatoVisualizer(done);
 });
+
+/**
+ * Wire-up the bower dependencies
+ * @return {Stream}
+ */
+gulp.task('wiredep', function () {
+    log('Wiring the bower dependencies into the html');
+
+    var wiredep = require('wiredep').stream;
+    var options = config.getWiredepDefaultOptions();
+
+    // Only include stubs if flag is enabled
+    var js = args.stubs ? [].concat(config.js, config.stubsjs) : config.js;
+    return gulp
+        .src(config.index)
+        .pipe(wiredep(options))
+        .pipe(inject(js, '', config.jsOrder))
+        .pipe(gulp.dest(config.client));
+});
+
+/**
+ * Run specs once and exit
+ * To start servers and run midway specs as well:
+ *    gulp test --startServers
+ * @return {Stream}
+ */
+gulp.task('test', ['vet'], function (done) {
+    startTests(true /*singleRun*/, done);
+});
+
+function errorLogger(error) {
+    log('***** ERRROR Starts');
+    log(error);
+    log('***** ERRROR Starts');
+    this.emit('end');
+}
+
 /**
  * Start Plato inspector and visualizer
  */
@@ -76,6 +114,54 @@ function startPlatoVisualizer(done) {
             log(overview.summary);
         }
         if (done) {
+            done();
+        }
+    }
+}
+
+/**
+ * Start the tests using karma.
+ * @param  {boolean} singleRun - True means run once and end (CI), or keep running (dev)
+ * @param  {Function} done - Callback to fire when karma is done
+ * @return {undefined}
+ */
+function startTests(singleRun, done) {
+    var child;
+    var excludeFiles = [];
+    var fork = require('child_process').fork;
+    var karma = require('karma').server;
+    var serverSpecs = config.serverIntegrationSpecs;
+
+    if (args.startServers) {
+        log('Starting servers');
+        var savedEnv = process.env;
+        savedEnv.NODE_ENV = 'dev';
+        savedEnv.PORT = 8888;
+        child = fork(config.nodeServer);
+    } else {
+        if (serverSpecs && serverSpecs.length) {
+            excludeFiles = serverSpecs;
+        }
+    }
+
+    console.log('KARMA: START');
+    karma.start({
+        configFile: __dirname + '/karma.conf.js',
+        exclude: excludeFiles,
+        singleRun: !!singleRun
+    }, karmaCompleted);
+
+    ////////////////
+
+    function karmaCompleted(karmaResult) {
+        log('Karma completed');
+        if (child) {
+            log('shutting down the child process');
+            child.kill();
+        }
+        if (karmaResult === 1) {
+            done('karma: tests failed with code ' + karmaResult);
+        } else {
             done();
         }
     }
@@ -120,6 +206,39 @@ function getHeader() {
     return $.header(template, {
         pkg: pkg
     });
+}
+
+/**
+ * Inject files in a sorted sequence at a specified inject label
+ * @param   {Array} src   glob pattern for source files
+ * @param   {String} label   The label name
+ * @param   {Array} order   glob pattern for sort order of the files
+ * @returns {Stream}   The stream
+ */
+function inject(src, label, order) {
+    var options = {read: false};
+    if (label) {
+        options.name = 'inject:' + label;
+    }
+
+    log('Injecting **** ');
+    log('Order :' + order)
+
+    return $.inject(orderSrc(src, order), options);
+}
+
+/**
+ * Order a stream
+ * @param   {Stream} src   The gulp.src stream
+ * @param   {Array} order Glob array pattern
+ * @returns {Stream} The ordered stream
+ */
+function orderSrc(src, order) {
+    order = order || ['**/*'];
+
+    return gulp
+        .src(src)
+        .pipe($.if(order, $.order(order)));
 }
 
 /**
