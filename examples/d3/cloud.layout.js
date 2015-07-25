@@ -27,7 +27,7 @@
             var board = zeroArray((size[0] >> 5) * size[1]),
                 bounds = null,
                 n = words.length,
-                u = -1,
+                i = -1,
                 tags = [],
                 data = words.map(function (d, i) {
                     return {
@@ -51,11 +51,11 @@
 
             function step() {
                 var start = +new Date;
-                while (+new Date - start < timeInterval && ++u < n && timer) {
-                    var d = data[u];
+                while (+new Date - start < timeInterval && ++i < n && timer) {
+                    var d = data[i];
                     d.x = (size[0] * (random() + 0.5)) >> 1;
                     d.y = (size[1] * (random() + 0.5)) >> 1;
-                    cloudSprite(d, data, u);
+                    cloudSprite(d, data, i);
                     if (place(board, d, bounds)) {
                         tags.push(d);
                         event.word(d);
@@ -73,7 +73,7 @@
                         d.y -= size[1] >> 1;
                     }
                 }
-                if (u >= n) {
+                if (i >= n) {
                     cloud.stop();
                     event.end(tags, bounds);
                 }
@@ -242,19 +242,21 @@
                     wsr = l * sr,
                     hcr = u * cr,
                     hsr = u * sr;
-                l = Math.max(Math.abs(wcr + hsr),
-                        Math.abs(wcr - hsr)) + 31 >> 5 << 5,
-                    u = ~~Math.max(Math.abs(wsr + hcr),
-                        Math.abs(wsr - hcr))
+                l = (Math.max(Math.abs(wcr + hsr),
+                        Math.abs(wcr - hsr)) + 0x1f) >> 5 << 5,
+                    u = ~~Math.max(Math.abs(wsr + hcr), Math.abs(wsr - hcr))
             } else {
-                l = l + 31 >> 5 << 5;
+                l = (l + 0x1f) >> 5 << 5;
             }
             if (u > maxh) {
                 maxh = u;
             }
-            if (x + l >= cw << 5 &&
-                (x = 0, r += maxh, maxh = 0),
-                r + u >= ch) {
+            if (x + l >= (cw << 5)) {
+                x = 0;
+                r += maxh;
+                maxh = 0;
+            }
+            if (r + u >= ch) {
                 break;
             }
             c.translate((x + (l >> 1)) / ratio, (r + (u >> 1)) / ratio);
@@ -279,7 +281,7 @@
             d = data[di];
             var l = d.width,
                 w32 = l >> 5,
-		z = d.padding,
+                z = d.padding,
                 u = d.y1 - d.y0;
             // Zero the buffer
             for (var i = 0; i < u * w32; i++) {
