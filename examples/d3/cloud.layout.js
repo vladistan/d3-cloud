@@ -51,7 +51,7 @@
 
             function step() {
                 var start = +new Date;
-                for (;+new Date - start < timeInterval && ++u < n && timer;) {
+                while (+new Date - start < timeInterval && ++u < n && timer) {
                     var d = data[u];
                     d.x = (size[0] * (random() + 0.5)) >> 1;
                     d.y = (size[1] * (random() + 0.5)) >> 1;
@@ -99,8 +99,8 @@
                 dxdy,
                 dx,
                 dy;
-            for (;(dxdy = s(t += dt)) && (dx = ~~dxdy[0], dy = ~~dxdy[1],
-                     !(Math.min(dx, dy) > maxDelta));) {
+            for (; (dxdy = s(t += dt)) && (dx = ~~dxdy[0], dy = ~~dxdy[1],
+                !(Math.min(dx, dy) > maxDelta));) {
 
                 tag.x = startX + dx;
                 tag.y = startY + dy;
@@ -228,7 +228,7 @@
             maxh = 0,
             n = data.length;
         --di;
-        for (; ++di < n;) {
+        while (++di < n) {
             d = data[di],
                 c.save(),
                 c.font = ~~((d.size + 1) / ratio) +
@@ -249,8 +249,10 @@
             } else {
                 l = l + 31 >> 5 << 5;
             }
-            if (u > maxh && (maxh = u),
-                x + l >= cw << 5 &&
+            if (u > maxh) {
+                maxh = u;
+            }
+            if (x + l >= cw << 5 &&
                 (x = 0, r += maxh, maxh = 0),
                 r + u >= ch) {
                 break;
@@ -275,14 +277,12 @@
                  sprite = [];
              --di >= 0;) {
             d = data[di];
+            var l = d.width,
+                w32 = l >> 5,
+                u = d.y1 - d.y0,
+                z = d.padding;
             // Zero the buffer
-            for (var l = d.width,
-                     w32 = l >> 5,
-                     u = d.y1 - d.y0,
-                     z = d.padding,
-                     i = 0;
-                 u * w32 > i;
-                 i++) {
+            for (var i = 0; i < u * w32; i++) {
                 sprite[i] = 0;
             }
             x = d.xoff;
@@ -292,7 +292,7 @@
             r = d.yoff;
             var seen = 0,
                 seenRow = -1;
-            for (var j = 0; u > j; j++) {
+            for (var j = 0; j < u; j++) {
                 for (var i = 0; i < l; i++) {
                     var k, m;
                     if (pixels[
