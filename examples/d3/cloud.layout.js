@@ -200,7 +200,7 @@
         };
 
         return d3.rebind(cloud, event, 'on');
-    }
+    };
 
     function cloudText(d) {
         return d.text;
