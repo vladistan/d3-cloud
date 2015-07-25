@@ -90,17 +90,17 @@
         };
 
         function place(board, tag, bounds) {
-            for (var perimeter = [{x: 0, y: 0}, {x: size[0], y: size[1]}],
-                     startX = tag.x,
-                     startY = tag.y,
-                     maxDelta = Math.sqrt(size[0] * size[0] + size[1] * size[1]),
-                     s = spiral(size),
-                     dt = random() < 0.5 ? 1 : -1,
-                     t = -dt,
-                     dxdy,
-                     dx,
-                     dy;
-                 (dxdy = s(t += dt)) && (dx = ~~dxdy[0], dy = ~~dxdy[1],
+            var perimeter = [{x: 0, y: 0}, {x: size[0], y: size[1]}],
+                startX = tag.x,
+                startY = tag.y,
+                maxDelta = Math.sqrt(size[0] * size[0] + size[1] * size[1]),
+                s = spiral(size),
+                dt = random() < 0.5 ? 1 : -1,
+                t = -dt,
+                dxdy,
+                dx,
+                dy;
+            for (;(dxdy = s(t += dt)) && (dx = ~~dxdy[0], dy = ~~dxdy[1],
                      !(Math.min(dx, dy) > maxDelta));) {
 
                 tag.x = startX + dx;
@@ -223,7 +223,7 @@
             return;
         }
 
-        cnv.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
+        c.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
         var x = 0,
             r = 0,
             maxh = 0,
@@ -231,10 +231,10 @@
         --di;
         for (; ++di < n;) {
             d = data[di],
-                cnv.save(),
-                cnv.font = ~~((d.size + 1) / ratio) +
+                c.save(),
+                c.font = ~~((d.size + 1) / ratio) +
                     'px ' + d.font;
-            var l = cnv.measureText(d.text + 'm').width * ratio,
+            var l = c.measureText(d.text + 'm').width * ratio,
                 u = d.size << 1;
             if (d.rotate) {
                 var sr = Math.sin(d.rotate * cloudRadians),
@@ -256,12 +256,12 @@
                 r + u >= ch) {
                 break;
             }
-            cnv.translate((x + (l >> 1)) / ratio, (r + (u >> 1)) / ratio);
+            c.translate((x + (l >> 1)) / ratio, (r + (u >> 1)) / ratio);
             if (d.rotate) {
-                cnv.rotate(d.rotate * cloudRadians);
+                c.rotate(d.rotate * cloudRadians);
             }
-            cnv.fillText(d.text, 0, 0);
-            cnv.restore();
+            c.fillText(d.text, 0, 0);
+            c.restore();
             d.width = l;
             d.height = u;
             d.xoff = x;
@@ -272,7 +272,7 @@
             d.y0 = -d.y1;
             x += l
         }
-        for (var pixels = cnv.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
+        for (var pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
                  sprite = [];
              --di >= 0;) {
             d = data[di];
@@ -441,13 +441,13 @@
         // Attempt to use node-canvas.
         canvas = new Canvas(cw << 5, ch);
     }
-    var cnv = canvas.getContext('2d'),
+    var c = canvas.getContext('2d'),
         spirals = {
             archimedean: archimedeanSpiral,
             rectangular: rectangularSpiral
         };
-    cnv.fillStyle = 'red';
-    cnv.textAlign = 'center';
+    c.fillStyle = 'red';
+    c.textAlign = 'center';
     t.cloud = cloud;
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));
