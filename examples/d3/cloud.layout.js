@@ -4,8 +4,7 @@
 // Algorithm due to Jonathan Feinberg, http://static.mrfeinberg.com/bv_ch03.pdf
 
 (function (t) {
-    function cloud() {
-
+    t.cloud =  function cloud() {
         var size = [256, 256],
             text = cloudText,
             font = cloudFont,
@@ -99,37 +98,47 @@
                 dxdy,
                 dx,
                 dy;
-            for (; (dxdy = s(t += dt)) && (dx = ~~dxdy[0], dy = ~~dxdy[1],
-                !(Math.min(dx, dy) > maxDelta));) {
+            while (dxdy = s(t += dt)) {
+
+                dx = ~~dxdy[0];
+                dy = ~~dxdy[1];
+
+                if (Math.min(Math.abs(dx), Math.abs(dy)) >= maxDelta) {
+                    break;
+                }
 
                 tag.x = startX + dx;
                 tag.y = startY + dy;
-                if (!(tag.x + tag.x0 < 0 || tag.y + tag.y0 < 0 ||
-                    tag.x + tag.x1 > size[0] || tag.y + tag.y1 > size[1] ||
-                    bounds &&
-                        // TODO only check for collisions within current bounds.
-                    cloudCollide(tag, board, size[0]) ||
-                    bounds && !collideRects(tag, bounds))) {
-                    var sprite = tag.sprite,
-                        w = tag.width >> 5,
-                        sw = size[0] >> 5,
-                        lx = tag.x - (w << 4),
-                        sx = lx & 0x7f,
-                        msx = 32 - sx,
-                        h = tag.y1 - tag.y0,
-                        x = (tag.y + tag.y0) * sw + (lx >> 5),
-                        last;
-                    for (var j = 0; j < h; j++) {
-                        last = 0;
-                        for (var i = 0; i <= w; i++) {
-                            board[x + i] |=
-                                (last << msx) |
-                                (i < w ? (last = sprite[j * w + i]) >>> sx : 0);
+
+                if (tag.x + tag.x0 < 0 || tag.y + tag.y0 < 0 ||
+                    tag.x + tag.x1 > size[0] || tag.y + tag.y1 > size[1]) {
+                    continue;
+                }
+
+                // TODO only check for collisions within current bounds.
+                if (!bounds || !cloudCollide(tag, board, size[0])) {
+                    if (!bounds || collideRects(tag, bounds)) {
+                        var sprite = tag.sprite,
+                            w = tag.width >> 5,
+                            sw = size[0] >> 5,
+                            lx = tag.x - (w << 4),
+                            sx = lx & 0x7f,
+                            msx = 32 - sx,
+                            h = tag.y1 - tag.y0,
+                            x = (tag.y + tag.y0) * sw + (lx >> 5),
+                            last;
+                        for (var j = 0; j < h; j++) {
+                            last = 0;
+                            for (var i = 0; i <= w; i++) {
+                                board[x + i] |=
+                                    (last << msx) |
+                                    (i < w ? (last = sprite[j * w + i]) >>> sx : 0);
+                            }
+                            x += sw;
                         }
-                        x += sw;
+                        delete tag.sprite;
+                        return true;
                     }
-                    delete tag.sprite;
-                    return true;
                 }
             }
             return false;
@@ -448,6 +457,6 @@
         };
     c.fillStyle = 'red';
     c.textAlign = 'center';
-    t.cloud = cloud;
+    
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));
