@@ -51,9 +51,8 @@
 
             function step() {
                 var start = +new Date;
-                for (var d;
-                     +new Date - start < timeInterval && ++u < n && timer;) {
-                    d = data[u];
+                for (;+new Date - start < timeInterval && ++u < n && timer;) {
+                    var d = data[u];
                     d.x = (size[0] * (random() + 0.5)) >> 1;
                     d.y = (size[1] * (random() + 0.5)) >> 1;
                     cloudSprite(d, data, u);
