@@ -226,7 +226,7 @@
         }
 
         cnv.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
-        var a = 0,
+        var x = 0,
             r = 0,
             maxh = 0,
             s = data.length;
@@ -252,12 +252,12 @@
                 l = l + 31 >> 5 << 5;
             }
             if (u > maxh && (maxh = u),
-                a + l >= cw << 5 &&
-                (a = 0, r += maxh, maxh = 0),
+                x + l >= cw << 5 &&
+                (x = 0, r += maxh, maxh = 0),
                 r + u >= ch) {
                 break;
             }
-            cnv.translate((a + (l >> 1)) / ratio, (r + (u >> 1)) / ratio);
+            cnv.translate((x + (l >> 1)) / ratio, (r + (u >> 1)) / ratio);
             if (d.rotate) {
                 cnv.rotate(d.rotate * cloudRadians);
             }
@@ -265,13 +265,13 @@
             cnv.restore();
             d.width = l;
             d.height = u;
-            d.xoff = a;
+            d.xoff = x;
             d.yoff = r;
             d.x1 = l >> 1;
             d.y1 = u >> 1;
             d.x0 = -d.x1;
             d.y0 = -d.y1;
-            a += l
+            x += l
         }
         for (var pixels = cnv.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
                  sprite = [];
@@ -287,35 +287,39 @@
                  C++) {
                 sprite[C] = 0;
             }
-            if (a = d.xoff, null === a) {
+            x = d.xoff;
+            if (x === null) {
                 return;
             }
             r = d.yoff;
             var seen = 0,
                 seenRow = -1;
-            for (var A = 0; u > A; A++) {
+            for (var j = 0; u > j; j++) {
                 for (var C = 0; l > C; C++) {
-                    var L, I;
+                    var k, m;
                     if (pixels[
-                        (r + A) * (cw << 5) + (a + C) << 2]) {
-                        L = w32 * A + (C >> 5);
-                        I = 1 << 31 - C % 32;
+                        (r + j) * (cw << 5) + (x + C) << 2]) {
+                        k = w32 * j + (C >> 5);
+                        m = 1 << (31 - (C % 32));
                     } else {
-                        L = w32 * A + (C >> 5);
-                        I = 0;
+                        k = w32 * j + (C >> 5);
+                        m = 0;
                     }
-                    z && (A && (sprite[L - w32] |= I), l - 1 > A &&
-                    (sprite[L + w32] |= I), I |= I << 1 | I >> 1),
-                        sprite[L] |= I,
-                        seen |= I
+                    if (z) {
+                        j && (sprite[k - w32] |= m), l - 1 > j &&
+                        (sprite[k + w32] |= m), m |= m << 1 | m >> 1
+                    }
+
+                    sprite[k] |= m;
+                    seen |= m;
                 }
                 if (seen) {
-                    seenRow = A
+                    seenRow = j;
                 }
                 else {
                     d.y0++;
                     u--;
-                    A--;
+                    j--;
                     r++;
                 }
             }
