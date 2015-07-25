@@ -233,43 +233,43 @@
             c.font = ~~((d.size + 1) / ratio) +
                 'px ' + d.font;
             var w = c.measureText(d.text + 'm').width * ratio,
-                u = d.size << 1;
+                h = d.size << 1;
             if (d.rotate) {
                 var sr = Math.sin(d.rotate * cloudRadians),
                     cr = Math.cos(d.rotate * cloudRadians),
                     wcr = w * cr,
                     wsr = w * sr,
-                    hcr = u * cr,
-                    hsr = u * sr;
+                    hcr = h * cr,
+                    hsr = h * sr;
                 w = (Math.max(Math.abs(wcr + hsr),
                         Math.abs(wcr - hsr)) + 0x1f) >> 5 << 5,
-                    u = ~~Math.max(Math.abs(wsr + hcr), Math.abs(wsr - hcr))
+                    h = ~~Math.max(Math.abs(wsr + hcr), Math.abs(wsr - hcr))
             } else {
                 w = (w + 0x1f) >> 5 << 5;
             }
-            if (u > maxh) {
-                maxh = u;
+            if (h > maxh) {
+                maxh = h;
             }
             if (x + w >= (cw << 5)) {
                 x = 0;
                 y += maxh;
                 maxh = 0;
             }
-            if (y + u >= ch) {
+            if (y + h >= ch) {
                 break;
             }
-            c.translate((x + (w >> 1)) / ratio, (y + (u >> 1)) / ratio);
+            c.translate((x + (w >> 1)) / ratio, (y + (h >> 1)) / ratio);
             if (d.rotate) {
                 c.rotate(d.rotate * cloudRadians);
             }
             c.fillText(d.text, 0, 0);
             c.restore();
             d.width = w;
-            d.height = u;
+            d.height = h;
             d.xoff = x;
             d.yoff = y;
             d.x1 = w >> 1;
-            d.y1 = u >> 1;
+            d.y1 = h >> 1;
             d.x0 = -d.x1;
             d.y0 = -d.y1;
             x += w;
@@ -281,9 +281,9 @@
             var w = d.width,
                 w32 = w >> 5,
                 z = d.padding,
-                u = d.y1 - d.y0;
+                h = d.y1 - d.y0;
             // Zero the buffer
-            for (var i = 0; i < u * w32; i++) {
+            for (var i = 0; i < h * w32; i++) {
                 sprite[i] = 0;
             }
             x = d.xoff;
@@ -293,7 +293,7 @@
             y = d.yoff;
             var seen = 0,
                 seenRow = -1;
-            for (var j = 0; j < u; j++) {
+            for (var j = 0; j < h; j++) {
                 for (var i = 0; i < w; i++) {
                     var k, m;
                     if (pixels[
@@ -317,7 +317,7 @@
                 }
                 else {
                     d.y0++;
-                    u--;
+                    h--;
                     j--;
                     y++;
                 }
