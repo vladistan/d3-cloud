@@ -105,8 +105,7 @@
                 tag.x = startX + dx;
                 tag.y = startY + dy;
                 if (!(tag.x + tag.x0 < 0 || tag.y + tag.y0 < 0 ||
-                    tag.x + tag.x1 > size[0] ||
-                    tag.y + tag.y1 > size[1] ||
+                    tag.x + tag.x1 > size[0] || tag.y + tag.y1 > size[1] ||
                     bounds &&
                         // TODO only check for collisions within current bounds.
                     cloudCollide(tag, board, size[0]) ||
@@ -224,7 +223,7 @@
 
         c.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
         var x = 0,
-            r = 0,
+            y = 0,
             maxh = 0,
             n = data.length;
         --di;
@@ -253,13 +252,13 @@
             }
             if (x + w >= (cw << 5)) {
                 x = 0;
-                r += maxh;
+                y += maxh;
                 maxh = 0;
             }
-            if (r + u >= ch) {
+            if (y + u >= ch) {
                 break;
             }
-            c.translate((x + (w >> 1)) / ratio, (r + (u >> 1)) / ratio);
+            c.translate((x + (w >> 1)) / ratio, (y + (u >> 1)) / ratio);
             if (d.rotate) {
                 c.rotate(d.rotate * cloudRadians);
             }
@@ -268,7 +267,7 @@
             d.width = w;
             d.height = u;
             d.xoff = x;
-            d.yoff = r;
+            d.yoff = y;
             d.x1 = w >> 1;
             d.y1 = u >> 1;
             d.x0 = -d.x1;
@@ -291,14 +290,14 @@
             if (x === null) {
                 return;
             }
-            r = d.yoff;
+            y = d.yoff;
             var seen = 0,
                 seenRow = -1;
             for (var j = 0; j < u; j++) {
                 for (var i = 0; i < w; i++) {
                     var k, m;
                     if (pixels[
-                        ((r + j) * (cw << 5) + (x + i)) << 2]) {
+                        ((y + j) * (cw << 5) + (x + i)) << 2]) {
                         k = w32 * j + (i >> 5);
                         m = 1 << (31 - (i % 32));
                     } else {
@@ -320,7 +319,7 @@
                     d.y0++;
                     u--;
                     j--;
-                    r++;
+                    y++;
                 }
             }
             d.y1 = d.y0 + seenRow;
