@@ -233,25 +233,25 @@
             c.save();
             c.font = ~~((d.size + 1) / ratio) +
                 'px ' + d.font;
-            var l = c.measureText(d.text + 'm').width * ratio,
+            var w = c.measureText(d.text + 'm').width * ratio,
                 u = d.size << 1;
             if (d.rotate) {
                 var sr = Math.sin(d.rotate * cloudRadians),
                     cr = Math.cos(d.rotate * cloudRadians),
-                    wcr = l * cr,
-                    wsr = l * sr,
+                    wcr = w * cr,
+                    wsr = w * sr,
                     hcr = u * cr,
                     hsr = u * sr;
-                l = (Math.max(Math.abs(wcr + hsr),
+                w = (Math.max(Math.abs(wcr + hsr),
                         Math.abs(wcr - hsr)) + 0x1f) >> 5 << 5,
                     u = ~~Math.max(Math.abs(wsr + hcr), Math.abs(wsr - hcr))
             } else {
-                l = (l + 0x1f) >> 5 << 5;
+                w = (w + 0x1f) >> 5 << 5;
             }
             if (u > maxh) {
                 maxh = u;
             }
-            if (x + l >= (cw << 5)) {
+            if (x + w >= (cw << 5)) {
                 x = 0;
                 r += maxh;
                 maxh = 0;
@@ -259,28 +259,28 @@
             if (r + u >= ch) {
                 break;
             }
-            c.translate((x + (l >> 1)) / ratio, (r + (u >> 1)) / ratio);
+            c.translate((x + (w >> 1)) / ratio, (r + (u >> 1)) / ratio);
             if (d.rotate) {
                 c.rotate(d.rotate * cloudRadians);
             }
             c.fillText(d.text, 0, 0);
             c.restore();
-            d.width = l;
+            d.width = w;
             d.height = u;
             d.xoff = x;
             d.yoff = r;
-            d.x1 = l >> 1;
+            d.x1 = w >> 1;
             d.y1 = u >> 1;
             d.x0 = -d.x1;
             d.y0 = -d.y1;
-            x += l;
+            x += w;
         }
         var pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
             sprite = [];
         while (--di >= 0) {
             d = data[di];
-            var l = d.width,
-                w32 = l >> 5,
+            var w = d.width,
+                w32 = w >> 5,
                 z = d.padding,
                 u = d.y1 - d.y0;
             // Zero the buffer
@@ -295,7 +295,7 @@
             var seen = 0,
                 seenRow = -1;
             for (var j = 0; j < u; j++) {
-                for (var i = 0; i < l; i++) {
+                for (var i = 0; i < w; i++) {
                     var k, m;
                     if (pixels[
                         ((r + j) * (cw << 5) + (x + i)) << 2]) {
@@ -306,7 +306,7 @@
                         m = 0;
                     }
                     if (z) {
-                        j && (sprite[k - w32] |= m), l - 1 > j &&
+                        j && (sprite[k - w32] |= m), w - 1 > j &&
                         (sprite[k + w32] |= m), m |= m << 1 | m >> 1
                     }
 
