@@ -102,16 +102,16 @@
                      dy;
                  (dxdy = s(t += dt)) && (dx = ~~dxdy[0], dy = ~~dxdy[1],
                      !(Math.min(dx, dy) > maxDelta));) {
-                if (tag.x = startX + dx,
-                        tag.y = startY + dy,
-                        !(tag.x + tag.x0 < 0 ||
-                        tag.y + tag.y0 < 0 ||
-                        tag.x + tag.x1 > size[0] ||
-                        tag.y + tag.y1 > size[1] ||
-                        bounds &&
-                            // TODO only check for collisions within current bounds.
-                        cloudCollide(tag, board, size[0]) ||
-                        bounds && !collideRects(tag, bounds))) {
+
+                tag.x = startX + dx;
+                tag.y = startY + dy;
+                if (!(tag.x + tag.x0 < 0 || tag.y + tag.y0 < 0 ||
+                    tag.x + tag.x1 > size[0] ||
+                    tag.y + tag.y1 > size[1] ||
+                    bounds &&
+                        // TODO only check for collisions within current bounds.
+                    cloudCollide(tag, board, size[0]) ||
+                    bounds && !collideRects(tag, bounds))) {
                     var sprite = tag.sprite,
                         w = tag.width >> 5,
                         sw = size[0] >> 5,
@@ -121,7 +121,7 @@
                         h = tag.y1 - tag.y0,
                         x = (tag.y + tag.y0) * sw + (lx >> 5),
                         last;
-                    for ( var j = 0; j < h; j++) {
+                    for (var j = 0; j < h; j++) {
                         last = 0;
                         for (var i = 0; i <= w; i++) {
                             board[x + i] |=
