@@ -18,6 +18,9 @@ module.exports = function (config) {
         proxies: {
             '/': 'http://localhost:8888/'
         },
+        // preprocess matching files before serving them to the browser
+        // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+        preprocessors: gulpConfig.karma.preprocessors,
         // test results reporter to use
         // possible values: 'dots', 'progress', 'coverage'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
