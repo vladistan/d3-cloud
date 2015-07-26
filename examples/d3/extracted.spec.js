@@ -1,14 +1,18 @@
 /* jshint -W117, -W030 */
 'use strict';
 
-describe('Basic Test', function () {
+describe('Extracted functions', function () {
 
-    it('Should test somethong', function () {
-        expect('bo').to.contain('b');
-    });
+    describe('Flatten', function () {
 
-    it('Should try to flatten thing', function () {
-        var rv = flatten('Test', []);
-        expect(rv).to.equal('Test');
+        it('should return as is if input is a string', function () {
+            var rv = flatten('Test', []);
+            expect(rv).to.equal('Test');
+        });
+
+        it('should flatten arrays', function () {
+            var rv = flatten(['a', 'b', ['c', 'd', 'e'], 'f'], []);
+            expect(rv).to.equal('a b c d e f');
+        });
     });
 });

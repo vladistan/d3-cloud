@@ -41,17 +41,17 @@ function hashchange(t) {
         }
     } else {
         if (t) {
-            load(t)
+            load(t);
         }
     }
 }
 
 function progress() {
-    statusText.text(++complete + '/' + max)
+    statusText.text(++complete + '/' + max);
 }
 
 function proxy(url, element) {
-    d3.text('//www.jasondavies.com/xhr?url=' + encodeURIComponent(url), element)
+    d3.text('//www.jasondavies.com/xhr?url=' + encodeURIComponent(url), element);
 }
 
 function flatten(t, e) {
@@ -65,14 +65,14 @@ function flatten(t, e) {
             n.push(a);
         }
     }
-    return n.join(' ')
+    return n.join(' ');
 }
 
 function parseHTML(text) {
     parseText(text.replace(htmlTags, ' ').replace(/&#(x?)([\dA-Fa-f]{1,4});/g,
         function (t, e, n) {
-            return String.fromCharCode(+((e ? '0x' : '') + n))
-        }).replace(/&\w+;/g, ' '))
+            return String.fromCharCode(+((e ? '0x' : '') + n));
+        }).replace(/&\w+;/g, ' '));
 }
 
 function getURL(url, element) {
@@ -82,9 +82,9 @@ function getURL(url, element) {
         d3.select(window).on('message', function () {
             var t = JSON.parse(d3.event.data);
             element((Array.isArray(t) ? t : t.results).map(function (t) {
-                return t.text
+                return t.text;
             }).join('\n\n'));
-            n.remove()
+            n.remove();
         });
 
         n.attr('src', 'http://jsonp.jasondavies.com/?' + encodeURIComponent(url));
@@ -93,11 +93,11 @@ function getURL(url, element) {
             if ('https:' !== location.protocol || /^https:/.test(url)) {
                 d3.text(url, function (n) {
                     if (null === n) {
-                        proxy(url, element)
+                        proxy(url, element);
                     } else {
-                        element(n)
+                        element(n);
                     }
-                })
+                });
             } else {
                 proxy(url, element);
             }
@@ -110,21 +110,24 @@ function getURL(url, element) {
 function parseText(t) {
     tags = {};
     var e = {};
-    t.split(d3.select('#per-line').property('checked') ? /\n/g : wordSeparators)
+    t.split(d3.select('#per-line')
+        .property('checked') ? /\n/g : wordSeparators)
         .forEach(function (t) {
             discard.test(t) ||
             (t = t.replace(punctuation, ''),
             stopWords.test(t.toLowerCase()) ||
             (t = t.substr(0, maxLength),
                 e[t.toLowerCase()] = t,
-                tags[t = t.toLowerCase()] = (tags[t] || 0) + 1))
-        }),
+                tags[t = t.toLowerCase()] = (tags[t] || 0) + 1));
+        });
 
-        tags = d3.entries(tags).sort(function (t, e) {
-            return e.value - t.value
-        }), tags.forEach(function (t) {
-        t.key = e[t.key]
-    }), generate()
+    tags = d3.entries(tags).sort(function (t, e) {
+        return e.value - t.value;
+    });
+    tags.forEach(function (t) {
+        t.key = e[t.key];
+    });
+    generate();
 }
 
 function load(t) {
@@ -137,7 +140,7 @@ function load(t) {
         location.hash = e;
     }
     if (e) {
-        getURL(fetcher, parseHTML)
+        getURL(fetcher, parseHTML);
     } else {
         if (fetcher) {
             parseText(fetcher);

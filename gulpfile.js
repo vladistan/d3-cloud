@@ -74,6 +74,34 @@ gulp.task('wiredep', function () {
 });
 
 /**
+ * Inject all the spec files into the specs.html
+ * @return {Stream}
+ */
+gulp.task('build-specs', function () {
+    log('building the spec runner');
+    log('spec-runner :' + config.specRunner);
+
+    var wiredep = require('wiredep').stream;
+    var options = config.getWiredepDefaultOptions();
+    var specs = config.specs;
+
+    if (args.startServers) {
+        specs = [].concat(specs, config.serverIntegrationSpecs);
+    }
+    options.devDependencies = true;
+
+    log('Dev Deps' + config.testlibraries);
+
+    return gulp
+        .src(config.specRunner)
+        .pipe(wiredep(options))
+        .pipe(inject(config.testlibraries, 'testlibraries'))
+        .pipe(inject(config.specHelpers, 'spechelpers'))
+        .pipe(inject(specs, 'specs', ['**/*']))
+        .pipe(gulp.dest(config.client));
+});
+
+/**
  * Run specs once and exit
  * To start servers and run midway specs as well:
  *    gulp test --startServers
@@ -91,13 +119,46 @@ function errorLogger(error) {
 }
 
 /**
+ * Inject files in a sorted sequence at a specified inject label
+ * @param   {Array} src   glob pattern for source files
+ * @param   {String} label   The label name
+ * @param   {Array} order   glob pattern for sort order of the files
+ * @returns {Stream}   The stream
+ */
+function inject(src, label, order) {
+    var options = {read: false};
+    if (label) {
+        options.name = 'inject:' + label;
+    }
+
+    log('Injecting **** ');
+    log('Order :' + order)
+
+    return $.inject(orderSrc(src, order), options);
+}
+
+/**
+ * Order a stream
+ * @param   {Stream} src   The gulp.src stream
+ * @param   {Array} order Glob array pattern
+ * @returns {Stream} The ordered stream
+ */
+function orderSrc(src, order) {
+    order = order || ['**/*'];
+
+    return gulp
+        .src(src)
+        .pipe($.if(order, $.order(order)));
+}
+
+/**
  * Start Plato inspector and visualizer
  */
 function startPlatoVisualizer(done) {
     log('Running Plato');
 
     var files = glob.sync(config.plato.js);
-    var excludeFiles = /.*\.spec\.js/;
+    var excludeFiles = /.*\.spec\.js|examples.d3.d3\.js/;
     var plato = require('plato');
 
     var options = {
@@ -206,39 +267,6 @@ function getHeader() {
     return $.header(template, {
         pkg: pkg
     });
-}
-
-/**
- * Inject files in a sorted sequence at a specified inject label
- * @param   {Array} src   glob pattern for source files
- * @param   {String} label   The label name
- * @param   {Array} order   glob pattern for sort order of the files
- * @returns {Stream}   The stream
- */
-function inject(src, label, order) {
-    var options = {read: false};
-    if (label) {
-        options.name = 'inject:' + label;
-    }
-
-    log('Injecting **** ');
-    log('Order :' + order)
-
-    return $.inject(orderSrc(src, order), options);
-}
-
-/**
- * Order a stream
- * @param   {Stream} src   The gulp.src stream
- * @param   {Array} order Glob array pattern
- * @returns {Stream} The ordered stream
- */
-function orderSrc(src, order) {
-    order = order || ['**/*'];
-
-    return gulp
-        .src(src)
-        .pipe($.if(order, $.order(order)));
 }
 
 /**

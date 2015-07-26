@@ -1,5 +1,6 @@
 module.exports = function () {
     var client = './examples/';
+    var server = './examples/';
     var report = './report/';
     var root = './';
     var specRunnerFile = 'specs.html';
@@ -29,7 +30,7 @@ module.exports = function () {
         client: client,
 
         js: [
-            '**/*.js',
+            './**/*.js',
             './examples/*.js',
             './examples/d3/*.js',
             '!' + '**/*.spec.js'
@@ -37,6 +38,10 @@ module.exports = function () {
         jsOrder: [
             '**/*'
         ],
+        report: report,
+        root: root,
+        server: server,
+        source: 'examples/',
         stubsjs: [
             'stubs/**/*.js'
         ],
@@ -45,7 +50,8 @@ module.exports = function () {
          /**
          * plato
          */
-        plato: {js: '**/*.js'},
+        plato: {js: 'examples/**/*.js'},
+
         /**
          * Bower and NPM files
          */
@@ -76,7 +82,7 @@ module.exports = function () {
             nodeModules + '/sinon-chai/lib/sinon-chai.js'
         ],
         specHelpers: ['test-helpers/*.js'],
-        specs: ['**/*.spec.js'],
+        specs: ['examples/specs.html'],
 
         /**
          * Node settings
@@ -101,6 +107,7 @@ module.exports = function () {
      */
     config.karma = getKarmaOptions();
 
+    return config;
     ////////////////
     function getKarmaOptions() {
         var options = {
@@ -109,16 +116,24 @@ module.exports = function () {
                 // 'examples/**/*.js'
                 //'spec.html'
                 //'node_modules/**/*'
-                'examples/extracted.specs.js'
+                'examples/d3/extracted.js',
+                'examples/**/*.spec.js'
+                //'r_specs.html'
             ),
             exclude: [],
             coverage: {
-                dir: report + 'coverage'
-            }
+                dir: report + 'coverage',
+                reporters: [
+                    // reporters not supporting the `file` property
+                    {type: 'html', subdir: 'report-html'},
+                    {type: 'lcov', subdir: 'report-lcov'},
+                    {type: 'text-summary'} //, subdir: '.', file: 'text-summary.txt'}
+                ]
+            },
+            preprocessors: {}
+
         };
+        options.preprocessors['examples/d3/*.js'] = ['coverage'];
         return options;
     }
-
-    return config;
-
 };
