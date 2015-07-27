@@ -97,8 +97,9 @@ gulp.task('build-specs', function () {
         .pipe(wiredep(options))
         .pipe(inject(config.testlibraries, 'testlibraries'))
         .pipe(inject(config.specHelpers, 'spechelpers'))
+        .pipe(inject(config.testJS, 'testJS'))
         .pipe(inject(specs, 'specs', ['**/*']))
-        .pipe(gulp.dest(config.client));
+        .pipe(gulp.dest('.'));
 });
 
 /**

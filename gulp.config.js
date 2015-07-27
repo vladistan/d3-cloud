@@ -27,6 +27,10 @@ module.exports = function () {
         ],
         index: 'index.html',
 
+        testJS: [
+            './examples/d3/*.js'
+        ],
+
         client: client,
 
         js: [

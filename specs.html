@@ -16,7 +16,7 @@
 
     <!--BEWARE of using any app styles as @media can screw up tests -->
 
-    <link rel="stylesheet" href="/node_modules/mocha/mocha.css">
+    <link rel="stylesheet" href="node_modules/mocha/mocha.css">
 
 </head>
 <body>
@@ -33,6 +33,10 @@
 <div id="mocha"></div>
 
 <!-- inject:testlibraries:js -->
+<script src="node_modules/chai/chai.js"></script>
+<script src="node_modules/mocha/mocha.js"></script>
+<script src="node_modules/mocha-clean/index.js"></script>
+<script src="node_modules/sinon-chai/lib/sinon-chai.js"></script>
 <!-- endinject -->
 
 <script>
@@ -43,9 +47,23 @@
 </script>
 
 <!-- bower:js -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="bower_components/toastr/toastr.js"></script>
+<script src="bower_components/sinon/index.js"></script>
 <!-- endbower -->
 
 <!-- inject:js -->
+<!-- endinject -->
+
+<!-- inject:testJS:js -->
+<script src="examples/d3/d3.js"></script>
+<script src="examples/d3/angle-selection.js"></script>
+<script src="examples/d3/cloud.layout.js"></script>
+<script src="examples/d3/downloads.js"></script>
+<script src="examples/d3/extracted.js"></script>
+<script src="examples/d3/extracted.spec.js"></script>
+<script src="examples/d3/wcloud.js"></script>
 <!-- endinject -->
 
 <!-- inject:spechelpers:js -->
