@@ -116,6 +116,9 @@ module.exports = function () {
                 // 'examples/**/*.js'
                 //'spec.html'
                 //'node_modules/**/*'
+                'examples/d3/phantom.helpers.js',
+                'examples/d3/d3.js',
+                'examples/d3/cloud.layout.js',
                 'examples/d3/extracted.js',
                 'examples/**/*.spec.js'
                 //'r_specs.html'

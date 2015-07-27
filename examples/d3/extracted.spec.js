@@ -15,4 +15,16 @@ describe('Extracted functions', function () {
             expect(rv).to.equal('a b c d e f');
         });
     });
+
+    describe('Progress', function () {
+        it('Should be updated', function () {
+            window.statusText = {};
+            window.statusText.text = sinon.spy();
+            window.complete = 9;
+            window.max = 9;
+            progress();
+            expect(window.statusText.text).to.have.been.calledWith('10/9');
+            expect(window.complete).to.equal(10);
+        });
+    });
 });
