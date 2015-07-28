@@ -28,6 +28,53 @@ describe('Extracted functions', function () {
         });
     });
 
+    describe('Text Parser', function () {
+        it('Should parse the text', function () {
+            var text = 'lorem ipsum dolor sit amet lorem sit sit sit';
+            var separator = /[ \t]+/;
+            parseText(text, separator);
+            expect(tags.length).to.equal(5);
+            expect(tags[0].key).to.equal('sit');
+            expect(tags[0].value).to.equal(4);
+            expect(tags[1].key).to.equal('lorem');
+            expect(tags[1].value).to.equal(2);
+        });
+
+        it('Should discard things to be discarded', function () {
+            var text = 'lorem @bob http://www.google.com ipsum ' +
+                'dolor sit amet lorem //sock';
+            var separator = /[ \t]+/;
+            parseText(text, separator);
+            expect(tags.length).to.equal(5);
+        });
+
+        it('Should drop stop words', function () {
+            var text = 'lorem are ipsum dolor sit amet lorem sit sit sit';
+            var separator = /[ \t]+/;
+            parseText(text, separator);
+            expect(tags.length).to.equal(5);
+        });
+
+        it('Should collate ignoring case but preserve case on the keys', function () {
+            var text = 'lorem are ipsum dolor Sit amet lorem  sit sit sit sit Sit';
+            var separator = /[ \t]+/;
+            parseText(text, separator);
+            expect(tags.length).to.equal(5);
+            expect(tags[0].key).to.equal('Sit');
+            expect(tags[0].value).to.equal(6);
+            expect(tags[1].key).to.equal('lorem');
+
+        });
+
+        it('Clip words longer than max length', function () {
+            var text = 'lorem are ipsum dolor sit amet lorem sit sit sit';
+            var separator = /\n/;
+            parseText(text, separator);
+            expect(tags.length).to.equal(1);
+            expect(tags[0].key).to.equal('lorem are ipsum dolor sit amet');
+        });
+    });
+
     describe('Boundary Functions', function () {
 
         describe('Cloud Bounds', function () {

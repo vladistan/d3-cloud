@@ -48,6 +48,8 @@ var testText = 'This works for some uses of a very small area of D3 API. I can i
     'then, we have to settle ' +
     'for regression testing.';
 
+var maxLength = 30;
+
 function hashchange(t) {
     load(t);
 }
@@ -80,22 +82,41 @@ function getSeparator() {
     return separator;
 }
 
+function cleanUpTag(t) {
+    if (discard.test(t)) {
+        return '';
+    }
+
+    t = t.replace(punctuation, '');
+    t = t.substr(0, maxLength);
+
+    if (stopWords.test(t.toLowerCase())) {
+        return '';
+    }
+
+    return t;
+}
+
 function parseText(text, separator) {
     var e = {};
     tags = {};
 
     text.split(separator)
         .forEach(function (t) {
-            discard.test(t) ||
-            (t = t.replace(punctuation, ''),
-            stopWords.test(t.toLowerCase()) ||
-            (t = t.substr(0, maxLength),
-                e[t.toLowerCase()] = t,
-                tags[t = t.toLowerCase()] = (tags[t] || 0) + 1));
+
+            t = cleanUpTag(t);
+            if (t === '') {
+                return;
+            }
+
+            var key = t.toLowerCase();
+
+            e[key] = t;
+            tags[key] = (tags[key] || 0) + 1
         });
 
-    tags = d3.entries(tags).sort(function (t, e) {
-        return e.value - t.value;
+    tags = d3.entries(tags).sort(function (a, b) {
+        return b.value - a.value;
     });
     tags.forEach(function (t) {
         t.key = e[t.key];

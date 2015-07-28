@@ -9,8 +9,6 @@ var fill = d3.scale.category20b(),
     keyword = '',
     tags,
     fontSize,
-    maxLength = 30,
-    fetcher,
     statusText = d3.select('#status'),
     layout = d3.layout.cloud()
         .timeInterval(10)
