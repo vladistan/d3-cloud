@@ -154,11 +154,21 @@
         };
 
         cloud.words = function (_) {
-            return arguments.length ? (words = _, cloud) : words;
+            if (arguments.length) {
+                words = _;
+                return cloud;
+            } else {
+                return words;
+            }
         };
 
         cloud.size = function (_) {
-            return arguments.length ? (size = [+_[0], +_[1]], cloud) : size;
+            if (arguments.length) {
+                size = [+_[0], +_[1]]
+                return cloud;
+            } else {
+                return size;
+            }
         };
 
         cloud.font = function (_) {
