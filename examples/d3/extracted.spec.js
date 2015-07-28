@@ -28,6 +28,28 @@ describe('Extracted functions', function () {
         });
     });
 
+    describe('Boundary Functions', function () {
+
+        describe('Cloud Bounds', function () {
+
+            var bounds;
+
+            beforeEach('Init bounds', function () {
+                bounds = [{x: 10, y: 15}, {x: 20, y: 25}];
+            });
+
+            it('Should Do nothing when obj is in the bounds', function () {
+                var obj = {x0: 3, y0: 3, x: 10, y: 14};
+                d3.layout.cloud.cloudBounds(bounds, obj);
+
+                expect(bounds[0].x).to.equal(10);
+                expect(bounds[0].y).to.equal(15);
+                expect(bounds[1].x).to.equal(20);
+                expect(bounds[1].y).to.equal(25);
+            });
+        });
+    });
+
     describe('Cloud layout', function () {
 
         it('zero Array should make array of zeros', function () {
@@ -35,6 +57,26 @@ describe('Extracted functions', function () {
             expect(rv[0]).to.equal(0);
             expect(rv[1]).to.equal(0);
             expect(rv[2]).to.equal(0);
+        });
+    });
+
+    describe('Cloud layout props', function () {
+        describe('Cloud layout.words props', function () {
+            it('should set words and return cloud ref', function () {
+                var cloud = d3.layout.cloud();
+                var rv = cloud.words(['a', 'b', 'c']);
+                expect(rv).to.equal(cloud);
+            });
+
+            it('should return words when invoked with no args', function () {
+                var cloud = d3.layout.cloud();
+                cloud.words(['a', 'b', 'c']);
+                var rv = cloud.words();
+                expect(rv[0]).to.equal('a');
+                expect(rv[1]).to.equal('b');
+                expect(rv[2]).to.equal('c');
+            });
+
         });
     });
 });

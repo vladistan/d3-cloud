@@ -476,5 +476,6 @@
     c.fillStyle = c.strokeStyle = 'red';
     c.textAlign = 'center';
     t.cloud.zeroArray = zeroArray;
+    t.cloud.cloudBounds = cloudBounds;
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));
