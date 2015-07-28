@@ -49,17 +49,8 @@ var testText = 'This works for some uses of a very small area of D3 API. I can i
     'for regression testing.';
 
 function hashchange(t) {
-    var e = location.hash;
-    if (e && e.length > 1) {
-        e = decodeURIComponent(e.substr(1));
-        if (e !== fetcher) {
-            load(e);
-        }
-    } else {
-        if (t) {
-            load(t);
-        }
-    }
+    load(t);
+
 }
 
 function progress() {
@@ -148,20 +139,10 @@ function parseText(t) {
 
 function load(t) {
     fetcher = t;
-    var e = /^(https?:)?\/\//.test(fetcher) ? '#' + encodeURIComponent(fetcher) : '';
     if (null !== fetcher) {
         d3.select('#text').property('value', fetcher);
     }
-    if (location.hash !== e) {
-        location.hash = e;
-    }
-    if (e) {
-        getURL(fetcher, parseHTML);
-    } else {
-        if (fetcher) {
-            parseText(fetcher);
-        }
-    }
+    parseText(fetcher);
 }
 
 function generate() {
@@ -237,25 +218,6 @@ function draw(t, e) {
         .delay(1e3)
         .duration(750)
         .attr('transform', 'translate(' + [w >> 1, h >> 1] + ')scale(' + scale + ')')
-}
-
-function setupFormEvents() {
-    var form = d3.select('#form')
-        .on('submit', function () {
-            load(d3.select('#text').property('value'));
-            d3.event.preventDefault()
-        });
-
-    form.selectAll('input[type=number]')
-        .on('click.refresh', function () {
-            if (this.value !== this.defaultValue) {
-                generate();
-                this.defaultValue = this.value;
-            }
-        });
-
-    form.selectAll('input[type=radio], #font')
-        .on('change', generate);
 }
 
 function setupFormEvents() {
