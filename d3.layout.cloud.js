@@ -12,7 +12,7 @@
     }
 
     function cloud(d3) {
-        d3.layout.cloud = function cloud() {
+        function cloud() {
             var size = [256, 256],
                 text = cloudText,
                 font = cloudFont,
@@ -84,7 +84,7 @@
                         event.end(tags, bounds);
                     }
                 }
-            }
+            };
 
             cloud.stop = function () {
                 if (timer) {
@@ -151,9 +151,15 @@
             }
 
             cloud.timeInterval = function (_) {
-                return arguments.length ?
-                    (timeInterval = _ === null ? Infinity : _ , cloud) :
-                    timeInterval;
+                if (arguments.length) {
+                    if (_ === null) {
+                        return timeInterval = Infinity , cloud;
+                    } else {
+                        return timeInterval = _ , cloud;
+                    }
+                } else {
+                    return timeInterval;
+                }
             };
 
             cloud.words = function (_) {
@@ -203,7 +209,7 @@
             };
 
             return d3.rebind(cloud, event, 'on');
-        };
+        }
 
         function cloudText(d) {
             return d.text;
@@ -465,6 +471,9 @@
             };
         c.fillStyle = c.strokeStyle = 'red';
         c.textAlign = 'center';
+
+        d3.layout.cloud = cloud;
+
     }
 
 })();

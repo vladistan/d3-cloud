@@ -465,5 +465,6 @@
 
     c.fillStyle = c.strokeStyle = 'red';
     c.textAlign = 'center';
+    t.cloud.zeroArray = zeroArray;
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));

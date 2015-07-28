@@ -27,4 +27,14 @@ describe('Extracted functions', function () {
             expect(window.complete).to.equal(10);
         });
     });
+
+    describe('Cloud layout', function () {
+
+        it('zero Array should make array of zeros', function () {
+            var rv = d3.layout.cloud.zeroArray(3);
+            expect(rv[0]).to.equal(0);
+            expect(rv[1]).to.equal(0);
+            expect(rv[2]).to.equal(0);
+        });
+    });
 });
