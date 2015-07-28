@@ -58,20 +58,6 @@ function progress() {
     statusText.text(++complete + '/' + max);
 }
 
-function flatten(t, e) {
-    if ('string' === typeof t) {
-        return t;
-    }
-    var n = [];
-    for (e in t) {
-        var a = flatten(t[e], e);
-        if (a) {
-            n.push(a);
-        }
-    }
-    return n.join(' ');
-}
-
 function getSeparator() {
     var separator;
     if (d3.select('#per-line').property('checked')) {
