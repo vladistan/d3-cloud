@@ -47,6 +47,36 @@ describe('Extracted functions', function () {
                 expect(bounds[1].x).to.equal(20);
                 expect(bounds[1].y).to.equal(25);
             });
+
+            it('Should expand x0 when obj is to the left', function () {
+                var obj = {x0: 3, y0: 3, x: 3, y: 14};
+                d3.layout.cloud.cloudBounds(bounds, obj);
+
+                expect(bounds[0].x).to.equal(6);
+                expect(bounds[0].y).to.equal(15);
+                expect(bounds[1].x).to.equal(20);
+                expect(bounds[1].y).to.equal(25);
+            });
+
+            it('Should expand x0,y0 when obj is to the top and left', function () {
+                var obj = {x0: 3, y0: 3, x: 3, y: 5};
+                d3.layout.cloud.cloudBounds(bounds, obj);
+
+                expect(bounds[0].x).to.equal(6);
+                expect(bounds[0].y).to.equal(8);
+                expect(bounds[1].x).to.equal(20);
+                expect(bounds[1].y).to.equal(25);
+            });
+
+            it('Should expand x1,y1 when obj is to the bottom and right', function () {
+                var obj = {x0: 23, y0: 20, x1: 40, y1: 45, x: 12, y: 12};
+                d3.layout.cloud.cloudBounds(bounds, obj);
+
+                expect(bounds[0].x).to.equal(10);
+                expect(bounds[0].y).to.equal(15);
+                expect(bounds[1].x).to.equal(52);
+                expect(bounds[1].y).to.equal(57);
+            });
         });
     });
 
