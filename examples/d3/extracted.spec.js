@@ -62,6 +62,14 @@ describe('Extracted functions', function () {
         });
     });
 
+    describe('Scale', function () {
+
+        it('should give scale of 1 for empty element', function () {
+            var rv = computeScale(null);
+            expect(rv).to.equal(1);
+        });
+    });
+
     describe('Boundary Functions', function () {
 
         describe('Cloud Bounds', function () {
