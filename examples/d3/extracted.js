@@ -50,15 +50,10 @@ var testText = 'This works for some uses of a very small area of D3 API. I can i
 
 function hashchange(t) {
     load(t);
-
 }
 
 function progress() {
     statusText.text(++complete + '/' + max);
-}
-
-function proxy(url, element) {
-    d3.text('//www.jasondavies.com/xhr?url=' + encodeURIComponent(url), element);
 }
 
 function flatten(t, e) {
@@ -75,50 +70,21 @@ function flatten(t, e) {
     return n.join(' ');
 }
 
-function parseHTML(text) {
-    parseText(text.replace(htmlTags, ' ').replace(/&#(x?)([\dA-Fa-f]{1,4});/g,
-        function (t, e, n) {
-            return String.fromCharCode(+((e ? '0x' : '') + n));
-        }).replace(/&\w+;/g, ' '));
-}
-
-function getURL(url, element) {
-    if (statusText.text('Fetching\u2026 '),
-            matchTwitter.test(url)) {
-        var n = d3.select('body').append('iframe').style('display', 'none');
-        d3.select(window).on('message', function () {
-            var t = JSON.parse(d3.event.data);
-            element((Array.isArray(t) ? t : t.results).map(function (t) {
-                return t.text;
-            }).join('\n\n'));
-            n.remove();
-        });
-
-        n.attr('src', 'http://jsonp.jasondavies.com/?' + encodeURIComponent(url));
-
-        try {
-            if ('https:' !== location.protocol || /^https:/.test(url)) {
-                d3.text(url, function (n) {
-                    if (null === n) {
-                        proxy(url, element);
-                    } else {
-                        element(n);
-                    }
-                });
-            } else {
-                proxy(url, element);
-            }
-        } catch (a) {
-            proxy(url, element);
-        }
+function getSeparator() {
+    var separator;
+    if (d3.select('#per-line').property('checked')) {
+        separator = /\n/g;
+    } else {
+        separator = wordSeparators;
     }
+    return separator;
 }
 
-function parseText(t) {
-    tags = {};
+function parseText(text, separator) {
     var e = {};
-    t.split(d3.select('#per-line')
-        .property('checked') ? /\n/g : wordSeparators)
+    tags = {};
+
+    text.split(separator)
         .forEach(function (t) {
             discard.test(t) ||
             (t = t.replace(punctuation, ''),
@@ -134,15 +100,15 @@ function parseText(t) {
     tags.forEach(function (t) {
         t.key = e[t.key];
     });
-    generate();
 }
 
-function load(t) {
-    fetcher = t;
-    if (null !== fetcher) {
-        d3.select('#text').property('value', fetcher);
+function load(text) {
+    if (null !== text) {
+        d3.select('#text').property('value', text);
     }
-    parseText(fetcher);
+
+    parseText(text, getSeparator());
+    generate();
 }
 
 function generate() {
@@ -179,36 +145,36 @@ function draw(t, e) {
     }
     words = t;
     var n = vis.selectAll('text').data(words, function (t) {
-        return t.text.toLowerCase()
+        return t.text.toLowerCase();
     });
     n.transition().duration(1e3).attr('transform', function (t) {
-        return 'translate(' + [t.x, t.y] + ')rotate(' + t.rotate + ')'
+        return 'translate(' + [t.x, t.y] + ')rotate(' + t.rotate + ')';
     }).style('font-size', function (t) {
-        return t.size + 'px'
+        return t.size + 'px';
     });
     n.enter().append('text')
         .attr('text-anchor', 'middle')
         .attr('transform', function (t) {
-            return 'translate(' + [t.x, t.y] + ')rotate(' + t.rotate + ')'
+            return 'translate(' + [t.x, t.y] + ')rotate(' + t.rotate + ')';
         }).style('font-size', '1px')
         .transition()
         .duration(1e3)
         .style('font-size', function (t) {
-            return t.size + 'px'
+            return t.size + 'px';
         });
     n.style('font-family', function (t) {
-        return t.font
+        return t.font;
     })
         .style('fill', function (t) {
-            return fill(t.text.toLowerCase())
+            return fill(t.text.toLowerCase());
         })
         .text(function (t) {
-            return t.text
+            return t.text;
         });
     var a = background.append('g').attr('transform', vis.attr('transform')),
         r = a.node();
     n.exit().each(function () {
-        r.appendChild(this)
+        r.appendChild(this);
     });
     a.transition()
         .duration(1e3)
@@ -217,14 +183,14 @@ function draw(t, e) {
     vis.transition()
         .delay(1e3)
         .duration(750)
-        .attr('transform', 'translate(' + [w >> 1, h >> 1] + ')scale(' + scale + ')')
+        .attr('transform', 'translate(' + [w >> 1, h >> 1] + ')scale(' + scale + ')');
 }
 
 function setupFormEvents() {
     var form = d3.select('#form')
         .on('submit', function () {
             load(d3.select('#text').property('value'));
-            d3.event.preventDefault()
+            d3.event.preventDefault();
         });
 
     form.selectAll('input[type=number]')
