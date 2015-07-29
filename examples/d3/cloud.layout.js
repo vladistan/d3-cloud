@@ -397,10 +397,10 @@
     }
 
     function collideRects(a, b) {
-        return a.x + a.x1 > b[0].x && a.x +
-            a.x0 < b[1].x && a.y +
-            a.y1 > b[0].y && a.y +
-            a.y0 < b[1].y;
+        return a.x + a.x1 > b[0].x &&
+            a.x + a.x0 < b[1].x &&
+            a.y + a.y1 > b[0].y &&
+            a.y + a.y0 < b[1].y;
     }
 
     function archimedeanSpiral(size) {

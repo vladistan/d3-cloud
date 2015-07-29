@@ -1,14 +1,6 @@
 /* jshint -W030, -W117, -W016 */
 
 var fill = d3.scale.category20b(),
-    w = 640,
-    h = 480,
-    words = [],
-    max, scale = 1,
-    complete = 0,
-    keyword = '',
-    tags,
-    fontSize,
     statusText = d3.select('#status'),
     layout = d3.layout.cloud()
         .timeInterval(10)

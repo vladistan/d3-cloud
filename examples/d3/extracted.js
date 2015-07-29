@@ -36,8 +36,12 @@ var stopWords = /^(i|me|my|myself|we|us|our|ours|ourselves|you|your|yours|yourse
     punctuation = new RegExp('[' + unicodePunctuationRe + ']', 'g'),
     wordSeparators = /[ \f\n\r\t\v\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\u3031-\u3035\u309b\u309c\u30a0\u30fc\uff70]+/g,
     discard = /^(@|https?:|\/\/)/,
-    htmlTags = /(<[^>]*?>|<script.*?<\/script>|<style.*?<\/style>|<head.*?><\/head>)/g,
-    matchTwitter = /^https?:\/\/([^\.]*\.)?twitter\.com/;
+    htmlTags = /(<[^>]*?>|<script.*?<\/script>|<style.*?<\/style>|<head.*?><\/head>)/g;
+
+var complete = 0,
+    keyword = '',
+    tags,
+    fontSize;
 
 var testText = 'This works for some uses of a very small area of D3 API. I can imagine TDDing ' +
     'like this. But the fake API is small and flawed, and there s a lot more work to be ' +
@@ -49,6 +53,11 @@ var testText = 'This works for some uses of a very small area of D3 API. I can i
     'for regression testing.';
 
 var maxLength = 30;
+
+var w = 640,
+    h = 480,
+    words = [],
+    max, scale = 1;
 
 function hashchange(t) {
     load(t);
@@ -127,13 +136,12 @@ function generate() {
     if (tags.length) {
         fontSize.domain([+tags[tags.length - 1].value || 1, +tags[0].value]);
     }
+    max = Math.min(tags.length, +d3.select('#max').property('value'));
     complete = 0;
     statusText.style('display', null);
     words = [];
     layout.stop()
-        .words(tags.slice(
-            0,
-            max = Math.min(tags.length, +d3.select('#max').property('value'))))
+        .words(tags.slice(0, max))
         .start();
 }
 
@@ -149,6 +157,10 @@ function computeScale(e) {
     }
 }
 
+function moveRotateXForm(x, y, spin) {
+    return 'translate(' + x + ',' + y + ')rotate(' + spin + ')';
+}
+
 function draw(d, i) {
 
     statusText.style('display', 'none');
@@ -160,19 +172,22 @@ function draw(d, i) {
             return t.text.toLowerCase();
         });
 
+    // Rotate present one in place
     n.transition()
         .duration(1e3)
         .attr('transform', function (t) {
             return 'translate(' + [t.x, t.y] + ')rotate(' + t.rotate + ')';
+            return moveRotateXForm(t.x, t.y, t.rotate);
         }).style('font-size', function (t) {
             return t.size + 'px';
         });
 
+    // Append new ones
     n.enter()
         .append('text')
         .attr('text-anchor', 'middle')
         .attr('transform', function (t) {
-            return 'translate(' + [t.x, t.y] + ')rotate(' + t.rotate + ')';
+            return moveRotateXForm(t.x, t.y, t.rotate);
         })
         .style('font-size', '1px')
         .transition()
@@ -201,8 +216,12 @@ function draw(d, i) {
             r.appendChild(this);
         });
 
+    // Remove old ones
     a.transition()
         .duration(1e3)
+        .attr('transform', function (t) {
+            return moveRotateXForm(w, 0, 180) + 'scale(0.0001)';
+        })
         .style('opacity', 1e-6)
         .remove();
 

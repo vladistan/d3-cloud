@@ -30,9 +30,9 @@
         o.exit()
             .remove();
         o.attr('transform', function (t) {
-            return 'rotate(' + (90 + t) + ')'
+            return 'rotate(' + (90 + t) + ')';
         }).attr('x2', function (t, e) {
-            return e && e !== c - 1 ? -r : -r - 5
+            return e && e !== c - 1 ? -r : -r - 5;
         });
         var s = l.selectAll('path.drag').data([u, i]);
         s.enter()
@@ -63,32 +63,32 @@
                             i += 360 - c;
                         } else {
                             if (0 > c) {
-                                (i = u)
+                                (i = u);
                             }
                         }
                     }
                     e();
                 }).on('dragend', generate));
         s.attr('transform', function (t) {
-            return 'rotate(' + (t + 90) + ')translate(-' + r + ')'
+            return 'rotate(' + (t + 90) + ')translate(-' + r + ')';
         });
         layout.rotate(function () {
-            return d(~~(Math.random() * c))
+            return d(~~(Math.random() * c));
         });
         d3.select('#angle-count')
             .property('value', c);
         d3.select('#angle-from')
             .property('value', u);
         d3.select('#angle-to')
-            .property('value', i)
+            .property('value', i);
     }
 
     function n(t, e) {
-        return t[0] * e[1] - t[1] * e[0]
+        return t[0] * e[1] - t[1] * e[0];
     }
 
     function a(t, e) {
-        return t[0] * e[0] + t[1] * e[1]
+        return t[0] * e[0] + t[1] * e[1];
     }
 
     var r = 40.5,
@@ -113,17 +113,17 @@
         .enter()
         .append('text')
         .attr('dy', function (t, e) {
-            return 1 === e ? null : '.3em'
+            return 1 === e ? null : '.3em';
         }).attr('text-anchor', function (t, e) {
-            return ['end', 'middle', 'start'][e]
+            return ['end', 'middle', 'start'][e];
         }).attr('transform', function (t) {
             t += 90;
             return 'rotate(' + t +
                 ')translate(' + -(r + 10) +
                 ')rotate(' + -t +
-                ')translate(2)'
+                ')translate(2)';
         }).text(function (t) {
-            return t + '\xb0'
+            return t + '\xb0';
         });
     var u, i, c,
         h = Math.PI / 180,

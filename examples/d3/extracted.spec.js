@@ -68,6 +68,18 @@ describe('Extracted functions', function () {
             var rv = computeScale(null);
             expect(rv).to.equal(1);
         });
+        it('should give scale of 2 an element half the screen', function () {
+            var e = [{x: 320, y: 280}, {x: 160, y: 360}];
+            var rv = computeScale(e);
+            expect(rv).to.equal(2);
+        });
+    });
+
+    describe('MoveSpinXFOrm', function () {
+        it('should compose xform', function () {
+            var rv = moveRotateXForm(34, 22, 11);
+            expect(rv).to.equal('translate(34,22)rotate(11)');
+        });
     });
 
     describe('Boundary Functions', function () {
