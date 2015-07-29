@@ -174,9 +174,9 @@ function draw(d, i) {
 
     // Rotate present one in place
     n.transition()
+        .delay(2e3)
         .duration(1e3)
         .attr('transform', function (t) {
-            return 'translate(' + [t.x, t.y] + ')rotate(' + t.rotate + ')';
             return moveRotateXForm(t.x, t.y, t.rotate);
         }).style('font-size', function (t) {
             return t.size + 'px';
@@ -191,7 +191,8 @@ function draw(d, i) {
         })
         .style('font-size', '1px')
         .transition()
-        .duration(1e3)
+        .delay(2e3)
+        .duration(2e3)
         .style('font-size', function (t) {
             return t.size + 'px';
         });
@@ -218,17 +219,16 @@ function draw(d, i) {
 
     // Remove old ones
     a.transition()
-        .duration(1e3)
+        .duration(3e3)
         .attr('transform', function (t) {
             return moveRotateXForm(w, 0, 180) + 'scale(0.0001)';
         })
         .style('opacity', 1e-6)
+        .transition()
+        .duration(4e3)
         .remove();
 
-    vis.transition()
-        .delay(1e3)
-        .duration(750)
-        .attr('transform', 'translate(' + [w >> 1, h >> 1] + ')scale(' + scale + ')');
+    vis.attr('transform', 'translate(' + [w >> 1, h >> 1] + ')scale(' + scale + ')');
 }
 
 function setupFormEvents() {
