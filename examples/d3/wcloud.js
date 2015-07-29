@@ -6,9 +6,9 @@ var fill = d3.scale.category20b(),
         .timeInterval(10)
         .size([w, h])
         .fontSize(function (t) {
-            return fontSize(+t.value)
+            return fontSize(+t.value);
         }).text(function (t) {
-            return t.key
+            return t.key;
         }).on('word', progress).on('end', draw),
     svg = d3.select('#vis')
         .append('svg')
