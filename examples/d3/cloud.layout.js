@@ -28,19 +28,7 @@
                 n = words.length,
                 i = -1,
                 tags = [],
-                data = words.map(function (d, i) {
-                    return {
-                        text: text.call(this, d, i),
-                        font: font.call(this, d, i),
-                        style: fontStyle.call(this, d, i),
-                        weight: fontWeight.call(this, d, i),
-                        rotate: rotate.call(this, d, i),
-                        size: ~~fontSize.call(this, d, i),
-                        padding: cloudPadding.call(this, d, i)
-                    };
-                }).sort(function (a, b) {
-                    return b.size - a.size;
-                });
+                data = prepWordTags();
 
             if (timer) {
                 clearInterval(timer);
@@ -88,6 +76,22 @@
             }
             return cloud;
         };
+
+        function prepWordTags() {
+            return words.map(function (d, i) {
+                return {
+                    text: text.call(this, d, i),
+                    font: font.call(this, d, i),
+                    style: fontStyle.call(this, d, i),
+                    weight: fontWeight.call(this, d, i),
+                    rotate: rotate.call(this, d, i),
+                    size: ~~fontSize.call(this, d, i),
+                    padding: cloudPadding.call(this, d, i)
+                };
+            }).sort(function (a, b) {
+                return b.size - a.size;
+            });
+        }
 
         function place(board, tag, bounds) {
             var perimeter = [{x: 0, y: 0}, {x: size[0], y: size[1]}],
@@ -209,6 +213,8 @@
             return arguments.length ? (random = _, cloud) : random;
         };
 
+        cloud.prepWordTags = prepWordTags;
+
         return d3.rebind(cloud, event, 'on');
     };
 
@@ -238,6 +244,18 @@
 
     // Fetches a monochrome sprite bitmap for the specified text.
     // Load in batches for speed.
+    function setupTag(tag, x, y, witdh, height) {
+        tag.width = witdh;
+        tag.height = height;
+        tag.xoff = x;
+        tag.yoff = y;
+        tag.x1 = witdh >> 1;
+        tag.y1 = height >> 1;
+        tag.x0 = -tag.x1;
+        tag.y0 = -tag.y1;
+        tag.hasText = true;
+    }
+
     function cloudSprite(d, data, di) {
         if (d.sprite) {
             return;
@@ -286,15 +304,7 @@
             }
             c.fillText(d.text, 0, 0);
             c.restore();
-            d.width = w;
-            d.height = h;
-            d.xoff = x;
-            d.yoff = y;
-            d.x1 = w >> 1;
-            d.y1 = h >> 1;
-            d.x0 = -d.x1;
-            d.y0 = -d.y1;
-            d.hasText = true;
+            setupTag(d, x, y, w, h);
             x += w;
         }
         var pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
@@ -477,5 +487,7 @@
     c.textAlign = 'center';
     t.cloud.zeroArray = zeroArray;
     t.cloud.cloudBounds = cloudBounds;
+    t.cloud.collideRects = collideRects;
+    t.cloud.setupTag = setupTag;
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));

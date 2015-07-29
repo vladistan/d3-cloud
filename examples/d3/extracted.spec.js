@@ -132,6 +132,28 @@ describe('Extracted functions', function () {
                 expect(bounds[1].y).to.equal(57);
             });
         });
+
+        describe('Collide Rects', function () {
+
+            var bounds;
+
+            beforeEach('Init bounds', function () {
+                bounds = [{x: 10, y: 15}, {x: 20, y: 30}];
+            });
+
+            it('OK if rect all inside', function () {
+                var tag = {x: 15, y: 25, x0: -3, x1: 3, y0: -4, y1: 2};
+                var rv = d3.layout.cloud.collideRects(tag, bounds);
+                expect(rv).to.be.true();
+            });
+
+            it('False if rect is above no overalp', function () {
+                var tag = {x: -45, y: -45, x0: -3, x1: 3, y0: -4, y1: 2};
+                var rv = d3.layout.cloud.collideRects(tag, bounds);
+                expect(rv).to.be.false();
+            });
+
+        });
     });
 
     describe('Cloud layout', function () {
@@ -141,6 +163,32 @@ describe('Extracted functions', function () {
             expect(rv[0]).to.equal(0);
             expect(rv[1]).to.equal(0);
             expect(rv[2]).to.equal(0);
+        });
+
+        it('Prep Tag Should setup the tag center and has text', function () {
+            var d = {};
+
+            d3.layout.cloud.setupTag(d, 30, 20, 8, 6);
+            expect(d.xoff).to.equal(30);
+            expect(d.yoff).to.equal(20);
+            expect(d.x1).to.equal(4);
+            expect(d.x0).to.equal(-4);
+            expect(d.y1).to.equal(3);
+            expect(d.y0).to.equal(-3);
+        })
+
+        it('Prep word tags should make sorted tags out of words', function () {
+            var cloud = d3.layout.cloud();
+            cloud.text(function (t) {  return t; });
+            cloud.fontSize(function (t) {
+                return t.charCodeAt(0) / 2;
+            });
+            cloud.words(['a', 'c', 'z']);
+            var rv = cloud.prepWordTags();
+            expect(rv.length).to.equal(3);
+            expect(rv[0].text).to.equal('z');
+            expect(rv[1].size).to.equal(49);
+
         });
     });
 
