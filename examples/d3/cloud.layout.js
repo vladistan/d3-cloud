@@ -37,7 +37,7 @@
                         rotate: rotate.call(this, d, i),
                         size: ~~fontSize.call(this, d, i),
                         padding: cloudPadding.call(this, d, i)
-                    }
+                    };
                 }).sort(function (a, b) {
                     return b.size - a.size;
                 });
@@ -79,7 +79,7 @@
                     event.end(tags, bounds);
                 }
             }
-        }
+        };
 
         cloud.stop = function () {
             if (timer) {
@@ -164,7 +164,7 @@
 
         cloud.size = function (_) {
             if (arguments.length) {
-                size = [+_[0], +_[1]]
+                size = [+_[0], +_[1]];
                 return cloud;
             } else {
                 return size;
@@ -265,7 +265,7 @@
                     hsr = h * sr;
                 w = (Math.max(Math.abs(wcr + hsr),
                         Math.abs(wcr - hsr)) + 0x1f) >> 5 << 5,
-                    h = ~~Math.max(Math.abs(wsr + hcr), Math.abs(wsr - hcr))
+                    h = ~~Math.max(Math.abs(wsr + hcr), Math.abs(wsr - hcr));
             } else {
                 w = (w + 0x1f) >> 5 << 5;
             }
@@ -332,7 +332,7 @@
                     }
                     if (z) {
                         j && (sprite[k - w32] |= m), w - 1 > j &&
-                        (sprite[k + w32] |= m), m |= m << 1 | m >> 1
+                        (sprite[k + w32] |= m), m |= m << 1 | m >> 1;
                     }
 
                     sprite[k] |= m;

@@ -30,7 +30,7 @@
                 .attr('xmlns', 'http://www.w3.org/2000/svg')
                 .node()
                 .parentNode
-                .innerHTML))))
+                .innerHTML))));
     }
 
     d3.select('#download-svg')
