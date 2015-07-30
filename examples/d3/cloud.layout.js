@@ -305,6 +305,36 @@
         return m;
     }
 
+    function addTagSprite(d, x, y, pixels) {
+        var w = d.width,
+            w32 = w >> 5,
+            h = d.y1 - d.y0,
+            sprite, x, y;
+
+        sprite = zeroArray(h * 32);
+        x = d.xoff;
+        y = d.yoff;
+        var seen = 0,
+            seenRow = -1;
+        for (var j = 0; j < h; j++) {
+            for (var i = 0; i < w; i++) {
+                var m = computeM(pixels, x, y, i, j);
+                seen |= adjustSprite(sprite, d, m, i, j, w, w32);
+            }
+            if (seen) {
+                seenRow = j;
+            }
+            else {
+                d.y0++;
+                h--;
+                j--;
+                y++;
+            }
+        }
+        d.y1 = d.y0 + seenRow;
+        d.sprite = sprite.slice(0, (d.y1 - d.y0) * w32);
+    }
+
     function cloudSprite(d, data, di) {
         if (d.sprite) {
             return;
@@ -346,8 +376,8 @@
             setupTag(d, x, y, w, h);
             x += w;
         }
-        var pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
-            sprite = [];
+        var pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data;
+
         while (--di >= 0) {
             d = data[di];
             if (!d.hasText) {
@@ -356,34 +386,7 @@
             if (d.xoff === null) {
                 return;
             }
-            var w = d.width,
-                w32 = w >> 5,
-                h = d.y1 - d.y0;
-
-            sprite = zeroArray(h * 32);
-            x = d.xoff;
-            y = d.yoff;
-            var seen = 0,
-                seenRow = -1;
-            for (var j = 0; j < h; j++) {
-                for (var i = 0; i < w; i++) {
-                    var k, m;
-
-                    m = computeM(pixels, x, y, i, j);
-                    seen |= adjustSprite(sprite, d, m, i, j, w, w32);
-                }
-                if (seen) {
-                    seenRow = j;
-                }
-                else {
-                    d.y0++;
-                    h--;
-                    j--;
-                    y++;
-                }
-            }
-            d.y1 = d.y0 + seenRow;
-            d.sprite = sprite.slice(0, (d.y1 - d.y0) * w32);
+            addTagSprite(d, x, y, pixels);
         }
 
     }
