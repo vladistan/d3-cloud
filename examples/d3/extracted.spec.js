@@ -238,9 +238,9 @@ describe('Extracted functions', function () {
                     d.padding = 1;
                     sprite = d3.layout.cloud.zeroArray(3);
                     var m = 8;
-                    m = d3.layout.cloud.adjustSprite(sprite, d, m, 0, 10, 1, 34);
+                    m = d3.layout.cloud.adjustSprite(sprite, d, m, 12, 0, 1, 34);
                     expect(sprite.length).to.equal(3);
-                    expect(sprite[0]).to.equal(0);
+                    expect(sprite[0]).to.equal(8 + 4 + 16);
                     expect(sprite[1]).to.equal(0);
                     expect(sprite[2]).to.equal(0);
                     expect(m).to.equal(8 + 4 + 16);
@@ -250,12 +250,12 @@ describe('Extracted functions', function () {
                 function () {
                     d.padding = 1;
                     sprite = d3.layout.cloud.zeroArray(3);
-                    var m = 12;
+                    var m = 16;
                     d3.layout.cloud.adjustSprite(sprite, d, m, 1, 1, 5, 1);
                     expect(sprite.length).to.equal(3);
-                    expect(sprite[0]).to.equal(12);
-                    expect(sprite[1]).to.equal(0);
-                    expect(sprite[2]).to.equal(12);
+                    expect(sprite[0]).to.equal(16);
+                    expect(sprite[1]).to.equal(16 + 8 + 32);
+                    expect(sprite[2]).to.equal(16);
 
                 });
         });

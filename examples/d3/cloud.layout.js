@@ -289,7 +289,8 @@
         return {h: h, w: w};
     }
 
-    function adjustSprite(sprite, d, m, j, k, w, w32) {
+    function adjustSprite(sprite, d, m, i, j, w, w32) {
+        var k = w32 * j + (i >> 5);
         if (d.padding) {
             if (j) {
                 sprite[k - w32] |= m;
@@ -300,6 +301,7 @@
 
             m |= m << 1 | m >> 1;
         }
+        sprite[k] |= m;
         return m;
     }
 
@@ -366,12 +368,9 @@
             for (var j = 0; j < h; j++) {
                 for (var i = 0; i < w; i++) {
                     var k, m;
-                    k = w32 * j + (i >> 5);
-                    m = computeM(pixels, x, y, i, j);
-                    m = adjustSprite(sprite, d, m, j, k, w, w32);
 
-                    sprite[k] |= m;
-                    seen |= m;
+                    m = computeM(pixels, x, y, i, j);
+                    seen |= adjustSprite(sprite, d, m, i, j, w, w32);
                 }
                 if (seen) {
                     seenRow = j;
