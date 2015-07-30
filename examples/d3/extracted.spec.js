@@ -217,7 +217,50 @@ describe('Extracted functions', function () {
 
         });
 
-        describe('Should compute value of M', function () {
+        describe('Adjust sprite', function () {
+
+            var sprite, d;
+
+            beforeEach('setup', function () {
+                sprite = d3.layout.cloud.zeroArray(3000);
+                d = {};
+            });
+
+            it('Should do nothing when padding is off', function () {
+                d.padding = false;
+                var m = 8;
+                m = d3.layout.cloud.adjustSprite(sprite, d, m, 10, 10, 10, 34);
+                expect(m).to.equal(8);
+            });
+
+            it('Should expand M, but dont touch sprite when j and w are low',
+                function () {
+                    d.padding = 1;
+                    sprite = d3.layout.cloud.zeroArray(3);
+                    var m = 8;
+                    m = d3.layout.cloud.adjustSprite(sprite, d, m, 0, 10, 1, 34);
+                    expect(sprite.length).to.equal(3);
+                    expect(sprite[0]).to.equal(0);
+                    expect(sprite[1]).to.equal(0);
+                    expect(sprite[2]).to.equal(0);
+                    expect(m).to.equal(8 + 4 + 16);
+                });
+
+            it('Should expand M, but should put m into w32 up and down around k',
+                function () {
+                    d.padding = 1;
+                    sprite = d3.layout.cloud.zeroArray(3);
+                    var m = 12;
+                    d3.layout.cloud.adjustSprite(sprite, d, m, 1, 1, 5, 1);
+                    expect(sprite.length).to.equal(3);
+                    expect(sprite[0]).to.equal(12);
+                    expect(sprite[1]).to.equal(0);
+                    expect(sprite[2]).to.equal(12);
+
+                });
+        });
+
+        describe('Should compute value of WH', function () {
 
             var d;
             beforeEach(function () {
@@ -264,6 +307,45 @@ describe('Extracted functions', function () {
                 }
             );
 
+        });
+
+        describe('isTagStickingOut', function () {
+
+            var size;
+
+            beforeEach('Setup', function () {
+                size = [40, 40];
+            });
+
+            it('should return false when all inside', function () {
+                var tag = {x: 20, y: 20, x0: -5, x1: 5, y0: -5, y1: 5};
+                var rv = d3.layout.cloud.isTagStickingOut(tag, size);
+                expect(rv).to.be.false();
+            });
+
+            it('should return true when to the left', function () {
+                var tag = {x: 20, y: 20, x0: -25, x1: 5, y0: -5, y1: 5};
+                var rv = d3.layout.cloud.isTagStickingOut(tag, size);
+                expect(rv).to.be.true();
+            });
+
+            it('should return true when to the right', function () {
+                var tag = {x: 20, y: 20, x0: -4, x1: 45, y0: -5, y1: 5};
+                var rv = d3.layout.cloud.isTagStickingOut(tag, size);
+                expect(rv).to.be.true();
+            });
+
+            it('should return true when to the top', function () {
+                var tag = {x: 20, y: 20, x0: -4, x1: 5, y0: -25, y1: 5};
+                var rv = d3.layout.cloud.isTagStickingOut(tag, size);
+                expect(rv).to.be.true();
+            });
+
+            it('should return true when to the bottom', function () {
+                var tag = {x: 20, y: 20, x0: -4, x1: 5, y0: -5, y1: 35};
+                var rv = d3.layout.cloud.isTagStickingOut(tag, size);
+                expect(rv).to.be.true();
+            });
         });
 
     });

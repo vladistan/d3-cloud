@@ -4,6 +4,7 @@
 // Algorithm due to Jonathan Feinberg, http://static.mrfeinberg.com/bv_ch03.pdf
 
 (function (t) {
+
     t.cloud = function cloud() {
         var size = [256, 256],
             text = cloudText,
@@ -117,8 +118,9 @@
                 tag.x = startX + dx;
                 tag.y = startY + dy;
 
-                if (tag.x + tag.x0 < 0 || tag.y + tag.y0 < 0 ||
-                    tag.x + tag.x1 > size[0] || tag.y + tag.y1 > size[1]) {
+                var bIsOutside = isTagStickingOut(tag, size);
+
+                if (bIsOutside) {
                     continue;
                 }
 
@@ -256,10 +258,11 @@
         tag.hasText = true;
     }
 
-    function computeM(pixels, x, y, i, j, m) {
+    function computeM(pixels, x, y, i, j) {
         var yOff = (y + j) * (cw << 5);
         var xOff = (x + i);
         var pixIdx = (yOff + xOff) << 2;
+        var m;
         if (pixels[pixIdx]) {
             m = 1 << (31 - (i % 32));
         } else {
@@ -284,6 +287,20 @@
             w = (w + 0x1f) >> 5 << 5;
         }
         return {h: h, w: w};
+    }
+
+    function adjustSprite(sprite, d, m, j, k, w, w32) {
+        if (d.padding) {
+            if (j) {
+                sprite[k - w32] |= m;
+            }
+            if (w - 1 > j) {
+                sprite[k + w32] |= m;
+            }
+
+            m |= m << 1 | m >> 1;
+        }
+        return m;
     }
 
     function cloudSprite(d, data, di) {
@@ -334,18 +351,15 @@
             if (!d.hasText) {
                 continue;
             }
-            var w = d.width,
-                w32 = w >> 5,
-                z = d.padding,
-                h = d.y1 - d.y0;
-            // Zero the buffer
-            for (var i = 0; i < h * w32; i++) {
-                sprite[i] = 0;
-            }
-            x = d.xoff;
-            if (x === null) {
+            if (d.xoff === null) {
                 return;
             }
+            var w = d.width,
+                w32 = w >> 5,
+                h = d.y1 - d.y0;
+
+            sprite = zeroArray(h * 32);
+            x = d.xoff;
             y = d.yoff;
             var seen = 0,
                 seenRow = -1;
@@ -353,12 +367,8 @@
                 for (var i = 0; i < w; i++) {
                     var k, m;
                     k = w32 * j + (i >> 5);
-                    m = computeM(pixels, x, y, i, j, m);
-                    if (z) {
-                        j && (sprite[k - w32] |= m);
-                        w - 1 > j && (sprite[k + w32] |= m);
-                        m |= m << 1 | m >> 1;
-                    }
+                    m = computeM(pixels, x, y, i, j);
+                    m = adjustSprite(sprite, d, m, j, k, w, w32);
 
                     sprite[k] |= m;
                     seen |= m;
@@ -377,6 +387,26 @@
             d.sprite = sprite.slice(0, (d.y1 - d.y0) * w32);
         }
 
+    }
+
+    function isTagStickingOut(tag, size) {
+        var toTheLeft = tag.x + tag.x0 < 0;
+        var toTheTop = tag.y + tag.y0 < 0;
+        var toTheRight = tag.x + tag.x1 > size[0];
+        var toTheBottom = tag.y + tag.y1 > size[1];
+        if (toTheLeft) {
+            return true;
+        }
+        if (toTheTop) {
+            return true;
+        }
+        if (toTheRight) {
+            return true;
+        }
+        if (toTheBottom) {
+            return true;
+        }
+        return false;
     }
 
     // Use mask-based collision detection.
@@ -506,5 +536,7 @@
     t.cloud.setupTag = setupTag;
     t.cloud.computeM = computeM;
     t.cloud.computeWH = computeWH;
+    t.cloud.adjustSprite = adjustSprite;
+    t.cloud.isTagStickingOut = isTagStickingOut;
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));
