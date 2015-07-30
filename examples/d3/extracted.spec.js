@@ -175,11 +175,13 @@ describe('Extracted functions', function () {
             expect(d.x0).to.equal(-4);
             expect(d.y1).to.equal(3);
             expect(d.y0).to.equal(-3);
-        })
+        });
 
         it('Prep word tags should make sorted tags out of words', function () {
             var cloud = d3.layout.cloud();
-            cloud.text(function (t) {  return t; });
+            cloud.text(function (t) {
+                return t;
+            });
             cloud.fontSize(function (t) {
                 return t.charCodeAt(0) / 2;
             });
@@ -190,6 +192,80 @@ describe('Extracted functions', function () {
             expect(rv[1].size).to.equal(49);
 
         });
+
+        describe('Should compute value of M', function () {
+
+            var pixels, m;
+            beforeEach(function () {
+                pixels = d3.layout.cloud.zeroArray(20);
+                m = 9;
+            });
+
+            it('Should set M to be 0 if corresponding pixels is empty ', function () {
+                    m = d3.layout.cloud.computeM(pixels, 2, 1, 4, 2, m);
+                    expect(m).to.equal(0);
+                }
+            );
+
+            it('Should set M to be non zero if corresponding pixels is filled ',
+                function () {
+                    pixels[6150 * 4] = 9;
+                    m = d3.layout.cloud.computeM(pixels, 2, 1, 4, 2, m);
+                    expect(m).to.equal(134217728);
+                }
+            );
+
+        });
+
+        describe('Should compute value of M', function () {
+
+            var d;
+            beforeEach(function () {
+                d = {};
+                d.size = 9;
+            });
+
+            it('Should return h=h*2 when D not rotated ',
+                function () {
+                    var rv = d3.layout.cloud.computeWH(d, 200);
+                    expect(rv.h).to.equal(18);
+                }
+            );
+
+            it('Should return w=w+31 when D not rotated ',
+                function () {
+                    var rv = d3.layout.cloud.computeWH(d, 33);
+                    expect(rv.w).to.equal(64);
+                }
+            );
+
+            it('Should return w=w+31 rounded up to next mul of 32 when D not rotated ',
+                function () {
+                    var rv = d3.layout.cloud.computeWH(d, 34);
+                    expect(rv.w).to.equal(64);
+                }
+            );
+
+            it('Should compute proper envelope when rotated ',
+                function () {
+                    d.rotate = 45;
+                    var rv = d3.layout.cloud.computeWH(d, 34);
+                    expect(rv.h).to.equal(36);
+                    expect(rv.w).to.equal(64);
+                }
+            );
+
+            it('When flipped envelope should be same as not rotated ',
+                function () {
+                    d.rotate = 180;
+                    var rv = d3.layout.cloud.computeWH(d, 34);
+                    expect(rv.h).to.equal(18);
+                    expect(rv.w).to.equal(64);
+                }
+            );
+
+        });
+
     });
 
     describe('Cloud layout props', function () {

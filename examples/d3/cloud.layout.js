@@ -256,6 +256,36 @@
         tag.hasText = true;
     }
 
+    function computeM(pixels, x, y, i, j, m) {
+        var yOff = (y + j) * (cw << 5);
+        var xOff = (x + i);
+        var pixIdx = (yOff + xOff) << 2;
+        if (pixels[pixIdx]) {
+            m = 1 << (31 - (i % 32));
+        } else {
+            m = 0;
+        }
+        return m;
+    }
+
+    function computeWH(d, w) {
+        var h;
+        h = d.size << 1;
+        if (d.rotate) {
+            var sr = Math.sin(d.rotate * cloudRadians),
+                cr = Math.cos(d.rotate * cloudRadians),
+                wcr = w * cr,
+                wsr = w * sr,
+                hcr = h * cr,
+                hsr = h * sr;
+            w = (Math.max(Math.abs(wcr + hsr), Math.abs(wcr - hsr)) + 0x1f) >> 5 << 5;
+            h = ~~Math.max(Math.abs(wsr + hcr), Math.abs(wsr - hcr));
+        } else {
+            w = (w + 0x1f) >> 5 << 5;
+        }
+        return {h: h, w: w};
+    }
+
     function cloudSprite(d, data, di) {
         if (d.sprite) {
             return;
@@ -272,21 +302,11 @@
             c.save();
             c.font = ~~((d.size + 1) / ratio) +
                 'px ' + d.font;
-            var w = c.measureText(d.text + 'm').width * ratio,
-                h = d.size << 1;
-            if (d.rotate) {
-                var sr = Math.sin(d.rotate * cloudRadians),
-                    cr = Math.cos(d.rotate * cloudRadians),
-                    wcr = w * cr,
-                    wsr = w * sr,
-                    hcr = h * cr,
-                    hsr = h * sr;
-                w = (Math.max(Math.abs(wcr + hsr),
-                        Math.abs(wcr - hsr)) + 0x1f) >> 5 << 5,
-                    h = ~~Math.max(Math.abs(wsr + hcr), Math.abs(wsr - hcr));
-            } else {
-                w = (w + 0x1f) >> 5 << 5;
-            }
+            var w = c.measureText(d.text + 'm').width * ratio, h;
+            var wh = computeWH(d, w);
+            h = wh.h;
+            w = wh.w;
+
             if (h > maxh) {
                 maxh = h;
             }
@@ -332,17 +352,12 @@
             for (var j = 0; j < h; j++) {
                 for (var i = 0; i < w; i++) {
                     var k, m;
-                    if (pixels[
-                        ((y + j) * (cw << 5) + (x + i)) << 2]) {
-                        k = w32 * j + (i >> 5);
-                        m = 1 << (31 - (i % 32));
-                    } else {
-                        k = w32 * j + (i >> 5);
-                        m = 0;
-                    }
+                    k = w32 * j + (i >> 5);
+                    m = computeM(pixels, x, y, i, j, m);
                     if (z) {
-                        j && (sprite[k - w32] |= m), w - 1 > j &&
-                        (sprite[k + w32] |= m), m |= m << 1 | m >> 1;
+                        j && (sprite[k - w32] |= m);
+                        w - 1 > j && (sprite[k + w32] |= m);
+                        m |= m << 1 | m >> 1;
                     }
 
                     sprite[k] |= m;
@@ -489,5 +504,7 @@
     t.cloud.cloudBounds = cloudBounds;
     t.cloud.collideRects = collideRects;
     t.cloud.setupTag = setupTag;
+    t.cloud.computeM = computeM;
+    t.cloud.computeWH = computeWH;
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));
