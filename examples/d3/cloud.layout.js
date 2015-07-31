@@ -148,7 +148,6 @@
                 tag.y = startY + dy;
 
                 if (!isTagStickingOut(tag, size)) {
-
                     // TODO only check for collisions within current bounds.
                     if (!bounds || !cloudCollide(tag, board, size[0])) {
                         if (!bounds || collideRects(tag, bounds)) {
@@ -361,7 +360,24 @@
         canvas.fillText(d.text, 0, 0);
     }
 
+    function computeTextPos(w, h, maxh, x, y) {
+        if (h > maxh) {
+            maxh = h;
+        }
+        if (x + w >= (cw << 5)) {
+            x = 0;
+            y += maxh;
+            maxh = 0;
+        }
+        return {maxh: maxh, x: x, y: y};
+    }
+
     function cloudSprite(d, data, di) {
+        var wh;
+        var w, h;
+        var textX;
+        var textY;
+
         if (d.sprite) {
             return;
         }
@@ -377,24 +393,21 @@
             c.save();
             c.font = ~~((d.size + 1) / ratio) +
                 'px ' + d.font;
-            var w = c.measureText(d.text + 'm').width * ratio, h;
-            var wh = computeWH(d, w);
+            w = c.measureText(d.text + 'm').width * ratio;
+            wh = computeWH(d, w);
             h = wh.h;
             w = wh.w;
 
-            if (h > maxh) {
-                maxh = h;
-            }
-            if (x + w >= (cw << 5)) {
-                x = 0;
-                y += maxh;
-                maxh = 0;
-            }
+            var __ret = computeTextPos(w, h, maxh, x, y);
+            maxh = __ret.maxh;
+            x = __ret.x;
+            y = __ret.y;
+
             if (y + h >= ch) {
                 break;
             }
-            var textX = (x + (w >> 1));
-            var textY = (y + (h >> 1));
+            textX = (x + (w >> 1));
+            textY = (y + (h >> 1));
             placeText(c, d, textX, textY);
             c.restore();
             setupTag(d, x, y, w, h);
@@ -437,21 +450,27 @@
 
     // Use mask-based collision detection.
     function cloudCollide(tag, board, sw) {
+        var cond;
+        var sprite, w, lx, sx, msx, h, x, last;
         sw >>= 5;
-        var sprite = tag.sprite,
-            w = tag.width >> 5,
-            lx = tag.x - (w << 4),
-            sx = lx & 0x7f,
-            msx = 32 - sx,
-            h = tag.y1 - tag.y0,
-            x = (tag.y + tag.y0) * sw + (lx >> 5),
-            last;
+        w = tag.width >> 5;
+        lx = tag.x - (w << 4);
+        sx = lx & 0x7f;
+        msx = 32 - sx;
+        h = tag.y1 - tag.y0;
+        x = (tag.y + tag.y0) * sw + (lx >> 5);
+        sprite = tag.sprite;
+
         for (var j = 0; j < h; j++) {
             last = 0;
             for (var i = 0; i <= w; i++) {
-                if (((last << msx) |
-                    (i < w ? (last = sprite[j * w + i]) >>> sx : 0)) &
-                    board[x + i]) {
+                cond = last << msx;
+                if (i < w) {
+                    cond = last << msx | (last = sprite[j * w + i]) >>> sx;
+                } else {
+                    cond = last << msx;
+                }
+                if (cond & board[x + i]) {
                     return true;
                 }
             }
@@ -527,11 +546,13 @@
         return a;
     }
 
-    var cloudRadians = Math.PI / 180,
-        cw = 1 << 11 >> 5,
-        ch = 1 << 11,
-        canvas,
-        ratio = 1;
+    var cloudRadians, cw, ch, canvas, ratio, c;
+
+    cloudRadians = Math.PI / 180;
+    ch = 1 << 11;
+    cw = ch >> 5;
+    ratio = 1;
+
     if (typeof document !== 'undefined') {
         canvas = document.createElement('canvas');
         canvas.width = 1;
@@ -548,11 +569,12 @@
         // Attempt to use node-canvas.
         canvas = new Canvas(cw << 5, ch);
     }
-    var c = canvas.getContext('2d'),
-        spirals = {
-            archimedean: archimedeanSpiral,
-            rectangular: rectangularSpiral
-        };
+
+    c = canvas.getContext('2d');
+    var spirals = {
+        archimedean: archimedeanSpiral,
+        rectangular: rectangularSpiral
+    };
 
     c.fillStyle = c.strokeStyle = 'red';
     c.textAlign = 'center';
@@ -565,5 +587,6 @@
     t.cloud.adjustSprite = adjustSprite;
     t.cloud.isTagStickingOut = isTagStickingOut;
     t.cloud.placeText = placeText;
+    t.cloud.computeTextPos = computeTextPos;
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));

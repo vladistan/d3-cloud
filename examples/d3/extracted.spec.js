@@ -260,6 +260,33 @@ describe('Extracted functions', function () {
                 });
         });
 
+        describe('Shuold compute text posistion', function () {
+
+            it('Should update maxH when its less than H', function () {
+                var h = 19;
+                var maxH = 15;
+                var rv = d3.layout.cloud.computeTextPos(0, h, maxH, 0, 0);
+                expect(rv.maxh).to.equal(h);
+            });
+
+            it('Should not update maxH when its larger than H', function () {
+                var h = 19;
+                var maxH = 95;
+                var rv = d3.layout.cloud.computeTextPos(0, h, maxH, 0, 0);
+                expect(rv.maxh).to.equal(95);
+            });
+
+            it('Should move to the new line when x + width is over 64',
+                function () {
+                    var h = 19;
+                    var maxH = 40;
+                    var rv = d3.layout.cloud.computeTextPos(30, h, maxH, 2030, 20);
+                    expect(rv.maxh).to.equal(0);
+                    expect(rv.x).to.equal(0);
+                    expect(rv.y).to.equal(60);
+                });
+        });
+
         describe('Should compute value of WH', function () {
 
             var d;
