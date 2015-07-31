@@ -94,9 +94,40 @@
             });
         }
 
+        function updateBoard(board, tag) {
+
+            var sprite, w, h, sw, lx, sx, msx, last, x;
+
+            w = tag.width >> 5;
+            lx = tag.x - (w << 4);
+            sx = lx & 0x7f;
+            msx = 32 - sx;
+            sw = size[0] >> 5;
+
+            x = (tag.y + tag.y0) * sw + (lx >> 5);
+
+
+            h = tag.y1 - tag.y0;
+            sprite = tag.sprite;
+
+            for (var j = 0; j < h; j++) {
+                last = 0;
+                for (var i = 0; i <= w; i++) {
+                    var newBoardVal;
+                    var lastMsx = last << msx;
+                    if (i < w) {
+                        newBoardVal = lastMsx | (last = sprite[j * w + i]) >>> sx;
+                    } else {
+                        newBoardVal = lastMsx;
+                    }
+                    board[x + i] |= newBoardVal;
+                }
+                x += sw;
+            }
+        }
+
         function place(board, tag, bounds) {
-            var perimeter = [{x: 0, y: 0}, {x: size[0], y: size[1]}],
-                startX = tag.x,
+            var startX = tag.x,
                 startY = tag.y,
                 maxDelta = Math.sqrt(size[0] * size[0] + size[1] * size[1]),
                 s = spiral(size),
@@ -127,24 +158,9 @@
                 // TODO only check for collisions within current bounds.
                 if (!bounds || !cloudCollide(tag, board, size[0])) {
                     if (!bounds || collideRects(tag, bounds)) {
-                        var sprite = tag.sprite,
-                            w = tag.width >> 5,
-                            sw = size[0] >> 5,
-                            lx = tag.x - (w << 4),
-                            sx = lx & 0x7f,
-                            msx = 32 - sx,
-                            h = tag.y1 - tag.y0,
-                            x = (tag.y + tag.y0) * sw + (lx >> 5),
-                            last;
-                        for (var j = 0; j < h; j++) {
-                            last = 0;
-                            for (var i = 0; i <= w; i++) {
-                                board[x + i] |=
-                                    (last << msx) |
-                                    (i < w ? (last = sprite[j * w + i]) >>> sx : 0);
-                            }
-                            x += sw;
-                        }
+
+                        updateBoard(board, tag);
+
                         delete tag.sprite;
                         return true;
                     }
