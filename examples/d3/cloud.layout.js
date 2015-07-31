@@ -96,16 +96,13 @@
 
         function updateBoard(board, tag) {
 
-            var sprite, w, h, sw, lx, sx, msx, last, x;
-
+            var sprite, w, h, sw, lx, sx, last, x;
             w = tag.width >> 5;
             lx = tag.x - (w << 4);
             sx = lx & 0x7f;
-            msx = 32 - sx;
             sw = size[0] >> 5;
 
             x = (tag.y + tag.y0) * sw + (lx >> 5);
-
 
             h = tag.y1 - tag.y0;
             sprite = tag.sprite;
@@ -114,7 +111,7 @@
                 last = 0;
                 for (var i = 0; i <= w; i++) {
                     var newBoardVal;
-                    var lastMsx = last << msx;
+                    var lastMsx = last << (32 - sx);
                     if (i < w) {
                         newBoardVal = lastMsx | (last = sprite[j * w + i]) >>> sx;
                     } else {
@@ -136,6 +133,7 @@
                 dxdy,
                 dx,
                 dy;
+
             while (true) {
 
                 dxdy = s(t += dt);
@@ -149,20 +147,17 @@
                 tag.x = startX + dx;
                 tag.y = startY + dy;
 
-                var bIsOutside = isTagStickingOut(tag, size);
+                if (!isTagStickingOut(tag, size)) {
 
-                if (bIsOutside) {
-                    continue;
-                }
+                    // TODO only check for collisions within current bounds.
+                    if (!bounds || !cloudCollide(tag, board, size[0])) {
+                        if (!bounds || collideRects(tag, bounds)) {
 
-                // TODO only check for collisions within current bounds.
-                if (!bounds || !cloudCollide(tag, board, size[0])) {
-                    if (!bounds || collideRects(tag, bounds)) {
+                            updateBoard(board, tag);
 
-                        updateBoard(board, tag);
-
-                        delete tag.sprite;
-                        return true;
+                            delete tag.sprite;
+                            return true;
+                        }
                     }
                 }
             }
@@ -170,9 +165,16 @@
         }
 
         cloud.timeInterval = function (_) {
-            return arguments.length ?
-                (timeInterval = _ === null ? Infinity : _ , cloud) :
-                timeInterval;
+            if (arguments.length) {
+                if (_ === null) {
+                    timeInterval = Infinity;
+                } else {
+                    timeInterval = _;
+                }
+                return cloud;
+            } else {
+                return timeInterval;
+            }
         };
 
         cloud.words = function (_) {
@@ -321,7 +323,7 @@
         return m;
     }
 
-    function addTagSprite(d, x, y, pixels) {
+    function addTagSprite(d, pixels) {
         var w = d.width,
             w32 = w >> 5,
             h = d.y1 - d.y0,
@@ -349,6 +351,14 @@
         }
         d.y1 = d.y0 + seenRow;
         d.sprite = sprite.slice(0, (d.y1 - d.y0) * w32);
+    }
+
+    function placeText(canvas, d, x, y) {
+        canvas.translate(x / ratio, y / ratio);
+        if (d.rotate) {
+            canvas.rotate(d.rotate * cloudRadians);
+        }
+        canvas.fillText(d.text, 0, 0);
     }
 
     function cloudSprite(d, data, di) {
@@ -383,11 +393,9 @@
             if (y + h >= ch) {
                 break;
             }
-            c.translate((x + (w >> 1)) / ratio, (y + (h >> 1)) / ratio);
-            if (d.rotate) {
-                c.rotate(d.rotate * cloudRadians);
-            }
-            c.fillText(d.text, 0, 0);
+            var textX = (x + (w >> 1));
+            var textY = (y + (h >> 1));
+            placeText(c, d, textX, textY);
             c.restore();
             setupTag(d, x, y, w, h);
             x += w;
@@ -402,7 +410,7 @@
             if (d.xoff === null) {
                 return;
             }
-            addTagSprite(d, x, y, pixels);
+            addTagSprite(d, pixels);
         }
 
     }
@@ -556,5 +564,6 @@
     t.cloud.computeWH = computeWH;
     t.cloud.adjustSprite = adjustSprite;
     t.cloud.isTagStickingOut = isTagStickingOut;
+    t.cloud.placeText = placeText;
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));
