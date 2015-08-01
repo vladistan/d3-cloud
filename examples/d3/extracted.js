@@ -57,7 +57,8 @@ var maxLength = 30;
 var w = 640,
     h = 480,
     words = [],
-    max, scale = 1;
+    max, scale = 1,
+    firstTime = true;
 
 function hashchange(t) {
     load(t);
@@ -167,6 +168,10 @@ function draw(d, i) {
     scale = computeScale(i);
     words = d;
 
+    var stdDelay = firstTime ? 0 : 2e3;
+
+    firstTime = false;
+
     var n = vis.selectAll('text')
         .data(words, function (t) {
             return t.text.toLowerCase();
@@ -174,7 +179,7 @@ function draw(d, i) {
 
     // Rotate present one in place
     n.transition()
-        .delay(2e3)
+        .delay(stdDelay)
         .duration(1e3)
         .attr('transform', function (t) {
             return moveRotateXForm(t.x, t.y, t.rotate);
@@ -191,7 +196,7 @@ function draw(d, i) {
         })
         .style('font-size', '1px')
         .transition()
-        .delay(2e3)
+        .delay(stdDelay)
         .duration(2e3)
         .style('font-size', function (t) {
             return t.size + 'px';
@@ -209,8 +214,9 @@ function draw(d, i) {
         });
 
     var a = background.append('g')
-            .attr('transform', vis.attr('transform')),
-        r = a.node();
+        .attr('transform', vis.attr('transform'));
+
+    r = a.node();
 
     n.exit()
         .each(function () {
