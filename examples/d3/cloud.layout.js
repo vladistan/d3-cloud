@@ -445,7 +445,7 @@
                 continue;
             }
             if (d.xoff === null) {
-                return;
+                break;
             }
             addTagSprite(d, pixels);
         }
@@ -501,9 +501,8 @@
             for (var i = 0; i <= v.w; i++) {
                 cond = last << msx;
                 if (i < v.w) {
-                    cond = last << msx | (last = sprite[j * v.w + i]) >>> v.sx;
-                } else {
-                    cond = last << msx;
+                    last = sprite[j * v.w + i];
+                    cond = cond | last >>> v.sx;
                 }
                 if (cond & board[x + i]) {
                     return true;
