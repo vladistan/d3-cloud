@@ -357,6 +357,110 @@ describe('Extracted functions', function () {
             });
         });
 
+        describe('AddTagSprite', function () {
+
+            it('Should return whole image if see start from the beginning', function () {
+                var sprite = [1, 2, 3, 4];
+                var tag = {
+                    x: 20, width: 64, y: 22, y0: 10, y1: 20,
+                    sprite: sprite, xoff: 0, yoff: 0
+                };
+                var board = [9];
+                d3.layout.cloud.addTagSprite(tag, board);
+                expect(tag.y0).to.equal(10);
+                expect(tag.y1).to.equal(19);
+                expect(tag.sprite.length).to.equal(18);
+            });
+
+            it('Should reduce the sprite when it image starts from second row',
+                function () {
+                    var sprite = [1, 2, 3, 4];
+                    var tag = {
+                        x: 20, width: 64, y: 22, y0: 10, y1: 20,
+                        sprite: sprite, xoff: 0, yoff: 0
+                    };
+                    var pixels = [];
+                    pixels[8192] = 0x55;
+                    d3.layout.cloud.addTagSprite(tag, pixels);
+                    expect(tag.y0).to.equal(11);
+                    expect(tag.y1).to.equal(19);
+                    expect(tag.sprite.length).to.equal(16);
+                });
+        });
+
+        describe('CloudSprite', function () {
+
+            it('Should annotate existing data tags', function () {
+
+                var data = [
+                    {text: 'Hello', value: 4, size: 4},
+                    {text: 'There', value: 1, size: 1}
+                ];
+                var i = 0;
+
+                d3.layout.cloud.cloudSprite(data, i);
+
+                expect(data[0].width).to.equal(32);
+                expect(data[0].height).to.equal(8);
+                expect(data[0].x1).to.equal(16);
+                expect(data[0].y1).to.equal(4);
+
+            });
+        });
+
+        describe('UpdateTags', function () {
+
+            it('Should not do anything if hasText is empty', function () {
+
+                var data = [
+                    {text: 'Hello', value: 4, size: 4},
+                    {text: 'There', value: 1, size: 1}
+                ];
+                var i = 1;
+                var pixels = [];
+
+                d3.layout.cloud.updateTags(data, i, pixels);
+
+                expect(data[0]).to.have.keys(['text', 'value', 'size']);
+                expect(data[1]).to.have.keys(['text', 'value', 'size']);
+
+            });
+
+            it('Should not do anything if hasText is empty', function () {
+
+                var data = [
+                    {
+                        text: 'Hello',
+                        value: 4,
+                        size: 4,
+                        hasText: true,
+                        xoff: 0,
+                        yoff: 0,
+                        x0: 0,
+                        x: 1,
+                        x1: 2,
+                        y: 1,
+                        y1: 2,
+                        y0: 1,
+                        width: 2
+                    },
+                    {text: 'There', value: 1, size: 1}
+                ];
+                var i = 1;
+                var pixels = [9];
+                pixels[8122] = 9;
+
+                d3.layout.cloud.updateTags(data, i, pixels);
+
+                expect(data[0]).to.have.keys(['text', 'value', 'size',
+                    'hasText', 'sprite', 'y1',
+                    'x', 'x0', 'x1', 'y', 'y0',
+                    'width', 'xoff', 'yoff']);
+                expect(data[1]).to.have.keys(['text', 'value', 'size']);
+
+            });
+        });
+
         describe('Spirals', function () {
 
             describe('Archimedian', function () {

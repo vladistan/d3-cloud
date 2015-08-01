@@ -40,12 +40,20 @@
             return cloud;
 
             function step() {
+                var pixels;
+                var di;
                 var start = +new Date;
                 while (+new Date - start < timeInterval && ++i < n && timer) {
                     var d = data[i];
                     d.x = (size[0] * (random() + 0.5)) >> 1;
                     d.y = (size[1] * (random() + 0.5)) >> 1;
-                    cloudSprite(d, data, i);
+
+                    if (!d.sprite) {
+                        di = cloudSprite(data, i);
+                        pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data;
+                        updateTags(data, di, pixels);
+                    }
+
                     if (d.hasText && place(board, d, bounds, needUpdate)) {
                         tags.push(d);
                         event.word(d);
@@ -409,21 +417,21 @@
         }
     }
 
-    function cloudSprite(d, data, di) {
+    function cloudSprite(data, di) {
+        var x, y, maxh, n;
         var wh;
         var w, h;
         var textX;
         var textY;
+        var d;
 
-        if (d.sprite) {
-            return;
-        }
+        d = data[di];
 
         c.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
-        var x = 0,
-            y = 0,
-            maxh = 0,
-            n = data.length;
+        x = 0;
+        y = 0;
+        maxh = 0;
+        n = data.length;
         --di;
         while (++di < n) {
             d = data[di];
@@ -450,9 +458,8 @@
             setupTag(d, x, y, w, h);
             x += w;
         }
-        var pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data;
 
-        updateTags(data, di, pixels);
+        return di;
 
     }
 
@@ -628,5 +635,8 @@
     t.cloud.computeTextPos = computeTextPos;
     t.cloud.setupValues = setupValues;
     t.cloud.cloudCollide = cloudCollide;
+    t.cloud.addTagSprite = addTagSprite;
+    t.cloud.cloudSprite = cloudSprite;
+    t.cloud.updateTags = updateTags;
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));
