@@ -623,5 +623,6 @@
     t.cloud.placeText = placeText;
     t.cloud.computeTextPos = computeTextPos;
     t.cloud.setupValues = setupValues;
+    t.cloud.cloudCollide = cloudCollide;
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));

@@ -1,4 +1,4 @@
-/* jshint -W117, -W030 */
+/* jshint -W117, -W030, -W016 */
 'use strict';
 
 describe('Extracted functions', function () {
@@ -295,6 +295,7 @@ describe('Extracted functions', function () {
                 canvas = {};
                 canvas.translate = sinon.spy();
                 canvas.fillText = sinon.spy();
+                canvas.rotate = sinon.spy();
             });
 
             it('When no rotation should translate and put text', function () {
@@ -303,6 +304,17 @@ describe('Extracted functions', function () {
                 };
                 d3.layout.cloud.placeText(canvas, d, 40, 40);
                 expect(canvas.translate).to.have.been.calledWith(40, 40);
+                expect(canvas.fillText).to.have.been.calledWith('Hello', 0, 0);
+            });
+
+            it('Should rotate, when rotation is defined', function () {
+                var d = {
+                    text: 'Hello',
+                    rotate: 3.14 / 2
+                };
+                d3.layout.cloud.placeText(canvas, d, 40, 40);
+                expect(canvas.translate).to.have.been.calledWith(40, 40);
+                expect(canvas.rotate).to.have.been.calledWith(0.027401669256310976);
                 expect(canvas.fillText).to.have.been.calledWith('Hello', 0, 0);
             });
 
@@ -319,6 +331,29 @@ describe('Extracted functions', function () {
                 expect(rv.sw).to.equal(2);
                 expect(rv.x).to.equal(66);
                 expect(rv.h).to.equal(26);
+            });
+        });
+
+        describe('CloudCollide', function () {
+
+            it('Should return false when everything empty', function () {
+                var sprite = [];
+                var tag = {x: 20, width: 64, y: 22, y0: 10, y1: 36, sprite: sprite};
+                var size = 64;
+                var board = [9];
+                var rv = d3.layout.cloud.cloudCollide(tag, board, size);
+                expect(rv).to.be.false();
+            });
+
+            it('Should return true sprite hits something on the board', function () {
+                var sprite = [];
+                sprite[0] = 1 << 21;
+                var tag = {x: 20, width: 64, y: 22, y0: 10, y1: 36, sprite: sprite};
+                var size = 64;
+                var board = [];
+                board[63] = 99;
+                var rv = d3.layout.cloud.cloudCollide(tag, board, size);
+                expect(rv).to.be.true();
             });
         });
 
