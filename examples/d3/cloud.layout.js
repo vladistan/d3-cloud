@@ -46,7 +46,7 @@
                     d.x = (size[0] * (random() + 0.5)) >> 1;
                     d.y = (size[1] * (random() + 0.5)) >> 1;
                     cloudSprite(d, data, i);
-                    if (d.hasText && place(board, d, bounds)) {
+                    if (d.hasText && place(board, d, bounds, needUpdate)) {
                         tags.push(d);
                         event.word(d);
                         if (bounds) {
@@ -123,7 +123,12 @@
             }
         }
 
-        function place(board, tag, bounds) {
+        function needUpdate(bounds, tag, board) {
+            var cloudCollision = (!bounds || !cloudCollide(tag, board, size[0]));
+            return cloudCollision && (!bounds || collideRects(tag, bounds));
+        }
+
+        function place(board, tag, bounds, checkUpdate) {
             var startX = tag.x,
                 startY = tag.y,
                 maxDelta = Math.sqrt(size[0] * size[0] + size[1] * size[1]),
@@ -149,14 +154,12 @@
 
                 if (!isTagStickingOut(tag, size)) {
                     // TODO only check for collisions within current bounds.
-                    if (!bounds || !cloudCollide(tag, board, size[0])) {
-                        if (!bounds || collideRects(tag, bounds)) {
+                    if (checkUpdate(bounds, tag, board)) {
 
-                            updateBoard(board, tag);
+                        updateBoard(board, tag);
 
-                            delete tag.sprite;
-                            return true;
-                        }
+                        delete tag.sprite;
+                        return true;
                     }
                 }
             }
