@@ -396,6 +396,19 @@
         return {maxh: maxh, x: x, y: y};
     }
 
+    function updateTags(data, di, pixels) {
+        while (--di >= 0) {
+            d = data[di];
+            if (!d.hasText) {
+                continue;
+            }
+            if (d.xoff === null) {
+                break;
+            }
+            addTagSprite(d, pixels);
+        }
+    }
+
     function cloudSprite(d, data, di) {
         var wh;
         var w, h;
@@ -439,16 +452,7 @@
         }
         var pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data;
 
-        while (--di >= 0) {
-            d = data[di];
-            if (!d.hasText) {
-                continue;
-            }
-            if (d.xoff === null) {
-                break;
-            }
-            addTagSprite(d, pixels);
-        }
+        updateTags(data, di, pixels);
 
     }
 
