@@ -287,6 +287,41 @@ describe('Extracted functions', function () {
                 });
         });
 
+        describe('Place Text', function () {
+
+            var canvas;
+
+            beforeEach('setup', function () {
+                canvas = {};
+                canvas.translate = sinon.spy();
+                canvas.fillText = sinon.spy();
+            });
+
+            it('When no rotation should translate and put text', function () {
+                var d = {
+                    text: 'Hello'
+                };
+                d3.layout.cloud.placeText(canvas, d, 40, 40);
+                expect(canvas.translate).to.have.been.calledWith(40, 40);
+                expect(canvas.fillText).to.have.been.calledWith('Hello', 0, 0);
+            });
+
+        });
+
+        describe('Setup Collision Values', function () {
+
+            it('Should setup initial collision values', function () {
+                var tag = {x: 128, width: 128, y: 22, y0: 10, y1: 36};
+                var size = [64, 15];
+                var rv = d3.layout.cloud.setupValues(tag, size);
+                expect(rv.w).to.equal(4);
+                expect(rv.sx).to.equal(64);
+                expect(rv.sw).to.equal(2);
+                expect(rv.x).to.equal(66);
+                expect(rv.h).to.equal(26);
+            });
+        });
+
         describe('Spirals', function () {
 
             describe('Archimedian', function () {

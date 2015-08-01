@@ -96,30 +96,26 @@
 
         function updateBoard(board, tag) {
 
-            var sprite, w, h, sw, lx, sx, last, x;
-            w = tag.width >> 5;
-            lx = tag.x - (w << 4);
-            sx = lx & 0x7f;
-            sw = size[0] >> 5;
+            var sprite, last, x, v;
 
-            x = (tag.y + tag.y0) * sw + (lx >> 5);
+            v = setupValues(tag, size);
 
-            h = tag.y1 - tag.y0;
+            x = v.x;
             sprite = tag.sprite;
 
-            for (var j = 0; j < h; j++) {
+            for (var j = 0; j < v.h; j++) {
                 last = 0;
-                for (var i = 0; i <= w; i++) {
+                for (var i = 0; i <= v.w; i++) {
                     var newBoardVal;
-                    var lastMsx = last << (32 - sx);
-                    if (i < w) {
-                        newBoardVal = lastMsx | (last = sprite[j * w + i]) >>> sx;
+                    var lastMsx = last << (32 - v.sx);
+                    if (i < v.w) {
+                        newBoardVal = lastMsx | (last = sprite[j * v.w + i]) >>> v.sx;
                     } else {
                         newBoardVal = lastMsx;
                     }
                     board[x + i] |= newBoardVal;
                 }
-                x += sw;
+                x += v.sw;
             }
         }
 
@@ -476,25 +472,36 @@
         return false;
     }
 
-    // Use mask-based collision detection.
-    function cloudCollide(tag, board, sw) {
-        var cond;
-        var sprite, w, lx, sx, msx, h, x, last;
-        sw >>= 5;
+    function setupValues(tag, size) {
+        var w, lx, sx, x, h, sw;
         w = tag.width >> 5;
         lx = tag.x - (w << 4);
         sx = lx & 0x7f;
-        msx = 32 - sx;
-        h = tag.y1 - tag.y0;
+        sw = size[0] >> 5;
         x = (tag.y + tag.y0) * sw + (lx >> 5);
-        sprite = tag.sprite;
+        h = tag.y1 - tag.y0;
+        return {w: w, sx: sx, x: x, h: h, sw: sw};
+    }
 
-        for (var j = 0; j < h; j++) {
+    // Use mask-based collision detection.
+    function cloudCollide(tag, board, sw) {
+        var cond;
+        var sprite, msx, x, last;
+        var size = [sw, 0];
+
+        var v = setupValues(tag, size);
+
+        sw >>= 5;
+        x = v.x;
+        sprite = tag.sprite;
+        msx = 32 - v.sx;
+
+        for (var j = 0; j < v.h; j++) {
             last = 0;
-            for (var i = 0; i <= w; i++) {
+            for (var i = 0; i <= v.w; i++) {
                 cond = last << msx;
-                if (i < w) {
-                    cond = last << msx | (last = sprite[j * w + i]) >>> sx;
+                if (i < v.w) {
+                    cond = last << msx | (last = sprite[j * v.w + i]) >>> v.sx;
                 } else {
                     cond = last << msx;
                 }
@@ -616,5 +623,6 @@
     t.cloud.isTagStickingOut = isTagStickingOut;
     t.cloud.placeText = placeText;
     t.cloud.computeTextPos = computeTextPos;
+    t.cloud.setupValues = setupValues;
 
 }('undefined' === typeof exports ? d3.layout || (d3.layout = {}) : exports));
