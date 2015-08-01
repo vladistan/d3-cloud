@@ -287,6 +287,75 @@ describe('Extracted functions', function () {
                 });
         });
 
+        describe('Spirals', function () {
+
+            describe('Archimedian', function () {
+
+                var s;
+
+                beforeEach('setup', function () {
+                    var cloud = d3.layout.cloud();
+                    s = cloud.spiral('archimedean').spiral()([20, 20]);
+                });
+
+                it('Should be 0 in the origin', function () {
+                    var rv = s(0);
+                    expect(rv[0]).to.equal(0);
+                    expect(rv[1]).to.equal(0);
+                });
+
+                it('Should be .5 .3 at 2PI', function () {
+                    var rv = s(6.18);
+                    expect(rv[0]).to.be.within(0.49, 0.51);
+                    expect(rv[1]).to.be.within(0.34, 0.36);
+                });
+            });
+
+            describe('Rectangular', function () {
+
+                var s;
+
+                beforeEach('setup', function () {
+                    var cloud = d3.layout.cloud();
+                    s = cloud.spiral('rectangular').spiral()([20, 20]);
+                });
+
+                it('Should be 4 in the origin', function () {
+                    var rv = s(0);
+                    expect(rv[0]).to.equal(4);
+                    expect(rv[1]).to.equal(0);
+                });
+
+                it('Should be [0,4] at 1', function () {
+                    var rv = s(1);
+                    expect(rv[0]).to.equal(0);
+                    expect(rv[1]).to.equal(4);
+                });
+
+                it('Should be [0, 8] at 1 when called twice', function () {
+                    s(1);
+                    var rv = s(1);
+
+                    expect(rv[0]).to.equal(0);
+                    expect(rv[1]).to.equal(8);
+                });
+
+                it('Should be [-4, 0] at 2.25', function () {
+                    var rv = s(2.25);
+
+                    expect(rv[0]).to.equal(-4);
+                    expect(rv[1]).to.equal(0);
+                });
+
+                it('Should be [0, -4] at 4.5', function () {
+                    var rv = s(4.5);
+
+                    expect(rv[0]).to.equal(0);
+                    expect(rv[1]).to.equal(-4);
+                });
+            });
+        });
+
         describe('Should compute value of WH', function () {
 
             var d;
@@ -392,6 +461,157 @@ describe('Extracted functions', function () {
                 expect(rv[0]).to.equal('a');
                 expect(rv[1]).to.equal('b');
                 expect(rv[2]).to.equal('c');
+            });
+
+        });
+
+        describe('Cloud layout.size props', function () {
+            it('should set size and return cloud ref', function () {
+                var cloud = d3.layout.cloud();
+                var rv = cloud.size([10, 20]);
+                expect(rv).to.equal(cloud);
+            });
+
+            it('should return size when invoked with no args', function () {
+                var cloud = d3.layout.cloud();
+                cloud.size([10, 20]);
+                var rv = cloud.size();
+                expect(rv[0]).to.equal(10);
+                expect(rv[1]).to.equal(20);
+            });
+
+        });
+
+        describe('Cloud layout.timeInterval props', function () {
+            it('should set size and return cloud ref', function () {
+                var cloud = d3.layout.cloud();
+                var rv = cloud.timeInterval(5);
+                expect(rv).to.equal(cloud);
+            });
+
+            it('should return size when invoked with no args', function () {
+                var cloud = d3.layout.cloud();
+                cloud.timeInterval(null);
+                var rv = cloud.timeInterval();
+                expect(rv).to.equal(Infinity);
+            });
+
+            it('should return size when invoked with no args', function () {
+                var cloud = d3.layout.cloud();
+                cloud.timeInterval(5);
+                var rv = cloud.timeInterval();
+                expect(rv).to.equal(5);
+            });
+
+        });
+
+        describe('Cloud layout.font props', function () {
+            it('should set font and return cloud ref', function () {
+                var cloud = d3.layout.cloud();
+                var rv = cloud.font(5);
+                expect(rv).to.equal(cloud);
+            });
+
+            it('should return font when invoked with no args', function () {
+                var cloud = d3.layout.cloud();
+                cloud.font(5);
+                var rv = cloud.font()();
+                expect(rv).to.equal(5);
+            });
+
+        });
+
+        describe('Cloud layout.fontstyle props', function () {
+            it('should set font and return cloud ref', function () {
+                var cloud = d3.layout.cloud();
+                var rv = cloud.fontStyle(5);
+                expect(rv).to.equal(cloud);
+            });
+
+            it('should return font when invoked with no args', function () {
+                var cloud = d3.layout.cloud();
+                cloud.fontStyle(5);
+                var rv = cloud.fontStyle()();
+                expect(rv).to.equal(5);
+            });
+
+        });
+
+        describe('Cloud layout.fontWeight props', function () {
+            it('should set fontWeight and return cloud ref', function () {
+                var cloud = d3.layout.cloud();
+                var rv = cloud.fontWeight(5);
+                expect(rv).to.equal(cloud);
+            });
+
+            it('should return fontWeight when invoked with no args', function () {
+                var cloud = d3.layout.cloud();
+                cloud.fontWeight(5);
+                var rv = cloud.fontWeight()();
+                expect(rv).to.equal(5);
+            });
+
+        });
+
+        describe('Cloud layout.rotate props', function () {
+            it('should set fontWeight and return cloud ref', function () {
+                var cloud = d3.layout.cloud();
+                var rv = cloud.rotate(5);
+                expect(rv).to.equal(cloud);
+            });
+
+            it('should return rotate when invoked with no args', function () {
+                var cloud = d3.layout.cloud();
+                cloud.rotate(5);
+                var rv = cloud.rotate()();
+                expect(rv).to.equal(5);
+            });
+
+        });
+
+        describe('Cloud layout.random props', function () {
+            it('should set fontWeight and return cloud ref', function () {
+                var cloud = d3.layout.cloud();
+                var rv = cloud.random(5);
+                expect(rv).to.equal(cloud);
+            });
+
+            it('should return random when invoked with no args', function () {
+                var cloud = d3.layout.cloud();
+                cloud.random(5);
+                var rv = cloud.random();
+                expect(rv).to.equal(5);
+            });
+        });
+
+        describe('Cloud layout.padding props', function () {
+            it('should set padding and return cloud ref', function () {
+                var cloud = d3.layout.cloud();
+                var rv = cloud.padding(5);
+                expect(rv).to.equal(cloud);
+            });
+
+            it('should return padding when invoked with no args', function () {
+                var cloud = d3.layout.cloud();
+                cloud.padding(5);
+                var rv = cloud.padding()();
+                expect(rv).to.equal(5);
+            });
+
+        });
+
+        describe('Cloud layout.spiral props', function () {
+            it('should set spiral and return cloud ref', function () {
+                var cloud = d3.layout.cloud();
+                var rv = cloud.spiral(5);
+                expect(rv).to.equal(cloud);
+            });
+
+            it('should return spiral when invoked with no args', function () {
+                var cloud = d3.layout.cloud();
+                cloud.spiral(5);
+                var rv = cloud.spiral();
+                expect(rv).to.equal(5);
             });
 
         });

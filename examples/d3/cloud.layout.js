@@ -195,11 +195,21 @@
         };
 
         cloud.font = function (_) {
-            return arguments.length ? (font = d3.functor(_), cloud) : font;
+            if (arguments.length) {
+                font = d3.functor(_);
+                return cloud;
+            } else {
+                return font;
+            }
         };
 
         cloud.fontStyle = function (_) {
-            return arguments.length ? (fontStyle = d3.functor(_), cloud) : fontStyle;
+            if (arguments.length) {
+                fontStyle = d3.functor(_);
+                return cloud;
+            } else {
+                return fontStyle;
+            }
         };
 
         cloud.fontWeight = function (_) {
@@ -209,7 +219,12 @@
         };
 
         cloud.rotate = function (_) {
-            return arguments.length ? (rotate = d3.functor(_), cloud) : rotate;
+            if (arguments.length) {
+                rotate = d3.functor(_);
+                return cloud;
+            } else {
+                return rotate;
+            }
         };
 
         cloud.text = function (_) {
@@ -217,7 +232,12 @@
         };
 
         cloud.spiral = function (_) {
-            return arguments.length ? (spiral = spirals[_] || _, cloud) : spiral;
+            if (arguments.length) {
+                spiral = spirals[_] || _;
+                return cloud;
+            } else {
+                return spiral;
+            }
         };
 
         cloud.fontSize = function (_) {
@@ -225,7 +245,12 @@
         };
 
         cloud.padding = function (_) {
-            return arguments.length ? (padding = d3.functor(_), cloud) : padding;
+            if (arguments.length) {
+                padding = d3.functor(_);
+                return cloud;
+            } else {
+                return padding;
+            }
         };
 
         cloud.random = function (_) {
