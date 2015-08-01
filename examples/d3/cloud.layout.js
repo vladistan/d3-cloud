@@ -248,7 +248,12 @@
         };
 
         cloud.fontSize = function (_) {
-            return arguments.length ? (fontSize = d3.functor(_), cloud) : fontSize;
+            if (arguments.length) {
+                fontSize = d3.functor(_);
+                return cloud;
+            } else {
+                return fontSize;
+            }
         };
 
         cloud.padding = function (_) {
@@ -296,12 +301,12 @@
 
     // Fetches a monochrome sprite bitmap for the specified text.
     // Load in batches for speed.
-    function setupTag(tag, x, y, witdh, height) {
-        tag.width = witdh;
+    function setupTag(tag, x, y, width, height) {
+        tag.width = width;
         tag.height = height;
         tag.xoff = x;
         tag.yoff = y;
-        tag.x1 = witdh >> 1;
+        tag.x1 = width >> 1;
         tag.y1 = height >> 1;
         tag.x0 = -tag.x1;
         tag.y0 = -tag.y1;
@@ -469,19 +474,8 @@
         var toTheTop = tag.y + tag.y0 < 0;
         var toTheRight = tag.x + tag.x1 > size[0];
         var toTheBottom = tag.y + tag.y1 > size[1];
-        if (toTheLeft) {
-            return true;
-        }
-        if (toTheTop) {
-            return true;
-        }
-        if (toTheRight) {
-            return true;
-        }
-        if (toTheBottom) {
-            return true;
-        }
-        return false;
+
+        return toTheTop || toTheRight || toTheLeft || toTheBottom;
     }
 
     function setupValues(tag, size) {

@@ -75,7 +75,7 @@ describe('Extracted functions', function () {
         });
     });
 
-    describe('MoveSpinXFOrm', function () {
+    describe('MoveSpinXForm', function () {
         it('should compose xform', function () {
             var rv = moveRotateXForm(34, 22, 11);
             expect(rv).to.equal('translate(34,22)rotate(11)');
