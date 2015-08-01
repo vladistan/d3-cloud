@@ -147,7 +147,7 @@ describe('Extracted functions', function () {
                 expect(rv).to.be.true();
             });
 
-            it('False if rect is above no overalp', function () {
+            it('False if rect is above no overlap', function () {
                 var tag = {x: -45, y: -45, x0: -3, x1: 3, y0: -4, y1: 2};
                 var rv = d3.layout.cloud.collideRects(tag, bounds);
                 expect(rv).to.be.false();
@@ -193,7 +193,7 @@ describe('Extracted functions', function () {
 
         });
 
-        describe('Should compute value of M', function () {
+        describe('Compute value of M', function () {
 
             var pixels, m;
             beforeEach(function () {
@@ -260,7 +260,7 @@ describe('Extracted functions', function () {
                 });
         });
 
-        describe('Shuold compute text posistion', function () {
+        describe('Compute text posistion', function () {
 
             it('Should update maxH when its less than H', function () {
                 var h = 19;
