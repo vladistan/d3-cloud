@@ -408,6 +408,26 @@ describe('Extracted functions', function () {
             });
         });
 
+        describe('UpdateBoard', function () {
+
+            it('Should update the board at position 24', function () {
+
+                var cloud = d3.layout.cloud();
+                var tag = {
+                    text: 'Hello', value: 4, size: 4,
+                    y1: 6, y: 3, y0: 0, x1: 32, x: 16, x0: 0, width: 32,
+                    sprite: [12, 19, 45]
+                };
+
+                var board = [5];
+
+                cloud.updateBoard(board, tag);
+
+                expect(board[24]).to.equal(12);
+
+            });
+        });
+
         describe('UpdateTags', function () {
 
             it('Should not do anything if hasText is empty', function () {

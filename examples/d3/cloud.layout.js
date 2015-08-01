@@ -265,6 +265,7 @@
         };
 
         cloud.prepWordTags = prepWordTags;
+        cloud.updateBoard = updateBoard;
 
         return d3.rebind(cloud, event, 'on');
     };
