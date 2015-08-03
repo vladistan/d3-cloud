@@ -238,6 +238,31 @@ function draw(d, i) {
 }
 
 function setupFormEvents() {
+
+    d3.select('#mbtn1').on('click', function () {
+        load(d3.select('#multi1').property('value'));
+        d3.event.preventDefault();
+
+    });
+
+    d3.select('#mbtn2').on('click', function () {
+        load(d3.select('#multi3').property('value'));
+        d3.event.preventDefault();
+
+    });
+
+    d3.select('#mbtn3').on('click', function () {
+        load(d3.select('#multi3').property('value'));
+        d3.event.preventDefault();
+
+    });
+
+    d3.select('#mbtn4').on('click', function () {
+        load(d3.select('#multi4').property('value'));
+        d3.event.preventDefault();
+
+    });
+
     var form = d3.select('#form')
         .on('submit', function () {
             load(d3.select('#text').property('value'));

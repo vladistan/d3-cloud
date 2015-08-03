@@ -46,6 +46,11 @@
         position: relative;
     }
 
+    .multiarea {
+        width: 100%;
+        height: 100px;
+    }
+
     hr {
         border: none;
         border-bottom: solid #ccc 1px;
@@ -82,7 +87,16 @@
     }
 </style>
 
+<div>
+    <button id="mbtn1" type="submit">Go!</button>
+    <button id="mbtn2" type="submit">Go!</button>
+    <button id="mbtn3" type="submit">Go!</button>
+    <button id="mbtn4" type="submit">Go!</button>
+
+</div>
+
 <div id="vis"></div>
+
 
 <form id="form">
 
@@ -95,11 +109,11 @@
 
             <p><textarea id="text"></textarea>
                 <button id="go" type="submit">Go!</button>
+
         </div>
     </div>
 
     <hr>
-
     <div style="float: right; text-align: right">
         <p><label for="max">Number of words:</label> <input type="number" value="250" min="1" id="max">
 
@@ -130,6 +144,13 @@
             <label for="angle-from">from</label> <input type="number" id="angle-from" value="-60" min="-90" max="90"> °
             <label for="angle-to">to</label> <input type="number" id="angle-to" value="60" min="-90" max="90"> °
     </div>
+
+    <p>
+        <textarea class="multiarea" id="multi1"></textarea>
+        <textarea class="multiarea" id="multi2"></textarea>
+        <textarea class="multiarea" id="multi3"></textarea>
+        <textarea class="multiarea" id="multi4"></textarea>
+    </p>
 
     <hr style="clear: both">
 
