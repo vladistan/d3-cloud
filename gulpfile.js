@@ -5,12 +5,22 @@ var glob = require('glob');
 var gulp = require('gulp');
 var path = require('path');
 var util = require('util');
+var debug = require('gulp-debug');
+var rename = require('gulp-rename');
+var awspublish = require('gulp-awspublish');
+var merge2 = require('merge2');
 var _ = require('lodash');
 
 var $ = require('gulp-load-plugins')({lazy: true});
 
 var colors = $.util.colors;
 var envenv = $.util.env;
+
+var env = {
+    get root() { return path.join(__dirname, '.'); },
+    get sitepath() { return path.join(this.root, 'examples');}
+};
+
 /**
  * yargs variables can be passed in to alter the behavior, when present.
  * Example: gulp serve-dev
@@ -27,6 +37,35 @@ var envenv = $.util.env;
  */
 gulp.task('help', $.taskListing);
 gulp.task('default', ['help']);
+
+/**
+ * Upload artifacts to Amazon S3
+*/
+gulp.task('publish-s3', function () {
+
+    var publisher = awspublish.create({
+        params: {
+            Bucket: 'test.teacompetition.org'
+        },
+    });
+
+    var extraOpts = {
+        simulate: false
+    };
+
+    var headers = {
+        'Cache-Control': 'max-age=60, no-transform, public'
+    };
+
+    return merge2(
+            gulp.src(config.publishjs),
+            gulp.src(config.allhtml))
+        .pipe(rename(function(obj) {
+            obj.dirname = '444-cloudanim';
+        }))
+        .pipe(publisher.publish(headers, extraOpts))
+        .pipe(awspublish.reporter())
+});
 
 /**
  * vet the code and create coverage report

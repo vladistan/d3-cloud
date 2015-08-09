@@ -27,6 +27,14 @@ module.exports = function () {
         ],
         index: 'index.html',
 
+        publishjs: [
+           './examples/d3/*.js'
+        ],
+
+        allhtml: [
+          './examples/d3/bob.html'
+        ],
+
         testJS: [
             './examples/d3/*.js'
         ],
