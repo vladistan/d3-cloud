@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>Word Cloud Generator</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
 <style>
     body {
         position: relative;
@@ -49,6 +52,7 @@
     .multiarea {
         width: 100%;
         height: 100px;
+        display: none;
     }
 
     hr {
@@ -87,13 +91,14 @@
     }
 </style>
 
-<div>
-    <button id="mbtn1" type="submit">Go!</button>
-    <button id="mbtn2" type="submit">Go!</button>
-    <button id="mbtn3" type="submit">Go!</button>
-    <button id="mbtn4" type="submit">Go!</button>
+<div class="main container">
 
-</div>
+<section>
+    <button class="btn " id="mbtn1" type="submit">1998</button>
+    <button class="btn btn-info" id="mbtn2" type="submit">2004</button>
+    <button class="btn btn-info" id="mbtn3" type="submit">2008</button>
+    <button class="btn btn-warning" id="mbtn4" type="submit">2014</button>
+</section>
 
 <div id="vis"></div>
 
@@ -108,7 +113,7 @@
             <p><label for="text">Enter a URL below, or paste some text.</label>
 
             <p><textarea id="text"></textarea>
-                <button id="go" type="submit">Go!</button>
+                <button class="btn btn-danger" id="go" type="submit">Go!</button>
 
         </div>
     </div>
@@ -118,8 +123,6 @@
         <p><label for="max">Number of words:</label> <input type="number" value="250" min="1" id="max">
 
         <p><label for="per-line"><input type="checkbox" id="per-line"> One word per line</label>
-            <p><label for="colours">Colours:</label> <a href="#" id="random-palette">get random palette</a>
-
         <p><label>Download:</label>
             <a id="download-svg" href="#" target="_blank">SVG</a> |
             <a id="download-png" href="#" target="_blank">PNG</a>
@@ -171,7 +174,6 @@ congue metus sed laoreet.
         </textarea>
 
         <textarea class="multiarea" id="multi2">
-
 Ut dignissim porta dui, at molestie nunc sodales vel. Curabitur non commodo
 neque, ac sollicitudin diam. In massa justo, aliquam eget facilisis nec,
 imperdiet nec orci. Quisque bibendum justo vel orci auctor bibendum. Nunc ut
@@ -187,12 +189,9 @@ vehicula quis sem. Praesent dapibus eros at dolor vestibulum, ut ullamcorper
 neque venenatis. Sed vitae tortor consequat, rhoncus velit et, dictum mauris.
 Nulla id orci erat. Nullam quis finibus lectus. Pellentesque et viverra urna,
 quis tristique risus. Quisque mollis suscipit mattis.
-
-
         </textarea>
 
         <textarea class="multiarea" id="multi3">
-
 Aliquam elit est, gravida vitae accumsan vel, vehicula non est. Vivamus a
 viverra dolor, non pellentesque erat. Phasellus a ipsum tortor. Suspendisse et
 justo turpis. Maecenas eu justo mi. Mauris semper felis vel tincidunt fringilla.
@@ -208,11 +207,9 @@ pretium quam. Morbi nisi augue, euismod vitae pretium a, bibendum vel est.
 Aliquam in condimentum nunc. Nulla non magna id augue pulvinar tristique. In
 sodales risus ut euismod iaculis. In vehicula, orci at gravida laoreet, felis mi
 tempor quam, ac placerat odio nisl sed erat.
-
         </textarea>
 
         <textarea class="multiarea" id="multi4">
-
 Morbi vulputate elit non efficitur tristique. Proin non est et odio maximus
 congue sed in lacus. Quisque congue vel ex ac posuere. Integer eget arcu
 malesuada, venenatis magna ac, auctor urna. Mauris tincidunt ullamcorper magna
@@ -242,17 +239,15 @@ feugiat nisi auctor. Proin auctor id ante convallis sollicitudin. Mauris ipsum
 nisl, sagittis id maximus nec, egestas maximus libero. Cum sociis natoque
 penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras tempor
 blandit risus, sed sollicitudin metus dignissim eget.
-
-
         </textarea>
     </p>
 
     <hr style="clear: both">
-
-    <p style="float: right"><a href="about/">How the Word Cloud Generator Works</a>.
-
-
 </form>
+
+</div>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="d3.js"></script>
 <script src="extracted.js"></script>
 <script src="cloud.layout.js"></script>

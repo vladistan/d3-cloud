@@ -54,8 +54,8 @@ var testText = 'This works for some uses of a very small area of D3 API. I can i
 
 var maxLength = 30;
 
-var w = 640,
-    h = 480,
+var w = 960,
+    h = 600,
     words = [],
     max, scale = 1,
     firstTime = true;

@@ -22,5 +22,5 @@ d3.select(window)
     .on('hashchange', hashchange);
 
 setupFormEvents();
-hashchange(testText);
+load(d3.select('#multi1').property('value'));
 // setupRandomPallete();
