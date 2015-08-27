@@ -156,7 +156,7 @@ function generate() {
             .property('value'));
     fontSize = d3.scale[d3.select('input[name=scale]:checked')
         .property('value')]()
-        .range([10, 100]);
+        .range([10, 75]);
     if (tags.length) {
         fontSize.domain([+tags[tags.length - 1].value || 1, +tags[0].value]);
     }
