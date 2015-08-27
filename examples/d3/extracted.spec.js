@@ -15,6 +15,21 @@ describe('Extracted functions', function () {
         });
     });
 
+    describe('Table Parser', function () {
+
+        it('Should parse lines of text', function () {
+
+            var table = 'word1 10.2\nword2 10.4\nword3 10.9';
+
+            parseTable(table);
+            expect(tags.length).to.equal(3);
+            expect(tags[0].key).to.equal('word3');
+            expect(tags[0].value).to.equal(10.9);
+
+        });
+
+    });
+
     describe('Text Parser', function () {
         it('Should parse the text', function () {
             var text = 'lorem ipsum dolor sit amet lorem sit sit sit';

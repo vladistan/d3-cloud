@@ -91,6 +91,23 @@ function cleanUpTag(t) {
     return t;
 }
 
+function parseTable(text) {
+
+    tags = {};
+
+    text.split(/\n/g)
+        .forEach(function(t) {
+            var e = t.split(/\s/g);
+            tags[e[0]] =  ~~ parseFloat(e[1]);
+        });
+
+    tags = d3.entries(tags).sort(function (a, b) {
+        return b.value - a.value;
+    });
+
+    return 0;
+}
+
 function parseText(text, separator) {
     var e = {};
     tags = {};
@@ -115,6 +132,12 @@ function parseText(text, separator) {
     tags.forEach(function (t) {
         t.key = e[t.key];
     });
+}
+
+function loadTable(text)
+{
+    parseTable(text);
+    generate();
 }
 
 function load(text) {
@@ -240,25 +263,25 @@ function draw(d, i) {
 function setupFormEvents() {
 
     d3.select('#mbtn1').on('click', function () {
-        load(d3.select('#multi1').property('value'));
+        loadTable(d3.select('#multi1').property('value'));
         d3.event.preventDefault();
 
     });
 
     d3.select('#mbtn2').on('click', function () {
-        load(d3.select('#multi3').property('value'));
+        loadTable(d3.select('#multi2').property('value'));
         d3.event.preventDefault();
 
     });
 
     d3.select('#mbtn3').on('click', function () {
-        load(d3.select('#multi3').property('value'));
+        loadTable(d3.select('#multi3').property('value'));
         d3.event.preventDefault();
 
     });
 
     d3.select('#mbtn4').on('click', function () {
-        load(d3.select('#multi4').property('value'));
+        loadTable(d3.select('#multi4').property('value'));
         d3.event.preventDefault();
 
     });
