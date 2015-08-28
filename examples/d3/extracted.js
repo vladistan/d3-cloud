@@ -262,6 +262,16 @@ function draw(d, i) {
 
 function setupFormEvents() {
 
+    d3.select('#hideSettings').on('click', function () {
+
+        var form = d3.select('#form');
+
+        form.style('visibility', function(d) {
+               return form.style('visibility') === 'hidden' ? 'visible' : 'hidden';
+           }
+       );
+    });
+
     d3.select('#mbtn1').on('click', function () {
         loadTable(d3.select('#multi1').property('value'));
         d3.event.preventDefault();
