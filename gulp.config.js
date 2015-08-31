@@ -32,7 +32,6 @@ module.exports = function () {
         ],
 
         allhtml: [
-          './examples/d3/bob.html',
           './examples/d3/bill.html'
         ],
 
