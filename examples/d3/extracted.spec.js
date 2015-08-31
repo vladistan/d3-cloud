@@ -28,6 +28,19 @@ describe('Extracted functions', function () {
 
         });
 
+
+        it('It should shrink low weight (<1) words to zero', function () {
+
+            var table = 'word1 .56\nword2 .67\nword3 1.9';
+
+            parseTable(table);
+            expect(tags.length).to.equal(3);
+            expect(tags[1].key).to.equal('word1');
+            expect(tags[1].value).to.equal(1);
+
+        });
+
+
     });
 
     describe('Text Parser', function () {
