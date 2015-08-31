@@ -19,12 +19,12 @@ describe('Extracted functions', function () {
 
         it('Should parse lines of text', function () {
 
-            var table = 'word1 10.2\nword2 10.4\nword3 10.9';
+            var table = 'word1 8.2\nword2 15.4\nword3 10.9';
 
             parseTable(table);
             expect(tags.length).to.equal(3);
-            expect(tags[0].key).to.equal('word3');
-            expect(tags[0].value).to.equal(10.9);
+            expect(tags[0].key).to.equal('word2');
+            expect(tags[0].value).to.equal(15);
 
         });
 
@@ -83,10 +83,10 @@ describe('Extracted functions', function () {
             var rv = computeScale(null);
             expect(rv).to.equal(1);
         });
-        it('should give scale of 2 an element half the screen', function () {
+        it('should give scale of 1.5 an element half the screen', function () {
             var e = [{x: 320, y: 280}, {x: 160, y: 360}];
             var rv = computeScale(e);
-            expect(rv).to.equal(2);
+            expect(rv).to.equal(1.5);
         });
     });
 
