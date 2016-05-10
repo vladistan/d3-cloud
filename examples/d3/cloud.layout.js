@@ -413,13 +413,9 @@
     function updateTags(data, di, pixels) {
         while (--di >= 0) {
             d = data[di];
-            if (!d.hasText) {
-                continue;
+            if (d.hasText && d.xoff !== null) {
+                addTagSprite(d, pixels);
             }
-            if (d.xoff === null) {
-                break;
-            }
-            addTagSprite(d, pixels);
         }
     }
 
