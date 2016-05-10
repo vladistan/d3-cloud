@@ -98,7 +98,7 @@ function parseTable(text) {
     text.split(/\n/g)
         .forEach(function(t) {
             var e = t.split(/\s/g);
-            tags[e[0]] =  ~~ parseFloat(e[1]);
+            tags[e[0]] =  ~~parseFloat(e[1]);
         });
 
     tags = d3.entries(tags).sort(function (a, b) {
