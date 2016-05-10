@@ -34,4 +34,6 @@ docker run -w /app -v `pwd`/.m2:/.m2 -v `pwd`:/app -u $UID:$UID \
        -i -e HOME=/app vladistan/node \
        gulp test
 
+sed  -i.bak  's@^SF:/app/@SF:@' report/coverage/report-lcov/lcov.info
+
 /usr/local/sonar-runner/bin/sonar-runner
