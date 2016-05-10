@@ -11,7 +11,7 @@ if [ x${DOCKER_VERSION} == x17178629171  ]; then
    echo "Old Docker detected"
    VOL_COMMANDS=''
    mkdir .npm
-   mkdir mode_modules
+   mkdir node_modules
 fi
 
 docker run -w /app -v `pwd`/.m2:/.m2 -v `pwd`:/app -u 0:0 \
