@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 terraform remote config \
     -backend=s3 \
     -backend-config="bucket=v-lad-anim-words-tf-infra" \
