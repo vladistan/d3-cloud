@@ -1,5 +1,12 @@
+
+variable "bucket" {
+    default = "ebiq-word-cloud.r2.v-lad.org"
+    description = "S3 bucket to use as static website"
+}
+
+
 resource "aws_s3_bucket" "ebiqwordcloud" {
-    bucket = "ebiq-word-cloud.r2.v-lad.org"
+    bucket = "${var.bucket}"
     acl = "public-read"
 
     tags {
@@ -17,8 +24,17 @@ resource "aws_s3_bucket" "ebiqwordcloud" {
         target_prefix = "log/"
     }
 
+    policy = "${template_file.policy.rendered}"
+
 }
 
+resource "template_file" "policy" {
+    template = "${file("files/s3-site-policy.json")}"
+
+    vars {
+        bucket = "${var.bucket}"
+    }
+}
 
 resource "aws_s3_bucket" "ebiqwordcloudlog" {
     bucket = "ebiq-word-cloud.r2.v-lad.org.logs"
@@ -34,6 +50,16 @@ resource "aws_s3_bucket" "ebiqwordcloudlog" {
         }
 
     }
+}
+
+
+resource "aws_s3_bucket_object" "object" {
+    bucket = "${aws_s3_bucket.ebiqwordcloud.id}"
+    key = "index.html"
+    source = "files/index.html"
+    content_type = "html"
+    content_encoding = "UTF-8"
+    etag = "${md5(file("files/index.html"))}"
 }
 
 
