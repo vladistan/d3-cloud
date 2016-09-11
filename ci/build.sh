@@ -38,40 +38,30 @@ if [ x${DOCKER_VERSION} == x17178629171  ]; then
    done
 fi
 
-# echo "Reset /app owner"
-#
-# docker run -w /app -v `pwd`/.m2:/.m2 -v `pwd`:/app -u 0:0 \
-#        $VOL_COMMANDS \
-#        -i -e HOME=/app local/nodebuild \
-#        chown -R $UID /app/.npm
-#
-# echo "Reset node modules owner"
-#
-# docker run -w /app -v `pwd`/.m2:/.m2 -v `pwd`:/app -u 0:0 \
-#        $VOL_COMMANDS \
-#        -i -e HOME=/app local/nodebuild \
-#        chown -R $UID /app/node_modules
-#
-# echo "Install NPM modules"
-#
 echo "AS root setup volumes"
 docker run -w /app  -v `pwd`:/app -u 0:0 \
-    $VOL_COMMANDS \
-    -i -e USE_UID=$USE_UID -e HOME=/app local/nodebuild \
+    ${VOL_COMMANDS} \
+    -i -e USE_UID=${USE_UID} -e HOME=/app local/nodebuild \
     /bin/bash ci/volPrep.sh
 
 echo "Install NPM modules"
-docker run -w /app -v `pwd`:/app -u $USE_UID:$USE_UID \
-       $VOL_COMMANDS \
+docker run -w /app -v `pwd`:/app -u ${USE_UID}:${USE_UID} \
+       ${VOL_COMMANDS} \
        -i -e HOME=/app local/nodebuild \
         npm install
 
 echo "JS Test"
 
-docker run -w /app -v `pwd`/.m2:/.m2 -v `pwd`:/app -u $USE_UID:$USE_UID \
-       $VOL_COMMANDS \
+docker run -w /app -v `pwd`/.m2:/.m2 -v `pwd`:/app -u ${USE_UID}:${USE_UID} \
+       ${VOL_COMMANDS} \
        -i -e HOME=/app local/nodebuild \
        gulp test
+
+echo "Publish S3"
+docker run -w /app -v `pwd`/.m2:/.m2 -v `pwd`:/app -u ${USE_UID}:${USE_UID} \
+       ${VOL_COMMANDS} \
+       -i -e HOME=/app local/nodebuild \
+       gulp publish-s3
 
 sed  -i.bak  's@^SF:/app/@SF:@' report/coverage/report-lcov/lcov.info
 
