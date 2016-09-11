@@ -57,18 +57,11 @@ docker run -w /app  -v `pwd`:/app -u 0:0 \
     -i -e USE_UID=$USE_UID -e HOME=/app local/nodebuild \
     /bin/bash ci/volPrep.sh
 
-
-       $VOL_COMMANDS \
-       -ti -e HOME=/app local/nodebuild \
-        /bin/bash
-#       npm install
-
 echo "Install NPM modules"
 docker run -w /app -v `pwd`:/app -u $USE_UID:$USE_UID \
        $VOL_COMMANDS \
        -i -e HOME=/app local/nodebuild \
         npm install
-
 
 echo "JS Test"
 
