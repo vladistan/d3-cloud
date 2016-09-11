@@ -296,6 +296,12 @@ function setupFormEvents() {
 
     });
 
+    d3.select('#mbtn5').on('click', function () {
+        loadTable(d3.select('#multi5').property('value'));
+        d3.event.preventDefault();
+
+    });
+
     var form = d3.select('#form')
         .on('submit', function () {
             load(d3.select('#text').property('value'));
