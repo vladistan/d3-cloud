@@ -45,7 +45,7 @@ gulp.task('publish-s3', function () {
 
     var publisher = awspublish.create({
         params: {
-            Bucket: 'test.teacompetition.org'
+            Bucket: 'ebiq-word-cloud.r2.v-lad.org'
         },
     });
 
