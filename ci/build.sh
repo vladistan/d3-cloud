@@ -6,6 +6,8 @@ cd ci
 ./ciBuild.sh
 cd ..
 
+set -u
+
 USE_UID=$UID
 
 if [ ${USE_UID} -eq 500345588 ]; then
