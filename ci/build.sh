@@ -31,8 +31,11 @@ DOCKER_VERSION=$(docker --version | sed 's/[^0-9]//g')
 if [ x${DOCKER_VERSION} == x17178629171  ]; then
    echo "Old Docker detected"
    VOL_COMMANDS=''
-   mkdir -p .npm
-   mkdir -p node_modules
+   BDIRS=".npm node_modules bower_components .cache .config"
+   for x in ${BDIRS}
+   do
+       mkdir -p ${x}
+   done
 fi
 
 # echo "Reset /app owner"
