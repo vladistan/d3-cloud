@@ -6,7 +6,6 @@ cd ci
 ./ciBuild.sh
 cd ..
 
-set -u
 
 USE_UID=$UID
 
@@ -23,6 +22,8 @@ NODEMOD_VOLUME=anim-wordcloud.nodemod.${GO_PIPELINE_NAME}
 CONFIG_VOLUME=anim-wordcloud.config.${GO_PIPELINE_NAME}
 CACHE_VOLUME=anim-wordcloud.cache.${GO_PIPELINE_NAME}
 BOWER_VOLUME=anim-wordcloud.bower.${GO_PIPELINE_NAME}
+
+set -u
 
 
 VOL_COMMANDS="-v $NPM_VOLUME:/app/.npm -v $NODEMOD_VOLUME:/app/node_modules"
@@ -62,9 +63,10 @@ docker run -w /app -v `pwd`/.m2:/.m2 -v `pwd`:/app -u ${USE_UID}:${USE_UID} \
 echo "Publish S3"
 docker run -w /app -v `pwd`/.m2:/.m2 -v `pwd`:/app -u ${USE_UID}:${USE_UID} \
        ${VOL_COMMANDS} \
-       -i -e HOME=/app local/nodebuild \
-       -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-       -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+       -i -e HOME=/app \
+       -e AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
+       -e AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" \
+       local/nodebuild \
        gulp publish-s3
 
 sed  -i.bak  's@^SF:/app/@SF:@' report/coverage/report-lcov/lcov.info
