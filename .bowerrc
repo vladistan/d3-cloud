@@ -1,6 +1,6 @@
 {
   "directory": "bower_components",
 	"scripts": {
-		"postinstall": [ "gulp wiredep", "gulp build-specs" ]
+		"postinstall": [ "gulp wiredep build-specs" ]
 	}
 }
