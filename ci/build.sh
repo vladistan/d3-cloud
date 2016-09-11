@@ -61,6 +61,8 @@ echo "Publish S3"
 docker run -w /app -v `pwd`/.m2:/.m2 -v `pwd`:/app -u ${USE_UID}:${USE_UID} \
        ${VOL_COMMANDS} \
        -i -e HOME=/app local/nodebuild \
+       -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+       -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
        gulp publish-s3
 
 sed  -i.bak  's@^SF:/app/@SF:@' report/coverage/report-lcov/lcov.info
