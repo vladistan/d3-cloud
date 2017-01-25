@@ -1,6 +1,8 @@
 #/bin/bash
 set -e
 
+export
+
 echo Building build image
 cd ci
 ./ciBuild.sh
@@ -47,11 +49,32 @@ docker run -w /app  -v `pwd`:/app -u 0:0 \
     -i -e USE_UID=${USE_UID} -e HOME=/app local/nodebuild \
     /bin/bash ci/volPrep.sh
 
+
+echo "AS root check volumes"
+docker run -w /app  -v `pwd`:/app -u 0:0 \
+    $VOL_COMMANDS \
+    -ti -e USE_UID=$USE_UID -e HOME=/app local/nodebuild \
+    /bin/bash
+
+
+echo "Check NPM modules"
+docker run -w /app -v `pwd`:/app -u $USE_UID:$USE_UID \
+       $VOL_COMMANDS \
+       -ti -e HOME=/app local/nodebuild \
+        /bin/bash
+
 echo "Install NPM modules"
 docker run -w /app -v `pwd`:/app -u ${USE_UID}:${USE_UID} \
        ${VOL_COMMANDS} \
        -i -e HOME=/app local/nodebuild \
         npm install
+
+echo "Check NPM modules"
+docker run -w /app -v `pwd`:/app -u $USE_UID:$USE_UID \
+       $VOL_COMMANDS \
+       -ti -e HOME=/app local/nodebuild \
+        /bin/bash
+
 
 echo "JS Test"
 
