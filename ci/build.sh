@@ -8,6 +8,10 @@ cd ci
 ./ciBuild.sh
 cd ..
 
+if [ "x${UID}" = "x" ]; then
+    echo "User ID not fount.. replacing"
+    export UID=$(id -u ${USER})
+fi
 
 USE_UID=$UID
 
