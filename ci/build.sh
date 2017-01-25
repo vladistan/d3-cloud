@@ -57,14 +57,14 @@ docker run -w /app  -v `pwd`:/app -u 0:0 \
 echo "AS root check volumes"
 docker run -w /app  -v `pwd`:/app -u 0:0 \
     $VOL_COMMANDS \
-    -ti -e USE_UID=$USE_UID -e HOME=/app local/nodebuild \
+    -i -e USE_UID=$USE_UID -e HOME=/app local/nodebuild \
     /bin/bash
 
 
 echo "Check NPM modules"
 docker run -w /app -v `pwd`:/app -u $USE_UID:$USE_UID \
        $VOL_COMMANDS \
-       -ti -e HOME=/app local/nodebuild \
+       -i -e HOME=/app local/nodebuild \
         /bin/bash
 
 echo "Install NPM modules"
@@ -76,7 +76,7 @@ docker run -w /app -v `pwd`:/app -u ${USE_UID}:${USE_UID} \
 echo "Check NPM modules"
 docker run -w /app -v `pwd`:/app -u $USE_UID:$USE_UID \
        $VOL_COMMANDS \
-       -ti -e HOME=/app local/nodebuild \
+       -i -e HOME=/app local/nodebuild \
         /bin/bash
 
 
