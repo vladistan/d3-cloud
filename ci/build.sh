@@ -37,7 +37,7 @@ VOL_COMMANDS="${VOL_COMMANDS} -v $CACHE_VOLUME:/app/.cache -v $CONFIG_VOLUME:/ap
 VOL_COMMANDS="${VOL_COMMANDS} -v $BOWER_VOLUME:/app/bower_components"
 
 DOCKER_VERSION=$(docker --version | sed 's/[^0-9]//g')
-if [ x${DOCKER_VERSION} == x17178629171  ]; then
+if [ x${DOCKER_VERSION} = "x17178629171"  ]; then
    echo "Old Docker detected"
    VOL_COMMANDS=''
    BDIRS=".npm node_modules bower_components .cache .config"
