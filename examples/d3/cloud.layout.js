@@ -50,7 +50,12 @@
 
                     if (!d.sprite) {
                         di = cloudSprite(data, i);
-                        pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data;
+
+                        pixels = c.getImageData(
+                            0, 0,
+                            (cw << 5) / ratio,
+                            ch / ratio).data;
+
                         updateTags(data, di, pixels);
                     }
 
@@ -117,7 +122,8 @@
                     var newBoardVal;
                     var lastMsx = last << (32 - v.sx);
                     if (i < v.w) {
-                        newBoardVal = lastMsx | (last = sprite[j * v.w + i]) >>> v.sx;
+                        newBoardVal = lastMsx |
+                                      (last = sprite[j * v.w + i]) >>> v.sx;
                     } else {
                         newBoardVal = lastMsx;
                     }
@@ -336,7 +342,10 @@
                 wsr = w * sr,
                 hcr = h * cr,
                 hsr = h * sr;
-            w = (Math.max(Math.abs(wcr + hsr), Math.abs(wcr - hsr)) + 0x1f) >> 5 << 5;
+            w = (
+                  Math.max(Math.abs(wcr + hsr),
+                  Math.abs(wcr - hsr)) + 0x1f
+                ) >> 5 << 5;
             h = ~~Math.max(Math.abs(wsr + hcr), Math.abs(wsr - hcr));
         } else {
             w = (w + 0x1f) >> 5 << 5;

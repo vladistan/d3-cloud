@@ -2,3 +2,5 @@ node_modules
 bower_components
 report
 /.sonar
+/.node-gyp
+/.bash_history
