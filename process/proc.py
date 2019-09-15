@@ -4,7 +4,7 @@ from glob import glob
 
 class DirProcessor(object):
     def __init__(self, data_dir):
-        self.files = glob(os.path.join(data_dir, '*.txt'))
+        self.files = sorted(glob(os.path.join(data_dir, '*.txt')))
 
     def get_ds(self):
         return self.files

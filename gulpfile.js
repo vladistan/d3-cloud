@@ -61,7 +61,7 @@ gulp.task('publish-s3', function () {
             gulp.src(config.publishjs),
             gulp.src(config.allhtml))
         .pipe(rename(function(obj) {
-            obj.dirname = '444-cloudanim';
+            obj.dirname = '445-cloudanim';
         }))
         .pipe(publisher.publish(headers, extraOpts))
         .pipe(awspublish.reporter())

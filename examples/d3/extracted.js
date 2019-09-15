@@ -275,31 +275,46 @@ function setupFormEvents() {
     d3.select('#mbtn1').on('click', function () {
         loadTable(d3.select('#multi1').property('value'));
         d3.event.preventDefault();
-
     });
 
     d3.select('#mbtn2').on('click', function () {
         loadTable(d3.select('#multi2').property('value'));
         d3.event.preventDefault();
-
     });
 
     d3.select('#mbtn3').on('click', function () {
         loadTable(d3.select('#multi3').property('value'));
         d3.event.preventDefault();
-
     });
 
     d3.select('#mbtn4').on('click', function () {
         loadTable(d3.select('#multi4').property('value'));
         d3.event.preventDefault();
-
     });
 
     d3.select('#mbtn5').on('click', function () {
         loadTable(d3.select('#multi5').property('value'));
         d3.event.preventDefault();
+    });
 
+    d3.select('#mbtn6').on('click', function () {
+        loadTable(d3.select('#multi6').property('value'));
+        d3.event.preventDefault();
+    });
+
+    d3.select('#mbtn7').on('click', function () {
+        loadTable(d3.select('#multi7').property('value'));
+        d3.event.preventDefault();
+    });
+
+    d3.select('#mbtn8').on('click', function () {
+        loadTable(d3.select('#multi8').property('value'));
+        d3.event.preventDefault();
+    });
+
+    d3.select('#mbtn9').on('click', function () {
+        loadTable(d3.select('#multi9').property('value'));
+        d3.event.preventDefault();
     });
 
     var form = d3.select('#form')
