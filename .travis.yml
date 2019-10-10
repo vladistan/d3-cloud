@@ -1,0 +1,34 @@
+language: node_js
+os:
+ - linux
+node_js:
+  - "12.10"
+  - "12.9"
+  - "11.15"
+  - "10.16"
+  - "10.15"
+  - "9.11"
+  - "8.16"
+before_install:
+  - 'nvm install-latest-npm'
+install:
+  npm install
+script:
+  - 'if [ -n "${PRETEST-}" ]; then npm run pretest ; fi'
+  - 'if [ -n "${POSTTEST-}" ]; then npm run posttest ; fi'
+  - 'if [ -n "${COVERAGE-}" ]; then npm run coverage ; fi'
+  - 'if [ -n "${TEST-}" ]; then npm run tests-only ; fi'
+sudo: false
+env:
+  - TEST=true
+matrix:
+  fast_finish: true
+  include:
+    - node_js: "lts/*"
+      env: PRETEST=true
+    - node_js: "lts/*"
+      env: POSTTEST=true
+    - node_js: "12.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.15"
+      env: TEST=true ALLOW_FAILURE=true
