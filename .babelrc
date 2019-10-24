@@ -1,17 +1,6 @@
 {
-  "comments": false,
+  "sourceType": "unambiguous",
   "presets": [
-    [
-          "@babel/preset-env",
-          {
-            "loose": true,
-            "modules": "auto"
-          }
-    ]
-  ],
-  "plugins": [
-    "@babel/plugin-proposal-class-properties",
-    "@babel/plugin-transform-runtime",
-    "source-map-support"
+    "@babel/preset-env"
   ]
 }

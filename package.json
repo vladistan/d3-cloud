@@ -1,59 +1,51 @@
 {
-  "name": "d3-cloud",
-  "version": "1.2.5",
-  "description": "Generate word clouds in JavaScript.",
-  "keywords": [
-    "word",
-    "cloud",
-    "tag",
-    "visualization",
-    "canvas"
-  ],
-  "homepage": "https://www.jasondavies.com/wordcloud/",
-  "license": "BSD-3-Clause",
   "author": {
     "name": "Jason Davies",
     "url": "https://www.jasondavies.com/"
   },
-  "main": "build/d3.layout.cloud.js",
-  "module": "index",
-  "jsnext:main": "index",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jasondavies/d3-cloud.git"
-  },
-  "scripts": {
-    "test": "karma start karma.conf.js",
-    "build": "mkdir -p build && browserify --standalone d3.layout.cloud index.js > build/d3.layout.cloud.js",
-    "prestart": "npm install",
-    "pretest": "npm install",
-    "test-single-run": "karma start karma.conf.js --single-run"
-  },
   "dependencies": {
-    "@babel/cli": "^7.6.2",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/polyfill": "^7.6.0",
     "@babel/runtime": "^7.6.2",
     "@babel/runtime-corejs2": "^7.6.2",
-    "babel-plugin-source-map-support": "^2.1.1",
-    "chai": "^4.2.0",
-    "d3-dispatch": "^1.0.3",
-    "fsevents": "^2.1.0",
-    "karma-sinon-chai": "^2.0.2",
-    "mocha": "^6.2.2",
-    "nodemon": "^1.19.3",
-    "sinon": "^7.5.0",
-    "sinon-chai": "^3.3.0",
-    "webpack": "^4.41.2"
+    "canvas": "^1.2.3",
+    "d3": "3.x",
+    "d3-dispatch": "^1.0.3"
   },
+  "description": "Generate word clouds in JavaScript.",
   "devDependencies": {
+    "@babel/cli": "^7.6.2",
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.2",
+    "@storybook/addon-actions": "5.2.5",
+    "@storybook/addon-centered": "5.2.5",
+    "@storybook/addon-docs": "5.2.5",
+    "@storybook/addon-events": "5.2.5",
+    "@storybook/addon-knobs": "5.2.5",
+    "@storybook/addon-links": "5.2.5",
+    "@storybook/addon-notes": "5.2.5",
+    "@storybook/addon-options": "5.2.5",
+    "@storybook/addon-storyshots": "5.2.5",
+    "@storybook/addon-storysource": "5.2.5",
+    "@storybook/addon-viewport": "5.2.5",
+    "@storybook/addons": "5.2.5",
+    "@storybook/client-api": "5.2.5",
+    "@storybook/core": "5.2.5",
+    "@storybook/core-events": "5.2.5",
+    "@storybook/html": "5.2.5",
+    "@storybook/source-loader": "5.2.5",
     "babel-loader": "^8.0.6",
+    "babel-plugin-source-map-support": "^2.1.1",
     "bower": "^1.8.2",
     "browserify": "^11.2.0",
+    "chai": "^4.2.0",
+    "d3-dispatch": "^1.0.3",
     "eslint": "^4.9.0",
+    "eventemitter3": "^4.0.0",
+    "format-json": "^1.0.3",
+    "fsevents": "^2.1.0",
+    "global": "^4.3.2",
     "http-server": "^0.10.0",
     "jasmine-core": "^2.8.0",
     "karma": "^1.7.1",
@@ -61,6 +53,39 @@
     "karma-firefox-launcher": "^1.0.1",
     "karma-jasmine": "^1.1.0",
     "karma-junit-reporter": "^1.2.0",
-    "wallabify": "0.0.15"
-  }
+    "karma-sinon-chai": "^2.0.2",
+    "mocha": "^6.2.2",
+    "nodemon": "^1.19.3",
+    "sinon": "^7.5.0",
+    "sinon-chai": "^3.3.0",
+    "wallabify": "0.0.15",
+    "webpack": "^4.41.2"
+  },
+  "homepage": "https://www.jasondavies.com/wordcloud/",
+  "jsnext:main": "index",
+  "keywords": [
+    "word",
+    "cloud",
+    "tag",
+    "visualization",
+    "canvas"
+  ],
+  "license": "BSD-3-Clause",
+  "main": "build/d3.layout.cloud.js",
+  "module": "index",
+  "name": "d3-cloud",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jasondavies/d3-cloud.git"
+  },
+  "scripts": {
+    "build": "mkdir -p build && browserify --standalone d3.layout.cloud index.js > build/d3.layout.cloud.js",
+    "build-storybook": "build-storybook",
+    "prestart": "npm install",
+    "pretest": "npm install",
+    "storybook": "start-storybook",
+    "test": "karma start karma.conf.js",
+    "test-single-run": "karma start karma.conf.js --single-run"
+  },
+  "version": "1.2.5"
 }
