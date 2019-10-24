@@ -75,7 +75,7 @@ module.exports = function() {
         event.call("end", cloud, tags, bounds);
       }
     }
-  }
+  };
 
   cloud.stop = function() {
     if (timer) {
@@ -199,6 +199,12 @@ module.exports = function() {
   cloud.on = function() {
     var value = event.on.apply(event, arguments);
     return value === event ? cloud : value;
+  };
+
+  // These are exported for testing purposes
+
+  cloud.testPoints = {
+    cloudBounds: cloudBounds
   };
 
   return cloud;

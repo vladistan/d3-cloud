@@ -9,17 +9,6 @@
     "visualization",
     "canvas"
   ],
-  
-  "ava": {
-    "cache": true,
-    "concurrency": 5,
-    "failFast": true,
-    "failWithoutAssertions": false,
-    "require": [
-      "@babel/register"
-    ],
-    "verbose": true
-  },
   "homepage": "https://www.jasondavies.com/wordcloud/",
   "license": "BSD-3-Clause",
   "author": {
@@ -34,14 +23,44 @@
     "url": "https://github.com/jasondavies/d3-cloud.git"
   },
   "scripts": {
-    "test": "ava .",
-    "build": "mkdir -p build && browserify --standalone d3.layout.cloud index.js > build/d3.layout.cloud.js"
+    "test": "karma start karma.conf.js",
+    "build": "mkdir -p build && browserify --standalone d3.layout.cloud index.js > build/d3.layout.cloud.js",
+    "prestart": "npm install",
+    "pretest": "npm install",
+    "test-single-run": "karma start karma.conf.js --single-run"
   },
   "dependencies": {
-    "d3-dispatch": "^1.0.3"
+    "@babel/cli": "^7.6.2",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/polyfill": "^7.6.0",
+    "@babel/runtime": "^7.6.2",
+    "@babel/runtime-corejs2": "^7.6.2",
+    "babel-plugin-source-map-support": "^2.1.1",
+    "chai": "^4.2.0",
+    "d3-dispatch": "^1.0.3",
+    "fsevents": "^2.1.0",
+    "karma-sinon-chai": "^2.0.2",
+    "mocha": "^6.2.2",
+    "nodemon": "^1.19.3",
+    "sinon": "^7.5.0",
+    "sinon-chai": "^3.3.0",
+    "webpack": "^4.41.2"
   },
   "devDependencies": {
-    "ava": "^1.4.1",
-    "browserify": "^11.2.0"
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.2",
+    "babel-loader": "^8.0.6",
+    "bower": "^1.8.2",
+    "browserify": "^11.2.0",
+    "eslint": "^4.9.0",
+    "http-server": "^0.10.0",
+    "jasmine-core": "^2.8.0",
+    "karma": "^1.7.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-junit-reporter": "^1.2.0",
+    "wallabify": "0.0.15"
   }
 }
