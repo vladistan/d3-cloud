@@ -206,6 +206,9 @@ module.exports = function() {
   cloud.testPoints = {
     cloudBounds: cloudBounds,
     setupDimensions: setupDimensions,
+    archimedeanSpiral: archimedeanSpiral,
+    rectangularSpiral: rectangularSpiral,
+    collideRects: collideRects,
   };
 
   return cloud;
