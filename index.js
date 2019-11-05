@@ -204,7 +204,8 @@ module.exports = function() {
   // These are exported for testing purposes
 
   cloud.testPoints = {
-    cloudBounds: cloudBounds
+    cloudBounds: cloudBounds,
+    setupDimensions: setupDimensions,
   };
 
   return cloud;
@@ -235,6 +236,18 @@ function cloudPadding() {
 }
 
 // Fetches a monochrome sprite bitmap for the specified text.
+function setupDimensions(d, x, y, w, h) {
+  d.width = w;
+  d.height = h;
+  d.xoff = x;
+  d.yoff = y;
+  d.x1 = w >> 1;
+  d.y1 = h >> 1;
+  d.x0 = -d.x1;
+  d.y0 = -d.y1;
+  d.hasText = true;
+}
+
 // Load in batches for speed.
 function cloudSprite(contextAndRatio, d, data, di) {
   if (d.sprite) return;
@@ -277,15 +290,7 @@ function cloudSprite(contextAndRatio, d, data, di) {
     c.fillText(d.text, 0, 0);
     if (d.padding) c.lineWidth = 2 * d.padding, c.strokeText(d.text, 0, 0);
     c.restore();
-    d.width = w;
-    d.height = h;
-    d.xoff = x;
-    d.yoff = y;
-    d.x1 = w >> 1;
-    d.y1 = h >> 1;
-    d.x0 = -d.x1;
-    d.y0 = -d.y1;
-    d.hasText = true;
+    setupDimensions(d, x, y, w, h);
     x += w;
   }
   var pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
