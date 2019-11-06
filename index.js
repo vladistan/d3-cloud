@@ -209,6 +209,7 @@ module.exports = function() {
     archimedeanSpiral: archimedeanSpiral,
     rectangularSpiral: rectangularSpiral,
     collideRects: collideRects,
+    functor: functor,
   };
 
   return cloud;

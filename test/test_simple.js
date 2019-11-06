@@ -1,7 +1,10 @@
+import {expect} from 'chai';
+
 chai.should();
 
 const cloud = require('..');
 
+const functor = cloud().testPoints.functor;
 
 describe('Word cloud layout', function () {
 
@@ -35,7 +38,7 @@ describe('Word cloud layout', function () {
 
         it('Correctly sets up dimensions from sprite', () => {
             const d = {};
-            setupDimensions(d, 100, 200, 44, 66 );
+            setupDimensions(d, 100, 200, 44, 66);
 
             d.hasText.should.be.true;
 
@@ -68,10 +71,10 @@ describe('Word cloud layout', function () {
         });
 
         it('Stretch initial center point to the extent of first obj', () => {
-            const bounds = [{x:100, y:200}, {x:100, y:200}];
-            const d = {x:100, y: 200};
+            const bounds = [{x: 100, y: 200}, {x: 100, y: 200}];
+            const d = {x: 100, y: 200};
 
-            setupDimensions(d, d.x, d.y, 44, 66 );
+            setupDimensions(d, d.x, d.y, 44, 66);
 
             (d.x + d.x0).should.eq(78);
 
@@ -86,10 +89,10 @@ describe('Word cloud layout', function () {
 
         it('When new object added to the right and bottom,  should stretch only one corner', () => {
 
-            const bounds = [{x:78, y:167}, {x:122, y:233}];
+            const bounds = [{x: 78, y: 167}, {x: 122, y: 233}];
 
-            const d = {x:140, y: 250};
-            setupDimensions(d, d.x, d.y, 44, 66 );
+            const d = {x: 140, y: 250};
+            setupDimensions(d, d.x, d.y, 44, 66);
 
             cloudBounds(bounds, d);
 
@@ -102,10 +105,10 @@ describe('Word cloud layout', function () {
 
         it('When new object added to the left and top,  should stretch only one corner', () => {
 
-            const bounds = [{x:78, y:167}, {x:162, y:283}];
+            const bounds = [{x: 78, y: 167}, {x: 162, y: 283}];
 
-            const d = {x:40, y: 50};
-            setupDimensions(d, d.x, d.y, 20, 30 );
+            const d = {x: 40, y: 50};
+            setupDimensions(d, d.x, d.y, 20, 30);
 
             cloudBounds(bounds, d);
 
@@ -116,6 +119,53 @@ describe('Word cloud layout', function () {
 
         })
     });
+
+});
+
+describe('Functors', () => {
+
+    it('returns function itself when called with the function', () => {
+        const a = () => 1;
+        const b = functor(a);
+        a.should.eq(b);
+    });
+
+    it('returns function that returns the value when called with the value', () => {
+            const a = () => 1;
+            const b = functor(5);
+            expect(b).to.be.a('function');
+            b().should.eq(5);
+        });
+
+});
+
+describe('Cloud Attributes', () => {
+
+    let c;
+
+    beforeEach(() => {
+        c = cloud();
+    });
+
+    it('lets  you set individual properties ', () => {
+        c.size([10, 11]);
+        c.size().should.eql([10, 11]);
+    })
+
+    it('lets properties are chainable for settings ', () => {
+        c
+            .font('verdana')
+            .fontStyle('serif')
+            .fontWeight(200)
+            .fontSize(55)
+            .rotate(94);
+
+        c.font()().should.eql('verdana');
+        c.fontStyle()().should.eql('serif');
+        c.fontSize()().should.eq(55);
+        c.rotate()().should.eq(94);
+        c.fontWeight()().should.eq(200);
+    })
 
 
 });
