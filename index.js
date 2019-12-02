@@ -210,6 +210,10 @@ module.exports = function() {
     rectangularSpiral: rectangularSpiral,
     collideRects: collideRects,
     functor: functor,
+    cloudCanvas: cloudCanvas,
+    getContext: getContext,
+    cloudSprite: cloudSprite,
+    zeroArray: zeroArray,
   };
 
   return cloud;
