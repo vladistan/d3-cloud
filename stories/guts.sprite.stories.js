@@ -106,7 +106,42 @@ export const simplestCase = () => {
     return div;
 };
 
+export const simpleCaseFlipped = () => {
 
+    const div = expDIV('spriteExplore', w, h);
+
+    setTimeout(() => {
+
+        const cv = d3.select('#spriteExplore');
+
+        const canvas = cld.canvas()();
+        const ctx = cld.testPoints.getContext(canvas);
+
+        const attrs = {font: 'Impact', padding: 0, size: 2, weight: 'light', style: 'normal'};
+
+
+        const data = [
+            Object.assign({text: '.', rotate: 180}, attrs),
+        ];
+
+        const d = data[0];
+
+        const s = cld.testPoints.cloudSprite(ctx, d, data, 0);
+
+        console.log(d.sprite);
+
+        displayLabel(cv, d, `Ratio ${ctx.ratio}`, 1);
+        displayLabel(cv, d, `Width ${d.width}`, 2);
+        displayLabel(cv, d, `Height ${d.height}`, 3);
+        displayLabel(cv, d, `Len ${d.sprite.length}`, 4);
+
+        displaySprite(cv, data[0], 0, 10);
+
+    });
+
+
+    return div;
+};
 
 export const largeWord = () => {
 
@@ -144,7 +179,6 @@ export const largeWord = () => {
     return div;
 };
 
-
 export const tinyWords = () => {
 
     const div = expDIV('spriteExplore', w, h);
@@ -175,6 +209,40 @@ export const tinyWords = () => {
 
         for  (let n = 0 ; n < 6 ; n ++ ) {
             displaySprite(cv, data[n], n < 3 ?  0 : 80, yoff[n % yoff.length]);
+        }
+
+    });
+
+
+    return div;
+};
+
+export const rotate = () => {
+
+    const div = expDIV('spriteExplore', w, h);
+
+    setTimeout(() => {
+
+        const cv = d3.select('#spriteExplore');
+        const yoff = [10];
+
+        const canvas = cld.canvas()();
+        const ctx = cld.testPoints.getContext(canvas);
+        const attrs = {font: 'Verdana', padding: 0, size: 28, weight: 'light', style: 'normal'};
+
+        const data = [
+            Object.assign({text: 'There', rotate: 45}, attrs),
+            Object.assign({text: 'There', rotate: -45}, attrs),
+        ];
+
+        const d = data[0];
+        cld.testPoints.cloudSprite(ctx, d, data, 0);
+
+
+        displayLabel(cv, d, `Ratio ${ctx.ratio}`, 1);
+
+        for  (let n = 0 ; n < 6 ; n ++ ) {
+            displaySprite(cv, data[n], n < 1 ?  0 : 80, yoff[n % yoff.length]);
         }
 
     });

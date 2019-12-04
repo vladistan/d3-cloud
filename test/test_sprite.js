@@ -59,6 +59,26 @@ describe('CloudCanvas', function () {
             }
         );
 
+        it('Rotate by 180 shrinks it a bit', function () {
+                const canvas = cld.canvas()();
+                const ctxAndRatio = cld.testPoints.getContext(canvas);
+                const attrs = {font: 'Impact', padding: 0, size: 2, weight: 'light', style: 'normal'};
+                const data = [Object.assign({text: '.', rotate: 180}, attrs),];
+                const d = data[0];
+
+                cld.testPoints.cloudSprite(ctxAndRatio, d, data, 0);
+
+                d.width.should.eq(32);
+                d.height.should.eq(4);
+                const sprite = d.sprite;
+
+                sprite.length.should.eq(2);
+                sprite[0].should.eq(0x00018000);
+                sprite[1].should.eq(0x00018000);
+
+            }
+        );
+
 
     })
 
