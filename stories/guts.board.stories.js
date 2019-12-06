@@ -16,7 +16,7 @@ import {
 const cloud = require("../index");
 
 export default {
-    title: 'Guts | Board (Canvas)',
+    title: 'Guts | Board',
     decorators: [withKnobs],
 };
 
