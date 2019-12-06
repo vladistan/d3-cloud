@@ -16,7 +16,7 @@ import {
 const cloud = require("../index");
 
 export default {
-    title: 'Guts | Board',
+    title: 'Guts | Board (Canvas)',
     decorators: [withKnobs],
 };
 
@@ -63,7 +63,6 @@ export const blankBoard = () => {
 
     return div;
 };
-
 
 export const withSquare = () => {
 
@@ -121,7 +120,6 @@ export const placeOne = () => {
     return div;
 
 };
-
 
 export const placeMultiple = () => {
 

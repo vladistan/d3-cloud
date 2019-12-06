@@ -1,6 +1,6 @@
 import {action} from '@storybook/addon-actions';
 import * as samples from './support/text_samples'
-import {expDIV} from "./util";
+import {expDIV, unrollNum} from "./util";
 import {
     array,
     boolean,
@@ -26,17 +26,6 @@ let cld = new cloud();
 const testPoints = new cloud().testPoints;
 const cloudCanvas = testPoints.cloudCanvas;
 
-
-function unrollNum(n) {
-
-    const rv = [];
-    for (let i = 0; i < 32; i++) {
-        rv[32 - i] = n & (1) ? 1 : 0;
-        n = n >> 1;
-    }
-
-    return rv;
-}
 
 function displaySprite(cv, d, xoff, yoff) {
 

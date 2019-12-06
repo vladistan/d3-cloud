@@ -15,3 +15,14 @@ export function expDIV(id, w ,h) {
 
     return div;
 }
+
+export function unrollNum(n) {
+
+    const rv = [];
+    for (let i = 0; i < 32; i++) {
+        rv[32 - i] = n & (1) ? 1 : 0;
+        n = n >> 1;
+    }
+
+    return rv;
+}
