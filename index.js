@@ -214,6 +214,7 @@ module.exports = function() {
     getContext: getContext,
     cloudSprite: cloudSprite,
     zeroArray: zeroArray,
+    place: place,
   };
 
   return cloud;
