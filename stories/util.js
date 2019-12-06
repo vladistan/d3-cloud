@@ -1,3 +1,4 @@
+
 export function expDIV(id, w ,h) {
 
     const div = document.createElement('div');
@@ -26,3 +27,22 @@ export function unrollNum(n) {
 
     return rv;
 }
+
+let cloud;
+let testPoints;
+let cloudCanvas;
+
+export function setCloud (cld) {
+    cloud = cld;
+    testPoints = cld.testPoints;
+    cloudCanvas = testPoints.cloudCanvas;
+}
+
+export function getCanvas(w, h) {
+    const lcnv = cloudCanvas();
+    lcnv.width = w;
+    lcnv.height = h;
+    lcnv.style.background = '#eee';
+    return lcnv;
+}
+

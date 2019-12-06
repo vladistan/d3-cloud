@@ -1,6 +1,6 @@
 import {action} from '@storybook/addon-actions';
 import * as samples from './support/text_samples'
-import {expDIV, unrollNum} from "./util";
+import {expDIV, getCanvas, setCloud, unrollNum} from "./util";
 import {
     array,
     boolean,
@@ -23,9 +23,8 @@ export default {
 const w = 1200 - 1;
 const h = 500 - 1;
 let cld = new cloud();
-const testPoints = new cloud().testPoints;
-const cloudCanvas = testPoints.cloudCanvas;
 
+setCloud(cld);
 
 function displaySprite(cv, d, xoff, yoff) {
 
@@ -46,7 +45,6 @@ function displaySprite(cv, d, xoff, yoff) {
                 } else {
                     cv.fillRect((col++) * 5 + xoff, n * 5 + yoff, 4, 4);
                 }
-
             }
         }
     }
@@ -57,17 +55,9 @@ function displayLabel(ctx, d, text, line) {
     ctx.fillText(text, w - w / 8, 20 * line);
 }
 
-function getCanvas() {
-    const lcnv = cloudCanvas();
-    lcnv.width = w;
-    lcnv.height = h;
-    lcnv.style.background = '#eee';
-    return lcnv;
-}
-
 export const simplestCase = () => {
 
-    const lcnv = getCanvas();
+    const lcnv = getCanvas(w, h);
     const cv = lcnv.getContext('2d');
 
     const canvas = cld.canvas()();
@@ -79,8 +69,6 @@ export const simplestCase = () => {
     ];
     const d = data[0];
     const s = cld.testPoints.cloudSprite(ctx, d, data, 0);
-
-    console.log(d.sprite);
 
     displaySprite(cv, data[0], 20, 10);
 
@@ -95,7 +83,7 @@ export const simplestCase = () => {
 
 export const simplestCaseFlipped = () => {
 
-    const lcnv = getCanvas();
+    const lcnv = getCanvas(w, h);
     const cv = lcnv.getContext('2d');
 
     const canvas = cld.canvas()();
@@ -107,9 +95,6 @@ export const simplestCaseFlipped = () => {
     ];
     const d = data[0];
     const s = cld.testPoints.cloudSprite(ctx, d, data, 0);
-
-    console.log(d.sprite);
-
 
     displaySprite(cv, data[0], 20, 10);
 
@@ -124,7 +109,7 @@ export const simplestCaseFlipped = () => {
 
 export const largeWord = () => {
 
-    const lcnv = getCanvas();
+    const lcnv = getCanvas(w, h);
     const cv = lcnv.getContext('2d');
 
     const canvas = cld.canvas()();
@@ -153,7 +138,7 @@ export const largeWord = () => {
 
 export const tinyWords = () => {
 
-    const lcnv = getCanvas();
+    const lcnv = getCanvas(w, h);
     const cv = lcnv.getContext('2d');
 
     const canvas = cld.canvas()();
@@ -188,7 +173,7 @@ export const tinyWords = () => {
 
 export const rotate = () => {
 
-    const lcnv = getCanvas();
+    const lcnv = getCanvas(w, h);
     const cv = lcnv.getContext('2d');
 
     const canvas = cld.canvas()();

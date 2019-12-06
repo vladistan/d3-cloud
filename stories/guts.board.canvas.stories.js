@@ -1,6 +1,6 @@
 import {action} from '@storybook/addon-actions';
 import * as samples from './support/text_samples'
-import {expDIV, unrollNum} from "./util";
+import {expDIV, getCanvas, unrollNum} from "./util";
 import {
     array,
     boolean,
@@ -32,130 +32,118 @@ function displayBoard(cv, board, w, h) {
     const sw = w / 32;
 
     let idx = 0;
+
+    cv.strokeStyle = '#405000';
+    cv.lineWidth = .5;
+
     for (let y = 0; y < h; y++) {
         let col = 0;
         for (let x = 0; x < sw; x++) {
             const s = unrollNum(board[idx++]);
-            cv.append('g')
-                .selectAll("circle")
-                .data(s)
-                .enter()
-                .append('circle')
-                .attr('cx', (d, i) => (col++) * .4 + 2)
-                .attr('cy', 4 + y * .4)
-                .attr('r', (d, i) => d / 6 + 0.05);
+            for (let i of s) {
+                if (!i) {
+                    cv.strokeRect((col++) * 5 + 7, y * 5 + 4, 4, 4);
+                } else {
+                    cv.fillRect((col++) * 5 + 7, y * 5 + 4, 4, 4);
+                }
+            }
         }
     }
 }
 
 export const blankBoard = () => {
 
-    const div = expDIV('spriteExplore', w, h);
+    const lcnv = getCanvas(w, h);
+    const cv = lcnv.getContext('2d');
 
-    setTimeout(() => {
+    const size = [128, 64];
+    const board = zeroArray((size[0] >> 5) * size[1]);
 
-        const cv = d3.select('#spriteExplore');
-        const size = [128, 64];
-        const board = zeroArray((size[0] >> 5) * size[1]);
+    displayBoard(cv, board, 128, 128);
 
-        displayBoard(cv, board, 128, 128);
-    });
 
-    return div;
+    return lcnv;
 };
 
 export const withSquare = () => {
 
-    const div = expDIV('spriteExplore', w, h);
+    const lcnv = getCanvas(w, h);
+    const cv = lcnv.getContext('2d');
 
-    setTimeout(() => {
+    const size = [128, 64];
+    const board = zeroArray((size[0] >> 5) * size[1]);
 
-        const cv = d3.select('#spriteExplore');
-        const size = [128, 64];
-        const board = zeroArray((size[0] >> 5) * size[1]);
+    for (let i = 0; i < 8; i++) {
+        board[(12 + i) * 4 + 1] = 0xffff;
+        board[(12 + i) * 4 + 2] = 0xffff0000;
+    }
 
-        for (let i = 0; i < 8; i++) {
-            board[(12 + i) * 4 + 1] = 0xffff;
-            board[(12 + i) * 4 + 2] = 0xffff0000;
-        }
-
-        displayBoard(cv, board, 128, 64);
-    });
-
-
-    return div;
+    displayBoard(cv, board, 128, 64);
+    return lcnv;
 };
 
 export const placeOne = () => {
 
-    const div = expDIV('spriteExplore', w, h);
-
-    setTimeout(() => {
-
-
-        const cv = d3.select('#spriteExplore');
-
-        const canvas = cld.canvas()();
-        const ctx = cld.testPoints.getContext(canvas);
-        const size = [64, 16];
-        const board = zeroArray((size[0] >> 5) * size[1]);
-        const bounds = [{x: 0, y: 0}, {x: size[0], y: size[1]}];
-
-        cld.size(size);
+    const lcnv = getCanvas(w, h);
+    const cv = lcnv.getContext('2d');
 
 
-        const attrs = {font: 'Impact', padding: 0, size: 4, weight: 'light', style: 'normal'};
+    const canvas = cld.canvas()();
+    const ctx = cld.testPoints.getContext(canvas);
+    const size = [64, 16];
+    const board = zeroArray((size[0] >> 5) * size[1]);
+    const bounds = [{x: 0, y: 0}, {x: size[0], y: size[1]}];
 
-        const data = [
-            Object.assign({text: '!', x: 16, y: 10, rotate: 0}, attrs),
-        ];
+    cld.size(size);
 
-        cld.testPoints.cloudSprite(ctx, data[0], data, 0);
-        cld.testPoints.place(board, data[0], bounds);
 
-        displayBoard(cv, board, size[0], size[1]);
+    const attrs = {font: 'Impact', padding: 0, size: 4, weight: 'light', style: 'normal'};
 
-    });
+    const data = [
+        Object.assign({text: '!', x: 16, y: 10, rotate: 0}, attrs),
+    ];
 
-    return div;
+    cld.testPoints.cloudSprite(ctx, data[0], data, 0);
+    cld.testPoints.place(board, data[0], bounds);
+
+    displayBoard(cv, board, size[0], size[1]);
+
+
+    return lcnv;
 
 };
 
 export const placeMultiple = () => {
 
-    const div = expDIV('spriteExplore', w, h);
+    const lcnv = getCanvas(w, h);
+    const cv = lcnv.getContext('2d');
 
-    setTimeout(() => {
+    const canvas = cld.canvas()();
+    const ctx = cld.testPoints.getContext(canvas);
+    const size = [96, 40];
+    const board = zeroArray((size[0] >> 5) * size[1]);
+    const bounds = [{x: 0, y: 0}, {x: size[0], y: size[1]}];
 
-        const cv = d3.select('#spriteExplore');
+    cld.size(size);
 
-        const canvas = cld.canvas()();
-        const ctx = cld.testPoints.getContext(canvas);
-        const size = [96, 40];
-        const board = zeroArray((size[0] >> 5) * size[1]);
-        const bounds = [{x: 0, y: 0}, {x: size[0], y: size[1]}];
+    const attrs = {font: 'Impact', padding: 0, size: 10, weight: 'light', style: 'normal'};
 
-        cld.size(size);
+    const data = [
+        Object.assign({text: 'Hello', x: 0, y: 0, rotate: -45}, attrs),
+        Object.assign({text: 'More', x: 0, y: 0, rotate: 45}, attrs),
+        Object.assign({text: 'Doh!', x: 0, y: 0, rotate: 0}, attrs),
+        Object.assign({text: 'There', x: 0, y: 0, rotate: 90}, attrs),
+    ];
 
-        const attrs = {font: 'Impact', padding: 0, size: 10, weight: 'light', style: 'normal'};
+    for (const d of data) {
+        cld.testPoints.cloudSprite(ctx, d, data, 0);
+        cld.testPoints.place(board, d, bounds);
+    }
 
-        const data = [
-            Object.assign({text: 'Hello', x: 0, y: 0, rotate: -45}, attrs),
-            Object.assign({text: 'More', x: 0, y: 0, rotate: 45}, attrs),
-            Object.assign({text: 'Doh!', x: 0, y: 0, rotate: 0}, attrs),
-            Object.assign({text: 'There', x: 0, y: 0, rotate: 90}, attrs),
-        ];
+    displayBoard(cv, board, size[0], size[1]);
 
-        for (const d of data ) {
-            cld.testPoints.cloudSprite(ctx, d, data, 0);
-            cld.testPoints.place(board, d, bounds);
-        }
 
-        displayBoard(cv, board, size[0], size[1]);
-
-    });
-
-    return div;
+    return lcnv;
 
 };
 
