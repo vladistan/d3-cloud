@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:5.5.0
 
 RUN useradd --no-log-init --home-dir /app --uid 200 user < /dev/null
 RUN useradd --no-log-init --home-dir /app --uid 502 go < /dev/null

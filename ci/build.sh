@@ -73,11 +73,11 @@ docker run -w /app -v `pwd`:/app -u ${USE_UID}:${USE_UID} \
        -i -e HOME=/app local/nodebuild \
         npm install
 
-echo "Check NPM modules"
-docker run -w /app -v `pwd`:/app -u $USE_UID:$USE_UID \
-       $VOL_COMMANDS \
-       -i -e HOME=/app local/nodebuild \
-        /bin/bash
+#echo "Check NPM modules"
+#docker run -w /app -v `pwd`:/app -u $USE_UID:$USE_UID \
+#       $VOL_COMMANDS \
+#       -i -e HOME=/app local/nodebuild \
+#        /bin/bash
 
 
 echo "JS Test"
